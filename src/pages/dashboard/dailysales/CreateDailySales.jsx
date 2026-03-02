@@ -14,7 +14,9 @@ export default function CreateDailySales() {
     PMS: {
       pumps: [
         { pumpNumber: 1, openingMeter: "", closingMeter: "" },
-        { pumpNumber: 2, openingMeter: "", closingMeter: "" }
+        { pumpNumber: 2, openingMeter: "", closingMeter: "" },
+        { pumpNumber: 3, openingMeter: "", closingMeter: "" },
+        { pumpNumber: 4, openingMeter: "", closingMeter: "" }
       ],
       pricePerLitre: "",
       expenses: [{ description: "", amount: "" }]
