@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { dailySalesAPI } from "../../../services/dailySalesService";
+import { pdfAPI } from "../../../services/pdfService";
 
 export default function ViewDailySales() {
   const { id } = useParams();
@@ -20,6 +21,20 @@ export default function ViewDailySales() {
     } catch (err) {
       alert("Failed to load daily sales");
       navigate("/dashboard/daily-sales");
+    }
+  };
+
+  const handleDownloadPDF = async () => {
+    try {
+      const res = await pdfAPI.generateSalesPDF(id, sales);
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `Daily_Sales_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+    } catch (err) {
+      alert("Failed to generate PDF");
     }
   };
 
@@ -243,6 +258,13 @@ export default function ViewDailySales() {
             LOCKED
           </span>
         )}
+
+        <button
+          onClick={handleDownloadPDF}
+          className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
+        >
+          Download PDF
+        </button>
       </div>
     </div>
   );
