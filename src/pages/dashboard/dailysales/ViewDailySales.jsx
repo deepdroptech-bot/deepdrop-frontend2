@@ -26,7 +26,7 @@ export default function ViewDailySales() {
 
   const handleDownloadPDF = async () => {
     try {
-      const res = await pdfAPI.generateSalesPDF(id, sales);
+      const res = await pdfAPI.generateSalesPDF(id);
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;

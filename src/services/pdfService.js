@@ -1,5 +1,6 @@
 import api from "./api";
 
 export const pdfAPI = {
-  generateSalesPDF: (id, data) => api.post(`/pdf/sales/${id}`, data, { responseType: "blob" }),
+  generateSalesPDF: (id) =>
+    api.get(`/pdf/sales/${id}`, { responseType: "blob" }),
 };
