@@ -444,7 +444,7 @@ if (loading)
             className="input-premium"
             value={form.AGO.calibrationLitres}
             onChange={e =>
-              handleSectionChange("AGO", "calibrationLitres", e.target.value)
+              handleAGOCalibrationChange("AGO", "calibrationLitres", e.target.value)
             }
           />
 
@@ -453,7 +453,7 @@ if (loading)
             className="input-premium"
             value={form.AGO.calibrationReason}
             onChange={e =>
-              handleSectionChange("AGO", "calibrationReason", e.target.value)
+              handleAGOCalibrationChange("AGO", "calibrationReason", e.target.value)
             }
           />
 
