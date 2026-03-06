@@ -202,23 +202,17 @@ export default function CreateDailySales() {
     navigate("/dashboard/daily-sales");
   };
 
-  const calculatePumpTotals = (pump, pricePerLitre) => {
+ const calculatePumpTotals = (pump, pricePerLitre) => {
   const opening = Number(pump.openingMeter) || 0;
   const closing = Number(pump.closingMeter) || 0;
-  const calibrationLitres = Number(pump.calibrationLitres) || 0;
+  const calibration = Number(pump.calibrationLitres) || 0;
   const price = Number(pricePerLitre) || 0;
 
-  const litres = closing - opening;
-  const calibration = calibrationLitres;
-  const litresSold = litres - calibration;
+  const litres = Math.max(closing - opening, 0);
+  const litresSold = Math.max(litres - calibration, 0);
   const amount = litresSold * price;
 
-  return {
-    litres: litres > 0 ? litres : 0,
-    calibration: calibration > 0 ? calibration : 0,
-    litresSold: litresSold > 0 ? litresSold : 0,
-    amount: amount > 0 ? amount : 0
-  };
+  return { litres, calibration, litresSold, amount };
 };
 
 const getPMSTotal = () => {
@@ -307,7 +301,7 @@ if (loading)
           />
 
           {form.PMS.pumps.map((pump, index) => {
-  const { litres, amount } = calculatePumpTotals(
+  const { litres, amount, calibration, litresSold} = calculatePumpTotals(
     pump,
     form.PMS.pricePerLitre
   );
