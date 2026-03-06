@@ -13,10 +13,10 @@ export default function CreateDailySales() {
 
     PMS: {
       pumps: [
-        { pumpNumber: 1, openingMeter: "", closingMeter: "" },
-        { pumpNumber: 2, openingMeter: "", closingMeter: "" },
-        { pumpNumber: 3, openingMeter: "", closingMeter: "" },
-        { pumpNumber: 4, openingMeter: "", closingMeter: "" }
+        { pumpNumber: 1, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" },
+        { pumpNumber: 2, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" },
+        { pumpNumber: 3, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" },
+        { pumpNumber: 4, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" }
       ],
       pricePerLitre: "",
       expenses: [{ description: "", amount: "" }]
@@ -25,6 +25,8 @@ export default function CreateDailySales() {
     AGO: {
       openingMeter: "",
       closingMeter: "",
+      calibrationLitres: "",
+      calibrationReason: "",
       pricePerLitre: "",
       expenses: [{ description: "", amount: "" }]
     },
@@ -58,6 +60,23 @@ export default function CreateDailySales() {
     setForm({
       ...form,
       PMS: { ...form.PMS, pumps: updated }
+    });
+  };
+
+  const handlePMSCalibrationChange = (index, field, value) => {
+    const updated = [...form.PMS.pumps];
+    updated[index][field] = value;
+
+    setForm({
+      ...form,
+      PMS: { ...form.PMS, pumps: updated }
+    });
+  };
+
+  const handleAGOCalibrationChange = (field, value) => {
+    setForm({
+      ...form,
+      AGO: { ...form.AGO, [field]: value }
     });
   };
 
@@ -142,7 +161,9 @@ export default function CreateDailySales() {
         pumps: form.PMS.pumps.map(p => ({
           pumpNumber: p.pumpNumber,
           openingMeter: Number(p.openingMeter),
-          closingMeter: Number(p.closingMeter)
+          closingMeter: Number(p.closingMeter),
+          calibrationLitres: Number(p.calibrationLitres),
+          calibrationReason: p.calibrationReason
         })),
         expenses: form.PMS.expenses.map(e => ({
           description: e.description,
@@ -153,6 +174,8 @@ export default function CreateDailySales() {
       AGO: {
         openingMeter: Number(form.AGO.openingMeter),
         closingMeter: Number(form.AGO.closingMeter),
+        calibrationLitres: Number(form.AGO.calibrationLitres),
+        calibrationReason: form.AGO.calibrationReason,
         pricePerLitre: Number(form.AGO.pricePerLitre),
         expenses: form.AGO.expenses.map(e => ({
           description: e.description,
@@ -182,13 +205,18 @@ export default function CreateDailySales() {
   const calculatePumpTotals = (pump, pricePerLitre) => {
   const opening = Number(pump.openingMeter) || 0;
   const closing = Number(pump.closingMeter) || 0;
+  const calibrationLitres = Number(pump.calibrationLitres) || 0;
   const price = Number(pricePerLitre) || 0;
 
   const litres = closing - opening;
-  const amount = litres * price;
+  const calibration = calibrationLitres;
+  const litresSold = litres - calibration;
+  const amount = litresSold * price;
 
   return {
     litres: litres > 0 ? litres : 0,
+    calibration: calibration > 0 ? calibration : 0,
+    litresSold: litresSold > 0 ? litresSold : 0,
     amount: amount > 0 ? amount : 0
   };
 };
@@ -206,13 +234,18 @@ const getPMSTotal = () => {
 const calculateAGOTotals = () => {
   const opening = Number(form.AGO.openingMeter) || 0;
   const closing = Number(form.AGO.closingMeter) || 0;
+  const calibrationLitres = Number(form.AGO.calibrationLitres) || 0;
   const price = Number(form.AGO.pricePerLitre) || 0;
 
   const litres = closing - opening;
-  const amount = litres * price;
+  const calibration = calibrationLitres;
+  const litresSold = litres - calibration;
+  const amount = litresSold * price;
 
   return {
     litres: litres > 0 ? litres : 0,
+    calibration: calibration > 0 ? calibration : 0,
+    litresSold: litresSold > 0 ? litresSold : 0,
     amount: amount > 0 ? amount : 0
   };
 };
@@ -303,11 +336,36 @@ if (loading)
           }
           required
         />
+
+        <h3 className="text-lg font-semibold col-span-full">
+          Pump {pump.pumpNumber} Calibration
+        </h3>
+
+        <input
+          type="number"
+          placeholder={`Pump ${pump.pumpNumber} Calibration Litres`}
+          className="input-premium"
+          value={pump.calibrationLitres}
+          onChange={e =>
+            handlePMSCalibrationChange(index, "calibrationLitres", e.target.value)
+          }
+        />
+
+        <input
+          placeholder={`Pump ${pump.pumpNumber} Calibration Reason`}
+          className="input-premium"
+          value={pump.calibrationReason}
+          onChange={e =>
+            handlePMSCalibrationChange(index, "calibrationReason", e.target.value)
+          }
+        />
       </div>
 
       {/* 🔥 LIVE RESULTS */}
       <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-700">
-        <p>Litres Sold: <span className="font-semibold">{litres.toFixed(2)} L</span></p>
+        <p>Litres: <span className="font-semibold">{litres.toFixed(2)} L</span></p>
+        <p>Calibration: <span className="font-semibold">{calibration.toFixed(2)} L</span></p>
+        <p>Litres Sold: <span className="font-semibold">{litresSold.toFixed(2)} L</span></p>
         <p>Total Amount: <span className="font-semibold">₦{amount.toLocaleString()}</span></p>
       </div>
     </div>
@@ -317,8 +375,6 @@ if (loading)
 <div className="text-right text-lg font-bold text-blue-600">
   PMS Total Sales: ₦{getPMSTotal().toLocaleString()}
 </div>
-
-
 
           {form.PMS.expenses.map((expense, index) => (
             <div key={index} className="flex gap-4">
@@ -378,15 +434,52 @@ if (loading)
             }
           />
 
+          <h3 className="text-lg font-semibold col-span-full">
+            AGO Calibration
+          </h3>
+
+          <input
+            type="number"
+            placeholder="Calibration Litres"
+            className="input-premium"
+            value={form.AGO.calibrationLitres}
+            onChange={e =>
+              handleSectionChange("AGO", "calibrationLitres", e.target.value)
+            }
+          />
+
+          <input
+            placeholder="Calibration Reason"
+            className="input-premium"
+            value={form.AGO.calibrationReason}
+            onChange={e =>
+              handleSectionChange("AGO", "calibrationReason", e.target.value)
+            }
+          />
+
           {(() => {
-  const { litres, amount } = calculateAGOTotals();
+  const { litres, litresSold, amount, calibration } = calculateAGOTotals();
 
   return (
     <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-700 mt-3">
       <p>
-        Litres Sold:{" "}
+        Litres:{" "}
         <span className="font-semibold">
           {litres.toFixed(2)} L
+        </span>
+      </p>
+
+        <p>
+        Calibration:{" "}
+        <span className="font-semibold">
+          {calibration.toFixed(2)} L
+        </span>
+      </p>
+
+      <p>
+        Litres Sold:{" "}
+        <span className="font-semibold">
+          {litresSold.toFixed(2)} L
         </span>
       </p>
 
