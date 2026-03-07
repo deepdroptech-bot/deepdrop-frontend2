@@ -7,6 +7,8 @@ export default function CreateDailySales() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const [form, setForm] = useState({
     salesDate: "",
@@ -197,9 +199,20 @@ export default function CreateDailySales() {
       notes: [...form.notes.filter(n => n.trim() !== "")]
     };
 
+    try {
+
     await dailySalesAPI.create(cleanedForm);
 
+    setMessage(res.data.msg);
+
+    setError("");
+
     navigate("/dashboard/daily-sales");
+
+    } catch (err) {
+      setError(err.response?.data?.msg || "An error occurred while creating daily sales record.");
+      setMessage("");
+    }
   };
 
  const calculatePumpTotals = (pump, pricePerLitre) => {
@@ -598,6 +611,8 @@ if (loading)
             </div>
           ))}
 
+          {message && <p className="text-green-500">{message}</p>}
+          {error && <p className="text-red-500">{error}</p>}
 
           <button className="btn-primary w-full">
             Draft Daily Sales

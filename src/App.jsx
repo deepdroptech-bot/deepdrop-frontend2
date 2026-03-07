@@ -75,10 +75,10 @@ function App() {
     <BrowserRouter>
    {/* Public routes */}
       <Routes>
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} />
         <Route path="/get-started" element={<GetStarted />} />
         <Route path="/login/agbor-rd" element={<Login />} />
-        <Route path="/login/ekiosa" element={<Login />} />
+        <Route path="/login/ekiosa" element={<Login />} /> */}
         <Route path="/login" element={<Login />} />
 
  {/* Protected dashboard routes */}

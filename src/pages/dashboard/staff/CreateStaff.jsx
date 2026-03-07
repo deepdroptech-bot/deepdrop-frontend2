@@ -7,7 +7,8 @@ export default function CreateStaff() {
   const navigate = useNavigate();
   const [form, setForm] = useState({});
   const [photo, setPhoto] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -40,13 +41,20 @@ export default function CreateStaff() {
 
   if (photo) data.append("photo", photo);
 
+  try {
+
   await staffAPI.create(data);
 
-  setSuccess("Staff created successfully!");
+  setMessage(res.data.msg);
+  setError("");
   setTimeout(() => {
     setSuccess(null);
     navigate("/dashboard/staff");
   }, 2000);
+} catch (err) {
+  setError(err.response?.data?.msg || "An error occurred while creating staff record.");
+  setMessage("");
+}
 };
 
 if (loading)
@@ -174,11 +182,16 @@ if (loading)
         </label>
       </div>
 
-      {success && (
-        <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-          <span className="block sm:inline">{success}</span>
-        </div>
-      )}
+        {message && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+            <span className="block sm:inline">{message}</span>
+          </div>
+        )}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
 
       {/* Submit Button */}
       <button

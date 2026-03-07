@@ -106,34 +106,57 @@ export default function EditDailySales() {
     </div>
   );
 
-  return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <h2 className="text-2xl font-bold">
-        Edit Daily Sales
-      </h2>
+return (
+  <div className="max-w-6xl mx-auto space-y-10">
 
-      <form onSubmit={handleSubmit} className="space-y-6 card-premium">
+    {/* HEADER */}
+    <div className="bg-white rounded-3xl shadow-xl p-6 flex justify-between items-center">
+      <div>
+        <h2 className="text-3xl font-extrabold text-gray-800">
+          Edit Daily Sales
+        </h2>
+        <p className="text-gray-500">
+          Update and adjust the daily sales record
+        </p>
+      </div>
+    </div>
 
-        {/* SALES DATE */}
-        <div>
-          <label>Sales Date</label>
-          <input
-            type="date"
-            value={form.salesDate}
-            onChange={(e) =>
-              setForm({ ...form, salesDate: e.target.value })
-            }
-            className="input-primary"
-            required
-          />
-        </div>
+    <form onSubmit={handleSubmit} className="space-y-10">
 
-        {/* PMS SECTION */}
-        <div>
-          <h3 className="font-bold text-lg">PMS</h3>
+      {/* SALES DATE */}
+      <div className="bg-white rounded-3xl shadow-lg p-6">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          Sales Date
+        </label>
 
-          {form.PMS.pumps.map((pump, index) => (
-            <div key={index} className="flex gap-4 mb-2">
+        <input
+          type="date"
+          value={form.salesDate}
+          onChange={(e) =>
+            setForm({ ...form, salesDate: e.target.value })
+          }
+          className="input-premium"
+          required
+        />
+      </div>
+
+      {/* PMS SECTION */}
+      <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-xl p-6 space-y-6">
+        <h3 className="text-xl font-bold text-blue-800">
+          PMS Pumps
+        </h3>
+
+        {form.PMS.pumps.map((pump, index) => (
+          <div
+            key={index}
+            className="bg-white p-5 rounded-2xl shadow-md space-y-4"
+          >
+            <h4 className="font-semibold text-gray-700">
+              Pump {pump.pumpNumber}
+            </h4>
+
+            <div className="grid md:grid-cols-2 gap-4">
+
               <input
                 type="number"
                 placeholder="Opening Meter"
@@ -146,7 +169,7 @@ export default function EditDailySales() {
                     PMS: { ...form.PMS, pumps: updated }
                   });
                 }}
-                className="input-primary"
+                className="input-premium"
               />
 
               <input
@@ -161,12 +184,12 @@ export default function EditDailySales() {
                     PMS: { ...form.PMS, pumps: updated }
                   });
                 }}
-                className="input-primary"
+                className="input-premium"
               />
 
               <input
                 type="number"
-                placeholder="Calibration"
+                placeholder="Calibration Litres"
                 value={pump.calibration}
                 onChange={(e) => {
                   const updated = [...form.PMS.pumps];
@@ -176,7 +199,7 @@ export default function EditDailySales() {
                     PMS: { ...form.PMS, pumps: updated }
                   });
                 }}
-                className="input-primary"
+                className="input-premium"
               />
 
               <input
@@ -191,14 +214,16 @@ export default function EditDailySales() {
                     PMS: { ...form.PMS, pumps: updated }
                   });
                 }}
-                className="input-primary"
+                className="input-premium"
               />
             </div>
-          ))}
+          </div>
+        ))}
 
+        <div className="pt-4 border-t">
           <input
             type="number"
-            placeholder="Price Per Litre"
+            placeholder="PMS Price Per Litre"
             value={form.PMS.pricePerLitre}
             onChange={(e) =>
               setForm({
@@ -206,14 +231,18 @@ export default function EditDailySales() {
                 PMS: { ...form.PMS, pricePerLitre: e.target.value }
               })
             }
-            className="input-primary"
+            className="input-premium"
           />
         </div>
+      </div>
 
-        {/* AGO SECTION */}
-        <div>
-          <h3 className="font-bold text-lg">AGO</h3>
+      {/* AGO */}
+      <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl shadow-xl p-6 space-y-4">
+        <h3 className="text-xl font-bold text-green-800">
+          AGO Sales
+        </h3>
 
+        <div className="grid md:grid-cols-3 gap-4">
           <input
             type="number"
             placeholder="Opening Meter"
@@ -224,7 +253,7 @@ export default function EditDailySales() {
                 AGO: { ...form.AGO, openingMeter: e.target.value }
               })
             }
-            className="input-primary"
+            className="input-premium"
           />
 
           <input
@@ -237,7 +266,7 @@ export default function EditDailySales() {
                 AGO: { ...form.AGO, closingMeter: e.target.value }
               })
             }
-            className="input-primary"
+            className="input-premium"
           />
 
           <input
@@ -250,127 +279,136 @@ export default function EditDailySales() {
                 AGO: { ...form.AGO, pricePerLitre: e.target.value }
               })
             }
-            className="input-primary"
+            className="input-premium"
           />
         </div>
+      </div>
 
-        {/* PRODUCTS SOLD */}
-        <div>
-          <h3 className="font-bold text-lg">Products Sold</h3>
+      {/* PRODUCTS */}
+      <div className="bg-white rounded-3xl shadow-xl p-6 space-y-4">
+        <h3 className="text-xl font-bold text-purple-700">
+          Products Sold
+        </h3>
 
-          {form.productsSold.map((item, index) => (
-            <div key={index} className="flex gap-4 mb-2">
-              <input
-                type="text"
-                placeholder="Item Name"
-                value={item.itemName}
-                onChange={(e) => {
-                  const updated = [...form.productsSold];
-                  updated[index].itemName = e.target.value;
-                  setForm({ ...form, productsSold: updated });
-                }}
-                className="input-primary"
-              />
+        {form.productsSold.map((item, index) => (
+          <div key={index} className="grid md:grid-cols-3 gap-4">
+            <input
+              type="text"
+              placeholder="Item Name"
+              value={item.itemName}
+              onChange={(e) => {
+                const updated = [...form.productsSold];
+                updated[index].itemName = e.target.value;
+                setForm({ ...form, productsSold: updated });
+              }}
+              className="input-premium"
+            />
 
-              <input
-                type="number"
-                placeholder="Quantity"
-                value={item.quantitySold}
-                onChange={(e) => {
-                  const updated = [...form.productsSold];
-                  updated[index].quantitySold = e.target.value;
-                  setForm({ ...form, productsSold: updated });
-                }}
-                className="input-primary"
-              />
+            <input
+              type="number"
+              placeholder="Quantity"
+              value={item.quantitySold}
+              onChange={(e) => {
+                const updated = [...form.productsSold];
+                updated[index].quantitySold = e.target.value;
+                setForm({ ...form, productsSold: updated });
+              }}
+              className="input-premium"
+            />
 
-              <input
-                type="number"
-                placeholder="Price Per Unit"
-                value={item.pricePerUnit}
-                onChange={(e) => {
-                  const updated = [...form.productsSold];
-                  updated[index].pricePerUnit = e.target.value;
-                  setForm({ ...form, productsSold: updated });
-                }}
-                className="input-primary"
-              />
-            </div>
-          ))}
-        </div>
+            <input
+              type="number"
+              placeholder="Price Per Unit"
+              value={item.pricePerUnit}
+              onChange={(e) => {
+                const updated = [...form.productsSold];
+                updated[index].pricePerUnit = e.target.value;
+                setForm({ ...form, productsSold: updated });
+              }}
+              className="input-premium"
+            />
+          </div>
+        ))}
+      </div>
 
-        {/* OTHER INCOME */}
-        <div>
-          <h3 className="font-bold text-lg">Other Income</h3>
+      {/* OTHER INCOME */}
+      <div className="bg-white rounded-3xl shadow-xl p-6 space-y-4">
+        <h3 className="text-xl font-bold text-indigo-700">
+          Other Income
+        </h3>
 
-          {form.otherIncome.map((item, index) => (
-            <div key={index} className="flex gap-4 mb-2">
-              <input
-                type="text"
-                placeholder="Item Name"
-                value={item.itemName}
-                onChange={(e) => {
-                  const updated = [...form.otherIncome];
-                  updated[index].itemName = e.target.value;
-                  setForm({ ...form, otherIncome: updated });
-                }}
-                className="input-primary"
-              />
+        {form.otherIncome.map((item, index) => (
+          <div key={index} className="grid md:grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Income Source"
+              value={item.itemName}
+              onChange={(e) => {
+                const updated = [...form.otherIncome];
+                updated[index].itemName = e.target.value;
+                setForm({ ...form, otherIncome: updated });
+              }}
+              className="input-premium"
+            />
 
-              <input
-                type="number"
-                placeholder="Amount"
-                value={item.amount}
-                onChange={(e) => {
-                  const updated = [...form.otherIncome];
-                  updated[index].amount = e.target.value;
-                  setForm({ ...form, otherIncome: updated });
-                }}
-                className="input-primary"
-              />
-            </div>
-          ))}
-        </div>
+            <input
+              type="number"
+              placeholder="Amount"
+              value={item.amount}
+              onChange={(e) => {
+                const updated = [...form.otherIncome];
+                updated[index].amount = e.target.value;
+                setForm({ ...form, otherIncome: updated });
+              }}
+              className="input-premium"
+            />
+          </div>
+        ))}
+      </div>
 
-        {/* NOTES */}
-        <div>
-          <h3 className="font-bold text-lg">Notes</h3>
+      {/* NOTES */}
+      <div className="bg-white rounded-3xl shadow-xl p-6 space-y-4">
+        <h3 className="text-xl font-bold text-gray-700">
+          Notes
+        </h3>
 
-          {form.notes.map((note, index) => (
-            <div key={index} className="flex gap-4 mb-2">
-              <input
-                type="text"
-                placeholder="Add a note (e.g. POS and Cash Amounts)"
-                className="input-primary"
-                value={note}
-                onChange={(e) => {
-                  const updated = [...form.notes];
-                  updated[index] = e.target.value;
-                  setForm({ ...form, notes: updated });
-                }}
-              />
-            </div>
-          ))}
-        </div>
-
-        {/* UPDATE REASON */}
-        <div>
-          <label>Reason For Update</label>
-          <textarea
-            value={form.updateReason}
-            onChange={(e) =>
-              setForm({ ...form, updateReason: e.target.value })
-            }
-            className="input-primary"
-            required
+        {form.notes.map((note, index) => (
+          <input
+            key={index}
+            type="text"
+            placeholder="Add note..."
+            value={note}
+            onChange={(e) => {
+              const updated = [...form.notes];
+              updated[index] = e.target.value;
+              setForm({ ...form, notes: updated });
+            }}
+            className="input-premium"
           />
-        </div>
+        ))}
+      </div>
 
-        <button className="btn-primary w-full">
-          Update Daily Sales
-        </button>
+      {/* UPDATE REASON */}
+      <div className="bg-white rounded-3xl shadow-xl p-6 space-y-3">
+        <label className="font-semibold text-gray-700">
+          Reason For Update
+        </label>
 
-      </form>
-    </div>
-  );
+        <textarea
+          value={form.updateReason}
+          onChange={(e) =>
+            setForm({ ...form, updateReason: e.target.value })
+          }
+          className="input-premium min-h-[120px]"
+          required
+        />
+      </div>
+
+      <button className="btn-primary w-full text-lg py-4">
+        Update Daily Sales
+      </button>
+
+    </form>
+  </div>
+);
 }
