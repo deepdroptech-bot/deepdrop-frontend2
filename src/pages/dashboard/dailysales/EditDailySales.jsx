@@ -163,6 +163,36 @@ export default function EditDailySales() {
                 }}
                 className="input-primary"
               />
+
+              <input
+                type="number"
+                placeholder="Calibration"
+                value={pump.calibration}
+                onChange={(e) => {
+                  const updated = [...form.PMS.pumps];
+                  updated[index].calibration = e.target.value;
+                  setForm({
+                    ...form,
+                    PMS: { ...form.PMS, pumps: updated }
+                  });
+                }}
+                className="input-primary"
+              />
+
+              <input
+                type="text"
+                placeholder="Calibration Reason"
+                value={pump.calibrationReason}
+                onChange={(e) => {
+                  const updated = [...form.PMS.pumps];
+                  updated[index].calibrationReason = e.target.value;
+                  setForm({
+                    ...form,
+                    PMS: { ...form.PMS, pumps: updated }
+                  });
+                }}
+                className="input-primary"
+              />
             </div>
           ))}
 
