@@ -13,10 +13,10 @@ export default function EditDailySales() {
 
     PMS: {
       pumps: [
-        { pumpNumber: 1, openingMeter: "", closingMeter: "" },
-        { pumpNumber: 2, openingMeter: "", closingMeter: "" },
-        { pumpNumber: 3, openingMeter: "", closingMeter: "" },
-        { pumpNumber: 4, openingMeter: "", closingMeter: "" }
+        { pumpNumber: 1, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" },
+        { pumpNumber: 2, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" },
+        { pumpNumber: 3, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" },
+        { pumpNumber: 4, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" }
       ],
       pricePerLitre: "",
       expenses: [{ description: "", amount: "" }]
@@ -25,6 +25,8 @@ export default function EditDailySales() {
     AGO: {
       openingMeter: "",
       closingMeter: "",
+      calibrationLitres: "",
+      calibrationReason: "",
       pricePerLitre: "",
       expenses: [{ description: "", amount: "" }]
     },

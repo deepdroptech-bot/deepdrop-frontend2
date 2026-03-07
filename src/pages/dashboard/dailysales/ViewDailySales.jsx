@@ -115,6 +115,8 @@ export default function ViewDailySales() {
               </p>
               <p>Opening: {pump.openingMeter}</p>
               <p>Closing: {pump.closingMeter}</p>
+              <p>Calibration: {pump.calibrationLitres}</p>
+              <p>calibrationReason: {pump.calibrationReason}</p>
               <p className="font-medium text-blue-700">
                 Litres Sold: {pump.litresSold}
               </p>
@@ -151,6 +153,8 @@ export default function ViewDailySales() {
           <div className="space-y-1">
             <p>Opening: {sales.AGO?.openingMeter}</p>
             <p>Closing: {sales.AGO?.closingMeter}</p>
+            <p>Calibration: {sales.AGO?.calibrationLitres}</p>
+            <p>Calibration Reason: {sales.AGO?.calibrationReason}</p>
             <p className="font-medium text-green-700">
               Litres Sold: {sales.AGO?.litresSold}
             </p>
@@ -258,14 +262,13 @@ export default function ViewDailySales() {
             LOCKED
           </span>
         )}
-
+      </div>
         <button
           onClick={handleDownloadPDF}
           className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
         >
           Download PDF
         </button>
-      </div>
     </div>
   );
 }
