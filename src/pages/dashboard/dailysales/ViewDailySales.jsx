@@ -28,6 +28,8 @@ export default function ViewDailySales() {
   const formatCurrency = (value) =>
     `₦${Number(value || 0).toLocaleString()}`;
 
+  
+
   if (loading)
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
@@ -80,6 +82,8 @@ export default function ViewDailySales() {
       setLoadingPDF(false); // Stop loading
     }
   };
+
+  const salesId = sales._id
 
   return (
     <div className="p-6 space-y-8">
@@ -275,7 +279,9 @@ export default function ViewDailySales() {
           </span>
         )}
       </div>
+      
         <button
+        
         onClick={() => handleDownloadPDF(salesId)}
         className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
         disabled={loadingPDF}
