@@ -8,6 +8,7 @@ export default function ViewDailySales() {
   const navigate = useNavigate();
   const [sales, setSales] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingPDF, setLoadingPDF] = useState(false);
 
   useEffect(() => {
     fetchSales();
@@ -21,20 +22,6 @@ export default function ViewDailySales() {
     } catch (err) {
       alert("Failed to load daily sales");
       navigate("/dashboard/daily-sales");
-    }
-  };
-
-  const handleDownloadPDF = async () => {
-    try {
-      const res = await pdfAPI.generateSalesPDF(id);
-      const url = window.URL.createObjectURL(new Blob([res.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `Daily_Sales_${id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-    } catch (err) {
-      alert("Failed to generate PDF");
     }
   };
 
@@ -68,6 +55,31 @@ export default function ViewDailySales() {
         </div>
       </div>
     );
+
+    const handleDownloadPDF = async (id) => {
+    try {
+      setLoadingPDF(true); // Start loading
+
+      const res = await pdfAPI.generateSalesPDF(id);
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `Daily_Sales_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (err) {
+      console.error("PDF download failed:", err);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setLoadingPDF(false); // Stop loading
+    }
+  };
 
   return (
     <div className="p-6 space-y-8">
@@ -264,11 +276,18 @@ export default function ViewDailySales() {
         )}
       </div>
         <button
-          onClick={handleDownloadPDF}
-          className="mt-6 px-4 py-2 bg-blue-600 text-white rounded-xl shadow hover:bg-blue-700 transition"
-        >
-          Download PDF
-        </button>
+        onClick={() => handleDownloadPDF(salesId)}
+        className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+        disabled={loadingPDF}
+      >
+        {loadingPDF ? "Generating PDF..." : "Download PDF"}
+      </button>
+
+      {loadingPDF && (
+        <p className="text-gray-500 text-sm mt-2">
+          Please wait while your PDF is being generated.
+        </p>
+      )}
     </div>
   );
 }
