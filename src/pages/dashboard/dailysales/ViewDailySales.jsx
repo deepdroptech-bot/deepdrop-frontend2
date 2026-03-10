@@ -155,7 +155,7 @@ export default function ViewDailySales() {
             <p>Total Expenses: {formatCurrency(sales.PMS.totalExpenses)}</p>
 
             <p className="font-bold text-lg text-blue-900 mt-2">
-              Net Sales: {formatCurrency(sales.PMS.netSales)}
+              Net Sales: {formatCurrency(sales.PMS.pNetSales)}
             </p>
           </div>
         </div>
@@ -188,7 +188,7 @@ export default function ViewDailySales() {
              <p>Total Expenses: {formatCurrency(sales.AGO?.totalExpenses)}</p>
 
             <p className="font-bold text-lg text-green-900 mt-2">
-              Net Sales: {formatCurrency(sales.AGO?.netSales)}
+              Net Sales: {formatCurrency(sales.AGO?.ANetSales)}
             </p>
           </div>
         </div>
@@ -242,7 +242,11 @@ export default function ViewDailySales() {
       {/* ================= SUMMARY ================= */}
       <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white p-8 rounded-3xl shadow-2xl">
         <h2 className="text-2xl font-bold mb-4">Financial Summary</h2>
-        <p>Total Sales: {formatCurrency(sales.totalSalesAmount)}</p>
+        <p>Total PMS Sales: {formatCurrency(sales.PMS.totalAmount)}</p>
+        <p>Total AGO Sales: {formatCurrency(sales.AGO.totalAmount)}</p>
+        <p>Total Other Income: {formatCurrency(sales.totalOtherIncome)}</p>
+        <p>Total Products Sales: {formatCurrency(sales.totalProductsSales)}</p>
+        <p>Total Net Sales: {formatCurrency(sales.totalSalesAmount)}</p>
         <p>Total Expenses: {formatCurrency(sales.totalExpenses)}</p>
         <p className="text-2xl font-extrabold mt-4">
           Net Sales: {formatCurrency(sales.netSales)}
