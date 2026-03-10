@@ -38,7 +38,7 @@ export default function ViewDailySales() {
           <span className="text-white text-2xl font-black">⏳</span>
         </div>
         <h2 className="text-2xl font-extrabold text-gray-800 mb-2">
-          Loading Daily Sales Records For Viewing2
+          Loading Daily Sales Records For Viewing
         </h2>
         <p className="text-gray-500 text-base">
           Please wait while we fetch daily sales records for viewing

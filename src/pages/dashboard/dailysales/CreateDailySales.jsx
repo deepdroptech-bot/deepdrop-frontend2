@@ -150,58 +150,58 @@ export default function CreateDailySales() {
      SUBMIT
   ========================= */
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    const cleanedForm = {
-      ...form,
-      salesDate: form.salesDate,
+  const cleanedForm = {
+    ...form,
+    salesDate: form.salesDate,
 
-      PMS: {
-        ...form.PMS,
-        pricePerLitre: Number(form.PMS.pricePerLitre),
-        pumps: form.PMS.pumps.map(p => ({
-          pumpNumber: p.pumpNumber,
-          openingMeter: Number(p.openingMeter),
-          closingMeter: Number(p.closingMeter),
-          calibrationLitres: Number(p.calibrationLitres),
-          calibrationReason: p.calibrationReason
-        })),
-        expenses: form.PMS.expenses.map(e => ({
-          description: e.description,
-          amount: Number(e.amount)
-        }))
-      },
-
-      AGO: {
-        openingMeter: Number(form.AGO.openingMeter),
-        closingMeter: Number(form.AGO.closingMeter),
-        calibrationLitres: Number(form.AGO.calibrationLitres),
-        calibrationReason: form.AGO.calibrationReason,
-        pricePerLitre: Number(form.AGO.pricePerLitre),
-        expenses: form.AGO.expenses.map(e => ({
-          description: e.description,
-          amount: Number(e.amount)
-        }))
-      },
-
-      productsSold: form.productsSold.map(p => ({
-        itemName: p.itemName,
-        quantitySold: Number(p.quantitySold),
-        pricePerUnit: Number(p.pricePerUnit)
+    PMS: {
+      ...form.PMS,
+      pricePerLitre: Number(form.PMS.pricePerLitre),
+      pumps: form.PMS.pumps.map(p => ({
+        pumpNumber: p.pumpNumber,
+        openingMeter: Number(p.openingMeter),
+        closingMeter: Number(p.closingMeter),
+        calibrationLitres: Number(p.calibrationLitres),
+        calibrationReason: p.calibrationReason
       })),
+      expenses: form.PMS.expenses.map(e => ({
+        description: e.description,
+        amount: Number(e.amount)
+      }))
+    },
 
-      otherIncome: form.otherIncome.map(i => ({
-        itemName: i.itemName,
-        amount: Number(i.amount)
-      })),
+    AGO: {
+      openingMeter: Number(form.AGO.openingMeter),
+      closingMeter: Number(form.AGO.closingMeter),
+      calibrationLitres: Number(form.AGO.calibrationLitres),
+      calibrationReason: form.AGO.calibrationReason,
+      pricePerLitre: Number(form.AGO.pricePerLitre),
+      expenses: form.AGO.expenses.map(e => ({
+        description: e.description,
+        amount: Number(e.amount)
+      }))
+    },
 
-      notes: [...form.notes.filter(n => n.trim() !== "")]
-    };
+    productsSold: form.productsSold.map(p => ({
+      itemName: p.itemName,
+      quantitySold: Number(p.quantitySold),
+      pricePerUnit: Number(p.pricePerUnit)
+    })),
 
-    try {
+    otherIncome: form.otherIncome.map(i => ({
+      itemName: i.itemName,
+      amount: Number(i.amount)
+    })),
 
-    await dailySalesAPI.create(cleanedForm);
+    notes: [...form.notes.filter(n => n.trim() !== "")]
+  };
+
+  try {
+
+    const res = await dailySalesAPI.create(cleanedForm);
 
     setMessage(res.data.msg);
 
@@ -209,11 +209,16 @@ export default function CreateDailySales() {
 
     navigate("/dashboard/daily-sales");
 
-    } catch (err) {
-      setError(err.response?.data?.msg || "An error occurred while creating daily sales record.");
-      setMessage("");
-    }
-  };
+  } catch (err) {
+
+    setError(
+      err.response?.data?.msg ||
+      "An error occurred while creating daily sales record."
+    );
+
+    setMessage("");
+  }
+};
 
  const calculatePumpTotals = (pump, pricePerLitre) => {
   const opening = Number(pump.openingMeter) || 0;
