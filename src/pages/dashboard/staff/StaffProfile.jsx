@@ -19,6 +19,17 @@ export default function StaffProfile() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  const handlegeneratePDF = async () => {
+    const response = await pdfAPI.generateStaffPDF(id);
+    const blob = new Blob([response.data], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `staff-${id}-profile.pdf`;
+    link.click();
+  };
+
+
   if (loading)
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
@@ -289,6 +300,13 @@ export default function StaffProfile() {
         Delete Staff
       </button>
       </Permissions>
+
+      <button
+        className="px-6 py-3 rounded-2xl font-semibold text-white bg-gray-800 hover:bg-gray-900 shadow transition"
+        onClick={handlegeneratePDF}
+      >
+        Download Staff PDF
+      </button>
     </div>
 
   </div>

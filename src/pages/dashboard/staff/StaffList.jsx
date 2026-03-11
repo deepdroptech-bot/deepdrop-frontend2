@@ -12,6 +12,18 @@ export default function StaffList() {
       .finally(() => setLoading(false));
   }, []);
 
+  const handlegeneratePDF = () => {
+    staffAPI.generatePDF()
+      .then(res => {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "staff-list.pdf";
+        link.click();
+      });
+  };
+
+
     if (loading)
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
@@ -36,6 +48,15 @@ export default function StaffList() {
         <Link to="/dashboard/staff/new" className="btn-primary">
           + Add Staff
         </Link>
+
+        <Permissions requiredRole="AD_AC">
+        <button
+          className="px-6 py-3 rounded-2xl font-semibold text-white bg-gray-800 hover:bg-gray-900 shadow transition"
+          onClick={handlegeneratePDF}
+        >
+          Download Staff Salary List PDF
+        </button>
+        </Permissions>
       </div>
 
       <div className="grid gap-4">

@@ -131,10 +131,11 @@ export default function ViewDailySales() {
               </p>
               <p>Opening: {pump.openingMeter}</p>
               <p>Closing: {pump.closingMeter}</p>
+              <p>Meter Litres: {pump.meterLitres}</p>
               <p>Calibration: {pump.calibrationLitres}</p>
-              <p>calibrationReason: {pump.calibrationReason}</p>
+              <p>calibration Reason: {pump.calibrationReason}</p>
               <p className="font-medium text-blue-700">
-                Litres Sold: {pump.litresSold}
+                Litres Sold: {pump.netLitresSold}
               </p>
             </div>
           ))}
