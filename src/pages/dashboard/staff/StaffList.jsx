@@ -64,8 +64,9 @@ export default function StaffList() {
         <Link to="/dashboard/staff/new" className="btn-primary">
           + Add Staff
         </Link>
+      </div>
 
-        <Permissions requiredRole="AD_AC">
+       <Permissions requiredRole="AD_AC">
         <button
         
         onClick={() => handlegeneratePDF()}
@@ -81,7 +82,6 @@ export default function StaffList() {
         </p>
       )}
         </Permissions>
-      </div>
 
       <div className="grid gap-4">
         {staff.map(s => (
