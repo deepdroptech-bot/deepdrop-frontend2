@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 
 export const navItems = [
-  { name: "Overview", path: "/dashboard", icon: LayoutDashboard, roles: ["admin", "manager", "accountant"] },
+  { name: "Overview2", path: "/dashboard", icon: LayoutDashboard, roles: ["admin", "manager", "accountant"] },
   { name: "Users", path: "allusers", icon: Users, roles: ["admin"] },
   { name: "Daily Sales", path: "daily-sales", icon: DollarSign, roles: ["admin", "manager", "accountant"] },
   { name: "Staff", path: "staff", icon: Users, roles: ["admin", "manager"] },
