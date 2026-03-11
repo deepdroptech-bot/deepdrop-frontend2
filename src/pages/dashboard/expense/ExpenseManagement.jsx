@@ -61,16 +61,29 @@ export default function ExpenseManagement() {
   const formatCurrency = (val) =>
     `₦${Number(val || 0).toLocaleString()}`;
 
-  const handlegeneratePDF = () => {
-    setLoadingPDF(true);
-    pdfAPI.generateExpensePDF()
-      .then(res => {
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "expense-list.pdf";
-        link.click();
-      });
+  const handlegeneratePDF = async () => {
+    try {
+      setLoadingPDF(true); // Start loading
+
+      const res = await pdfAPI.generateExpensePDF();
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `Expense_List.pdf`);
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (err) {
+      console.error("PDF download failed:", err);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setLoadingPDF(false); // Stop loading
+    }
   };
 
 
