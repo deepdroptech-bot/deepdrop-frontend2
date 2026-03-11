@@ -65,14 +65,14 @@ export default function StaffList() {
           + Add Staff
         </Link>
 
-        <Permissions requiredRole="AD_AC">
+        {/* <Permissions requiredRole="AD_AC">
         <button
           className="px-6 py-3 rounded-2xl font-semibold text-white bg-gray-800 hover:bg-gray-900 shadow transition"
           onClick={handlegeneratePDF}
         >
           Download Staff Salary List PDF
         </button>
-        </Permissions>
+        </Permissions> */}
       </div>
 
       <div className="grid gap-4">
