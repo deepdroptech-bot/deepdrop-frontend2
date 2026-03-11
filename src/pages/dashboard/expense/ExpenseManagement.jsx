@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { expenseAPI } from "../../../services/expenseService";
 import { useNavigate } from "react-router-dom";
+import Permissions from "../../../components/Permission ";
+import { pdfAPI } from "../../../services/pdfService";
 
 export default function ExpenseManagement() {
 
@@ -12,6 +14,7 @@ export default function ExpenseManagement() {
     category: "General"
   });
   const [loading, setLoading] = useState(true);
+  const [loadingPDF, setLoadingPDF] = useState(false);
 
   const fetchCurrent = async () => {
     const res = await expenseAPI.getCurrent();
@@ -59,7 +62,8 @@ export default function ExpenseManagement() {
     `₦${Number(val || 0).toLocaleString()}`;
 
   const handlegeneratePDF = () => {
-    expenseAPI.generateExpensePDF()
+    setLoadingPDF(true);
+    pdfAPI.generateExpensePDF()
       .then(res => {
         const url = window.URL.createObjectURL(new Blob([res.data]));
         const link = document.createElement("a");
@@ -221,14 +225,22 @@ export default function ExpenseManagement() {
                 </div>
               ))}
             </div>
-            <Permissions requiredRole="AD_AC">
+     <Permissions requiredRole="AD_AC">
               <button
-                className="px-6 py-3 rounded-2xl font-semibold text-white bg-gray-800 hover:bg-gray-900 shadow transition"
-                onClick={handlegeneratePDF}
-              >
-                Download Expense PDF
-              </button>
-            </Permissions>
+        
+        onClick={() => handlegeneratePDF()}
+        className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+        disabled={loadingPDF}
+      >
+        {loadingPDF ? "Generating PDF..." : "Download Expense PDF"}
+      </button>
+
+      {loadingPDF && (
+        <p className="text-gray-500 text-sm mt-2">
+          Please wait while your PDF is being generated.
+        </p>
+      )}
+     </Permissions>
 
           </div>
         </>

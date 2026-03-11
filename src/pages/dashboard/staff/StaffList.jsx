@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { staffAPI } from "../../../services/staffService";
 import { Link } from "react-router-dom";
+import { pdfAPI } from "../../../services/pdfService";
+import Permissions from "../../../components/Permission ";
 
 export default function StaffList() {
   const [staff, setStaff] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingPDF, setLoadingPDF] = useState(false);
 
   useEffect(() => {
     staffAPI.getAll()
@@ -12,33 +15,16 @@ export default function StaffList() {
       .finally(() => setLoading(false));
   }, []);
 
-  const handlegeneratePDF = () => {
-  staffAPI.generatePDF()
-    .then(res => {
-
-      const blob = new Blob([res.data], { type: "application/pdf" });
-
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-
-      link.href = url;
-
-      link.setAttribute("download", "staff-list.pdf");
-
-      document.body.appendChild(link);
-
-      link.click();
-
-      link.remove();
-
-      window.URL.revokeObjectURL(url);
-
-    })
-    .catch(err=>{
-      console.error("PDF error:", err);
-    });
-};
+  const handlegeneratePDF = async () => {
+    setLoadingPDF(true);
+    const response = await pdfAPI.generateStaffSalaryPDF();
+    const blob = new Blob([response.data], { type: "application/pdf" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `staff-salary-list.pdf`;
+    link.click();
+  };
 
     if (loading)
   return (
@@ -65,14 +51,22 @@ export default function StaffList() {
           + Add Staff
         </Link>
 
-        {/* <Permissions requiredRole="AD_AC">
+        <Permissions requiredRole="AD_AC">
         <button
-          className="px-6 py-3 rounded-2xl font-semibold text-white bg-gray-800 hover:bg-gray-900 shadow transition"
-          onClick={handlegeneratePDF}
-        >
-          Download Staff Salary List PDF
-        </button>
-        </Permissions> */}
+        
+        onClick={() => handlegeneratePDF()}
+        className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+        disabled={loadingPDF}
+      >
+        {loadingPDF ? "Generating PDF..." : "Download Staff Salary List PDF"}
+      </button>
+
+      {loadingPDF && (
+        <p className="text-gray-500 text-sm mt-2">
+          Please wait while your PDF is being generated.
+        </p>
+      )}
+        </Permissions>
       </div>
 
       <div className="grid gap-4">

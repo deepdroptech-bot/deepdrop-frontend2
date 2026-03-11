@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { staffAPI } from "../../../services/staffService";
 import Permissions from "../../../components/Permission ";
+import { pdfAPI } from "../../../services/pdfService";
 
 export default function StaffProfile() {
   const { id } = useParams();
@@ -9,6 +10,7 @@ export default function StaffProfile() {
 
   const [staff, setStaff] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingPDF, setLoadingPDF] = useState(false);
 
   const [bonus, setBonus] = useState({ amount: "", reason: "" });
   const [deduction, setDeduction] = useState({ amount: "", reason: "" });
@@ -20,6 +22,7 @@ export default function StaffProfile() {
   }, [id]);
 
   const handlegeneratePDF = async () => {
+    setLoadingPDF(true);
     const response = await pdfAPI.generateStaffPDF(id);
     const blob = new Blob([response.data], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
@@ -299,14 +302,22 @@ export default function StaffProfile() {
       >
         Delete Staff
       </button>
-      </Permissions>
 
       <button
-        className="px-6 py-3 rounded-2xl font-semibold text-white bg-gray-800 hover:bg-gray-900 shadow transition"
-        onClick={handlegeneratePDF}
+        
+        onClick={() => handlegeneratePDF()}
+        className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
+        disabled={loadingPDF}
       >
-        Download Staff PDF
+        {loadingPDF ? "Generating PDF..." : "Download Staff PDF"}
       </button>
+
+      {loadingPDF && (
+        <p className="text-gray-500 text-sm mt-2">
+          Please wait while your PDF is being generated.
+        </p>
+      )}
+      </Permissions>
     </div>
 
   </div>
