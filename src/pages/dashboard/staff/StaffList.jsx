@@ -13,16 +13,32 @@ export default function StaffList() {
   }, []);
 
   const handlegeneratePDF = () => {
-    staffAPI.generatePDF()
-      .then(res => {
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "staff-list.pdf";
-        link.click();
-      });
-  };
+  staffAPI.generatePDF()
+    .then(res => {
 
+      const blob = new Blob([res.data], { type: "application/pdf" });
+
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+
+      link.href = url;
+
+      link.setAttribute("download", "staff-list.pdf");
+
+      document.body.appendChild(link);
+
+      link.click();
+
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+
+    })
+    .catch(err=>{
+      console.error("PDF error:", err);
+    });
+};
 
     if (loading)
   return (
