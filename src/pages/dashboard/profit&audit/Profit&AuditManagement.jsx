@@ -17,6 +17,10 @@ export default function ProfitAuditManagement() {
 
   const [loading, setLoading] = useState(false);
 
+  const [calibrationFrom,setCalibrationFrom] = useState("");
+const [calibrationTo,setCalibrationTo] = useState("");
+const [calibrationData,setCalibrationData] = useState([]);
+
   const formatCurrency = (val) =>
     `₦${Number(val || 0).toLocaleString()}`;
 
@@ -62,6 +66,25 @@ export default function ProfitAuditManagement() {
     }
   };
 
+  const fetchCalibrationAudit = async ()=>{
+
+try{
+
+const res = await profitAuditAPI.getPumpCalibrationAudit(
+calibrationFrom,
+calibrationTo
+);
+
+setCalibrationData(res.data);
+
+}catch{
+
+alert("Failed to fetch calibration audit");
+
+}
+
+};
+
   if (loading)
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
@@ -94,7 +117,7 @@ export default function ProfitAuditManagement() {
 
       {/* ================= TABS ================= */}
       <div className="flex gap-4">
-        {["daily", "summary", "audit"].map(tab => (
+        {["daily","summary", "calibration","audit"].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -106,6 +129,7 @@ export default function ProfitAuditManagement() {
           >
             {tab === "daily" && "Daily Report"}
             {tab === "summary" && "Profit Summary"}
+            {tab === "calibration" && "Pump Calibration"}
             {tab === "audit" && "Audit Trail"}
           </button>
         ))}
@@ -207,8 +231,27 @@ export default function ProfitAuditManagement() {
       <div className="space-y-2 text-sm text-gray-600">
         <p>
           <span className="font-medium text-gray-700">Litres Sold:</span>{" "}
-          {summary.PMS.litres.toLocaleString()} L
+          {summary.PMS.totalLitres.toLocaleString()} L
         </p>
+
+      <p>
+<span className="font-medium text-gray-700">
+Pump 1 & 2:
+</span>
+
+{summary.PMS.pump12Litres.toLocaleString()} L
+</p>
+
+<p>
+
+<span className="font-medium text-gray-700">
+Pump 3 & 4:
+</span>
+
+{summary.PMS.pump34Litres.toLocaleString()} L
+
+</p>
+
         <p>
           <span className="font-medium text-gray-700">Revenue:</span>{" "}
           {formatCurrency(summary.PMS.revenue)}
@@ -280,6 +323,34 @@ export default function ProfitAuditManagement() {
       </div>
     </div>
 
+    <div className="bg-orange-50 p-6 rounded-2xl">
+
+<h3 className="font-bold mb-2">
+Products Revenue
+</h3>
+
+<p className="text-2xl font-bold text-orange-600">
+
+{formatCurrency(summary.products.revenue)}
+
+</p>
+
+</div>
+
+<div className="bg-pink-50 p-6 rounded-2xl">
+
+<h3 className="font-bold mb-2">
+Other Income
+</h3>
+
+<p className="text-2xl font-bold text-pink-600">
+
+{formatCurrency(summary.otherIncome)}
+
+</p>
+
+</div>
+
     {/* ================= GRAND TOTAL ================= */}
     <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-purple-600 text-white rounded-3xl p-8 shadow-xl">
 
@@ -312,6 +383,134 @@ export default function ProfitAuditManagement() {
 )}
         </div>
       )}
+
+    {/* ============================================================
+         PUMP CALIBRATION AUDIT
+      ============================================================ */}
+      {activeTab === "calibration" && (
+
+<div className="bg-white p-6 rounded-3xl shadow-xl space-y-6">
+
+<div className="flex gap-4">
+
+<input
+type="date"
+className="border p-3 rounded-xl"
+value={calibrationFrom}
+onChange={e=>setCalibrationFrom(e.target.value)}
+/>
+
+<input
+type="date"
+className="border p-3 rounded-xl"
+value={calibrationTo}
+onChange={e=>setCalibrationTo(e.target.value)}
+/>
+
+<button
+
+onClick={fetchCalibrationAudit}
+
+className="bg-red-600 text-white px-6 rounded-xl"
+
+>
+
+Generate
+
+</button>
+
+</div>
+
+<table className="w-full">
+
+<thead className="bg-gray-100">
+
+<tr>
+
+<th className="p-3">Date</th>
+
+<th className="p-3">Pump</th>
+
+<th className="p-3">Litres</th>
+
+<th className="p-3">Reason</th>
+
+<th className="p-3">Staff</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{calibrationData.length ?(
+
+calibrationData.map((item,i)=>(
+
+<tr
+key={i}
+className="border-b"
+>
+
+<td className="p-3">
+
+{new Date(item.salesDate)
+.toLocaleDateString()}
+
+</td>
+
+<td className="p-3">
+
+Pump {item.pumpNumber}
+
+</td>
+
+<td className="p-3 text-red-600 font-semibold">
+
+{item.calibrationLitres} L
+
+</td>
+
+<td className="p-3">
+
+{item.calibrationReason}
+
+</td>
+
+<td className="p-3">
+
+{item.staffName || "-"}
+
+</td>
+
+</tr>
+
+))
+
+):( 
+
+<tr>
+
+<td
+colSpan="5"
+className="text-center p-6"
+>
+
+No calibration records
+
+</td>
+
+</tr>
+
+)}
+
+</tbody>
+
+</table>
+
+</div>
+
+)}
 
       {/* ============================================================
          AUDIT TRAIL TAB

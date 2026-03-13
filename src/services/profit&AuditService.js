@@ -10,4 +10,8 @@ export const profitAuditAPI = {
 
   getAuditTrail: (date) =>
     API.get(`/profit-audit/audit-trail/${date}`),
+
+  
+  getPumpCalibrationAudit: (from,to) =>
+API.get(`/profit-audit/pump-calibration-audit?from=${from}&to=${to}`)
 };

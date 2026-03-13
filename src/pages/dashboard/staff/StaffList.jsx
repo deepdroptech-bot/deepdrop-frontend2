@@ -66,7 +66,7 @@ export default function StaffList() {
         </Link>
       </div>
 
-       <Permissions requiredRole="AD_AC">
+       <Permissions permission="AD_AC">
         <button
         
         onClick={() => handlegeneratePDF()}

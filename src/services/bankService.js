@@ -10,4 +10,7 @@ export const bankAPI = {
 
   getBankBalance: () =>
     API.get("/bank"),
+
+  getBankHistory: () =>
+    API.get("/bank/history")
 };
