@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { bankAPI } from "../../../services/bankService";
-import Permissions from "../../../components/Permission";
+import Permissions from "../../../components/Permission ";
 
 export default function BankManagement(){
 
