@@ -443,7 +443,7 @@ Generate
 
 <tbody>
 
-{calibrationData.length ?(
+{calibrationData?.length (
 
 calibrationData.map((item,i)=>(
 
