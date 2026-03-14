@@ -111,15 +111,8 @@ function App() {
 
     {/* Inventory management routes */}
     <Route path="inventory" element={<InventoryManagement />} />
-    <Route
-path="/inventory/fuel-history"
-element={<FuelHistory/>}
-/>
-
-<Route
-path="/inventory/product-history"
-element={<ProductHistory/>}
-/>
+    <Route path="/inventory/fuel-history" element={<FuelHistory />} />
+    <Route path="/inventory/product-history" element={<ProductHistory />} />
 
     {/* Bank management routes */}
     <Route path="bank" element={<BankManagement />} />
