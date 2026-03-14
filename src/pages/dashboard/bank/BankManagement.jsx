@@ -26,22 +26,6 @@ fetchData();
 
 },[]);
 
-const fetchHistory = async ()=>{
-
-try{
-
-const res = await bankAPI.getBankHistory();
-
-setHistory(res.data.history || []);
-
-}catch{
-
-alert("Failed to fetch history");
-
-}
-
-};
-
 const fetchData = async()=>{
 
 setLoading(true);
@@ -61,6 +45,22 @@ alert("Failed to fetch bank data");
 setLoading(false);
 
 }
+};
+
+const fetchHistory = async ()=>{
+
+try{
+
+const res = await bankAPI.getBankHistory();
+
+setHistory(res.data.history || []);
+
+}catch{
+
+alert("Failed to fetch history");
+
+}
+
 };
 
 
@@ -109,6 +109,7 @@ narration:""
 });
 
 fetchBank();
+fetchHistory();
 
 }catch{
 
