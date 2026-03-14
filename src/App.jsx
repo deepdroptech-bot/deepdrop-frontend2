@@ -33,6 +33,8 @@ import ViewDailySales from "./pages/dashboard/dailysales/ViewDailySales";
 
 // Inventory Management pages
 import InventoryManagement from "./pages/dashboard/inventory/InventoryManagement";
+import FuelHistory from "./pages/inventory/FuelHistory";
+import ProductHistory from "./pages/inventory/ProductHistory";
 
 // Bank Management pages
 import BankManagement from "./pages/dashboard/bank/BankManagement";
@@ -109,6 +111,15 @@ function App() {
 
     {/* Inventory management routes */}
     <Route path="inventory" element={<InventoryManagement />} />
+    <Route
+path="/inventory/fuel-history"
+element={<FuelHistory/>}
+/>
+
+<Route
+path="/inventory/product-history"
+element={<ProductHistory/>}
+/>
 
     {/* Bank management routes */}
     <Route path="bank" element={<BankManagement />} />

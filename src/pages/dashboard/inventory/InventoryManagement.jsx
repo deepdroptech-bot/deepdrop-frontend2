@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { inventoryAPI } from "../../../services/inventoryService";
 import Permissions from "../../../components/Permission ";
+import { useNavigate } from "react-router-dom";
 
 export default function InventoryManagement() {
   const [inventory, setInventory] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const PMS_THRESHOLD = 5000;   // total PMS litres warning level
 const WELL_THRESHOLD = 2000;  // per well warning
@@ -304,11 +306,17 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
 
       return (
         <div
-          key={well.wellNumber}
-          className={`bg-white p-5 rounded-2xl shadow transition ${
-            isLow ? "border border-red-400" : ""
-          }`}
-        >
+key={well.wellNumber}
+onClick={()=>
+navigate(
+`/inventory/fuel-history?type=PMS&well=${well.wellNumber}`
+)
+}
+className={`cursor-pointer bg-white p-5 rounded-2xl shadow transition 
+hover:shadow-xl hover:-translate-y-1 duration-300
+${isLow ? "border border-red-400" : ""}
+`}
+>
           <div className="flex justify-between mb-2">
             <h3 className="font-semibold">
               Well {well.wellNumber}
@@ -346,6 +354,7 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
   </h2>
 
   {(() => {
+    
     const percentage = Math.min(
       (inventory.fuel.AGO.quantityLitres / 10000) * 100,
       100
@@ -355,9 +364,12 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
       inventory.fuel.AGO.quantityLitres < AGO_THRESHOLD;
 
     return (
-      <div className={`bg-white p-5 rounded-2xl shadow ${
-        isLow ? "border border-red-400" : ""
-      }`}>
+      <div
+onClick={()=>navigate("/inventory/fuel-history?type=AGO")}
+className={`bg-white p-5 rounded-2xl shadow cursor-pointer hover:scale-[1.02] transition ${
+isLow ? "border border-red-400" : ""
+}`}
+>
         <div className="flex justify-between mb-2">
           <span className="font-semibold">AGO Tank</span>
           <span className="font-bold">
@@ -405,13 +417,19 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
 
       return (
         <div
-          key={slot.slotNumber}
-          className={`p-4 rounded-2xl shadow transition ${
-            isLow
-              ? "bg-red-50 border border-red-400"
-              : "bg-gray-50"
-          }`}
-        >
+key={slot.slotNumber}
+onClick={()=>
+slot.itemName &&
+navigate(
+`/inventory/product-history?slot=${slot.slotNumber}`
+)
+}
+className={`p-4 rounded-2xl shadow transition cursor-pointer
+${isLow ?
+"bg-red-50 border border-red-400":
+"bg-gray-50 hover:bg-gray-100"
+}`}
+>
           <div className="flex justify-between mb-2">
             <span className="font-semibold text-sm">
               Slot {slot.slotNumber}
