@@ -33,8 +33,8 @@ import ViewDailySales from "./pages/dashboard/dailysales/ViewDailySales";
 
 // Inventory Management pages
 import InventoryManagement from "./pages/dashboard/inventory/InventoryManagement";
-import FuelHistory from "./pages/inventory/FuelHistory";
-import ProductHistory from "./pages/inventory/ProductHistory";
+import FuelHistory from "./pages/dashboard/inventory/fuelHistory";
+import ProductHistory from "./pages/dashboard/inventory/productHistory";
 
 // Bank Management pages
 import BankManagement from "./pages/dashboard/bank/BankManagement";
