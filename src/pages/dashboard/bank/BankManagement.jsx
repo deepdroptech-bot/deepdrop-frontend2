@@ -34,20 +34,25 @@ try{
 
 await Promise.all([
 
-await fetchBank(),
+fetchBank(),
 fetchHistory()
 
 ]);
 
-}
-finally{
+}catch{
+
 alert("Failed to fetch bank data");
+
+}finally{
+
 setLoading(false);
 
 }
 };
 
 const fetchHistory = async ()=>{
+
+setHistoryLoading(true);   // start loading
 
 try{
 
@@ -58,6 +63,10 @@ setHistory(res.data.history || []);
 }catch{
 
 alert("Failed to fetch history");
+
+}finally{
+
+setHistoryLoading(false);   // ✅ stop loading
 
 }
 
@@ -408,7 +417,7 @@ className="bg-indigo-600 text-white rounded-xl p-3 font-semibold hover:bg-indigo
 
 "Adding..." :
 
-"Add Entry"
+"Add Amount"
 
 }
 
@@ -490,9 +499,9 @@ Loading history...
 
 ):
 
-history.slice(0,20).length ?(
+history.length ?(
 
-history.map((item,i)=>(
+history.slice(0,20).map((item,i)=>(
 
 <tr
 key={i}
@@ -512,6 +521,9 @@ item.type === "PMS"
 ? "text-green-600"
 : "text-purple-600"
 }`} >
+
+{item.type}
+
 </td>
 
 <td className="p-3 text-green-600 font-semibold">
@@ -564,5 +576,4 @@ No transactions yet
 </div>
 
 );
-
 }
