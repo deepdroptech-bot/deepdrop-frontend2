@@ -308,9 +308,7 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
         <div
 key={well.wellNumber}
 onClick={()=>
-navigate(
-`/inventory/fuel-history?type=PMS&well=${well.wellNumber}`
-)
+navigate(`/dashboard/inventory/fuel-history?type=PMS&well=${well.wellNumber}`)
 }
 className={`cursor-pointer bg-white p-5 rounded-2xl shadow transition 
 hover:shadow-xl hover:-translate-y-1 duration-300
@@ -365,7 +363,7 @@ ${isLow ? "border border-red-400" : ""}
 
     return (
       <div
-onClick={()=>navigate("/inventory/fuel-history?type=AGO")}
+onClick={()=>navigate("/dashboard/inventory/fuel-history?type=AGO")}
 className={`bg-white p-5 rounded-2xl shadow cursor-pointer hover:scale-[1.02] transition ${
 isLow ? "border border-red-400" : ""
 }`}
