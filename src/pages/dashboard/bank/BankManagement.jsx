@@ -40,23 +40,27 @@ alert("Failed to fetch history");
 
 }
 
-setHistoryLoading(false);
-
 };
 
 const fetchData = async()=>{
 
 setLoading(true);
 
+try{
+
 await Promise.all([
 
-await fetchData(),
+await fetchBank(),
 fetchHistory()
 
 ]);
 
+}
+finally{
+alert("Failed to fetch bank data");
 setLoading(false);
 
+}
 };
 
 
@@ -67,8 +71,6 @@ try{
 const res = await bankAPI.getBankBalance();
 
 setBank(res.data);
-
-setLoading(false);
 
 }catch{
 
@@ -162,10 +164,10 @@ Please wait while we fetch Bank Data
 
 const totalBalance =
 
-bank.PMS +
-bank.AGO +
-bank.products +
-bank.otherIncome;
+(bank?.PMS || 0) +
+(bank?.AGO || 0) +
+(bank?.products || 0) +
+(bank?.otherIncome || 0);
 
 
 return(
