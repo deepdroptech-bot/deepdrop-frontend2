@@ -1,6 +1,7 @@
 import { useEffect,useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { inventoryAPI } from "../../services/inventoryService";
+import { inventoryAPI } from "../../../services/inventoryService";
+
 
 export default function FuelHistory(){
 
