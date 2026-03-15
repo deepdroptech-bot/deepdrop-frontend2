@@ -205,8 +205,6 @@ const handleSubmit = async (e) => {
 
     setMessage(res.data.msg);
 
-    setError("");
-
     navigate("/dashboard/daily-sales");
 
   } catch (err) {

@@ -19,26 +19,23 @@ fetchHistory();
 
 },[type,well]);
 
-const fetchHistory = async()=>{
+const fetchHistory = async () => {
+  try {
+    const res = await inventoryAPI.getFuelHistory({ type, well });
+    
+    // res.data IS already the history array
+    let history = res.data;
 
-const res = await inventoryAPI.getFuelHistory({
+    // well filter is optional, but the backend already does it if well exists
+    if (well) {
+      history = history.filter(item => item.wellNumber == well);
+    }
 
-type
-
-});
-
-let history = res.data.history;
-
-if(well){
-
-history = history.filter(
-item=> item.wellNumber == well
-);
-
-}
-
-setData(history);
-
+    setData(history);
+  } catch (error) {
+    console.error("Failed to fetch fuel history:", error);
+    setData([]); // safely reset to empty
+  }
 };
 
 return(

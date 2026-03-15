@@ -10,6 +10,7 @@ export default function CreateStaff() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(false)
 
     useEffect(() => {
        // Simulate loading time for better UX
@@ -20,6 +21,7 @@ export default function CreateStaff() {
 
   const handleSubmit = async e => {
   e.preventDefault();
+  setLoadingButton(true)
 
   if (!form.position) {
     alert("Position is required");
@@ -46,7 +48,6 @@ export default function CreateStaff() {
   await staffAPI.create(data);
 
   setMessage(res.data.msg);
-  setError("");
   setTimeout(() => {
     setSuccess(null);
     navigate("/dashboard/staff");
@@ -54,6 +55,9 @@ export default function CreateStaff() {
 } catch (err) {
   setError(err.response?.data?.msg || "An error occurred while creating staff record.");
   setMessage("");
+}
+finally {
+  setLoadingButton(false)
 }
 };
 
