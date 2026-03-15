@@ -45,11 +45,11 @@ export default function FuelHistory() {
           <tbody>
             {data.map((item, i) => (
               <tr key={i} className="border-b">
-                <td className="p-3">{new Date(item.createdAt).toLocaleString()}</td>
+                <td className="p-3">{new Date(item.addedAt).toLocaleString()}</td>
                 <td>{item.type}</td>
                 <td>{item.wellNumber || "-"}</td>
                 <td className="text-green-600">{item.Quantity}</td>
-                <td>{item.createdBy?.name}</td>
+                <td>{item.addedBy?.name}</td>
                 <td>{item.details}</td>
               </tr>
             ))}
