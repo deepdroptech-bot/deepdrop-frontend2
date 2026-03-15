@@ -1,128 +1,68 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { inventoryAPI } from "../../../services/inventoryService";
 
+export default function FuelHistory() {
+  const [data, setData] = useState([]);
+  const [params] = useSearchParams();
 
-export default function FuelHistory(){
+  const type = params.get("type");
+  const well = params.get("well");
 
-const [data,setData] = useState([]);
+  useEffect(() => {
+    fetchHistory();
+  }, [type, well]);
 
-const [params] = useSearchParams();
+  const fetchHistory = async () => {
+    try {
+      const res = await inventoryAPI.getFuelHistory({ type, well });
 
-const type = params.get("type");
-
-const well = params.get("well");
-
-useEffect(()=>{
-
-fetchHistory();
-
-},[type,well]);
-
-const fetchHistory = async () => {
-  try {
-    const res = await inventoryAPI.getFuelHistory({ type, well });
-    
-    // res.data IS already the history array
-    let history = res.data;
-
-    // well filter is optional, but the backend already does it if well exists
-    if (well) {
-      history = history.filter(item => item.wellNumber == well);
+      // extract the array safely
+      const history = res.data.history || [];
+      setData(history);
+    } catch (error) {
+      console.error("Failed to fetch fuel history:", error);
+      setData([]);
     }
+  };
 
-    setData(history);
-  } catch (error) {
-    console.error("Failed to fetch fuel history:", error);
-    setData([]); // safely reset to empty
-  }
-};
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Fuel History {type}</h1>
 
-return(
-
-<div className="p-6">
-
-<h1 className="text-2xl font-bold mb-6">
-
-Fuel History {type}
-
-</h1>
-
-<div className="bg-white rounded-2xl shadow">
-
-<table className="w-full">
-
-<thead>
-
-<tr className="border-b">
-
-<th className="p-3">Date</th>
-
-<th>Type</th>
-
-<th>Well</th>
-
-<th>Quantity</th>
-
-<th>User</th>
-
-<th>Details</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{data.map((item,i)=>(
-
-<tr key={i} className="border-b">
-
-<td className="p-3">
-
-{new Date(item.createdAt)
-.toLocaleString()}
-
-</td>
-
-<td>{item.type}</td>
-
-<td>
-
-{item.wellNumber || "-"}
-
-</td>
-
-<td className="text-green-600">
-
-{item.Quantity}
-
-</td>
-
-<td>
-
-{item.createdBy?.name}
-
-</td>
-
-<td>
-
-{item.details}
-
-</td>
-
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-);
-
+      <div className="bg-white rounded-2xl shadow">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b">
+              <th className="p-3">Date</th>
+              <th>Type</th>
+              <th>Well</th>
+              <th>Quantity</th>
+              <th>User</th>
+              <th>Details</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((item, i) => (
+              <tr key={i} className="border-b">
+                <td className="p-3">{new Date(item.createdAt).toLocaleString()}</td>
+                <td>{item.type}</td>
+                <td>{item.wellNumber || "-"}</td>
+                <td className="text-green-600">{item.Quantity}</td>
+                <td>{item.createdBy?.name}</td>
+                <td>{item.details}</td>
+              </tr>
+            ))}
+            {data.length === 0 && (
+              <tr>
+                <td colSpan={6} className="text-center p-3 text-gray-500">
+                  No history found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }
