@@ -419,7 +419,7 @@ key={slot.slotNumber}
 onClick={()=>
 slot.itemName &&
 navigate(
-`/inventory/product-history?slot=${slot.slotNumber}`
+`/dashboard/inventory/product-history?slot=${slot.slotNumber}`
 )
 }
 className={`p-4 rounded-2xl shadow transition cursor-pointer
