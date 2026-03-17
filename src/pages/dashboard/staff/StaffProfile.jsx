@@ -332,6 +332,24 @@ export default function StaffProfile() {
         </p>
       )}
       </Permissions>
+
+      <td>
+
+<button
+onClick={()=>
+navigate(
+`/dashboard/staff/${staff._id}/history`
+)
+}
+
+className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition"
+>
+
+View History
+
+</button>
+
+</td>
     </div>
 
   </div>

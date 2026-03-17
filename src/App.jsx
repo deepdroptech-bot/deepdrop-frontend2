@@ -23,6 +23,7 @@ import StaffList from "./pages/dashboard/staff/StaffList";
 import CreateStaff from "./pages/dashboard/staff/CreateStaff";
 import EditStaff from "./pages/dashboard/staff/EditStaff";
 import StaffAdjustments from "./pages/dashboard/staff/StaffAdjustments";
+import StaffHistory from "./pages/dashboard/staff/StaffHistory";
 
 // Daily Sales Management pages
 import DailySalesSummary from "./pages/dashboard/dailysales/DailySalesSummary";
@@ -101,6 +102,8 @@ function App() {
     <Route path="staff/:id/edit" element={<EditStaff />} />
     <Route path="staff/adjustments/:id" element={<StaffAdjustments />} />
     <Route path="staff/:id" element={<StaffProfile />} />
+    <Route path="/dashboard/staff/:id/history" element={<StaffHistory/>}
+/>
 
     {/* Daily sales management routes */}
     <Route path="daily-sales" element={<DailySalesManagement />} />

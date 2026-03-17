@@ -29,5 +29,8 @@ export const staffAPI = {
     axios.patch(`/staff/${id}/activate`),
 
   delete: (id) =>
-    axios.delete(`/staff/${id}`)
+    axios.delete(`/staff/${id}`),
+
+    getStaffHistory:(id)=>
+    axios.get(`/staff/${id}/history`)
 };
