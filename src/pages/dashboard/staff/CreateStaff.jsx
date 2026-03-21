@@ -2,7 +2,6 @@ import { useState } from "react";
 import { staffAPI } from "../../../services/staffService";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { set } from "mongoose";
 
 export default function CreateStaff() {
   const navigate = useNavigate();
