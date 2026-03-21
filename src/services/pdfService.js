@@ -9,4 +9,10 @@ export const pdfAPI = {
     api.get(`/pdf/staff-salary`, { responseType: "blob" }),
   generateExpensePDF: () =>
     api.get(`/pdf/expenses`, { responseType: "blob" }),
+
+  generateCalibrationPDF: (from, to) =>
+    api.get(`/pdf/calibration?from=${from}&to=${to}`, { responseType: "blob" }),
+
+  generateProfitSummaryPDF: (from, to) =>
+    api.get(`/pdf/profit-summary?from=${from}&to=${to}`, { responseType: "blob" }),
 };

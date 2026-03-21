@@ -16,6 +16,7 @@ export default function ProfitAuditManagement() {
   const [auditData, setAuditData] = useState(null);
 
   const [loading, setLoading] = useState(false);
+  const [loadingPDF, setLoadingPDF] = useState(false); 
 
   const [calibrationFrom,setCalibrationFrom] = useState("");
 const [calibrationTo,setCalibrationTo] = useState("");
@@ -55,6 +56,44 @@ const [calibrationData,setCalibrationData] = useState([]);
     }
   };
 
+const handleGenerateSummaryPDF = async () => {
+
+try{
+
+const res = await pdfAPI.generateProfitSummaryPDF(from,to);
+
+const blob = new Blob(
+[res.data],
+{type:"application/pdf"}
+);
+
+const url = window.URL.createObjectURL(blob);
+
+const link = document.createElement("a");
+
+link.href = url;
+
+link.download = `Profit_Summary_${from}_to_${to}.pdf`;
+
+document.body.appendChild(link);
+
+link.click();
+
+link.remove();
+
+window.URL.revokeObjectURL(url);
+
+}
+catch(err){
+
+console.error(err);
+
+alert("Failed to generate PDF");
+
+}
+
+};
+
   /* ================= AUDIT TRAIL ================= */
 
   const fetchAuditTrail = async () => {
@@ -65,6 +104,8 @@ const [calibrationData,setCalibrationData] = useState([]);
       alert("Sales record not found");
     }
   };
+
+  /* ================= CALIBRATION AUDIT ================= */
 
   const fetchCalibrationAudit = async ()=>{
 
@@ -83,6 +124,34 @@ alert("Failed to fetch calibration audit");
 
 }
 
+};
+
+const handleGenerateCalibrationPDF = async ()=>{
+
+try{
+const res = await pdfAPI.generateCalibrationPDF(calibrationFrom,calibrationTo);
+
+const blob = new Blob(
+[res.data],
+{type:"application/pdf"}
+);
+const url = window.URL.createObjectURL(blob);
+
+const link = document.createElement
+("a");
+
+link.href = url;
+link.download = `Pump_Calibration_${calibrationFrom}_to_${calibrationTo}.pdf`;
+
+document.body.appendChild(link);
+link.click();
+link.remove();
+window.URL.revokeObjectURL(url);
+}
+catch(err){
+console.error(err);
+alert("Failed to generate PDF");
+}
 };
 
   if (loading)
@@ -381,6 +450,24 @@ Other Income
 
   </div>
 )}
+
+  <div className="flex justify-end mt-8">
+
+    <button
+      onClick={handleGenerateSummaryPDF}
+      className="bg-green-600 text-white px-8 py-3 rounded-xl shadow-lg hover:bg-green-700 transition"
+      disabled={loadingPDF}
+      >
+        {loadingPDF ? "Generating PDF..." : "Log Info & Generate PDF"}
+    </button>
+
+    {loadingPDF && (
+        <p className="text-gray-500 text-sm mt-2">
+          Please wait while your PDF is being generated.
+        </p>
+      )}
+
+  </div>
         </div>
       )}
 
@@ -507,6 +594,24 @@ No calibration records
 </tbody>
 
 </table>
+
+<div className="flex justify-end mt-8">
+
+    <button
+      onClick={handleGenerateCalibrationPDF}
+      className="bg-green-600 text-white px-8 py-3 rounded-xl shadow-lg hover:bg-green-700 transition"
+      disabled={loadingPDF}
+      >
+        {loadingPDF ? "Generating PDF..." : "Log Info & Generate PDF"}
+    </button>
+
+    {loadingPDF && (
+        <p className="text-gray-500 text-sm mt-2">
+          Please wait while your PDF is being generated.
+        </p>
+      )}
+
+  </div>
 
 </div>
 

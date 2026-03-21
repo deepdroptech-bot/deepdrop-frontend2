@@ -342,7 +342,7 @@ navigate(
 )
 }
 
-className="bg-blue-500 text-white px-3 py-1 rounded-lg hover:bg-blue-600 transition"
+className="px-6 py-3 rounded-2xl font-semibold text-white bg-red-600 hover:bg-purple-700 shadow transition"
 >
 
 View History
