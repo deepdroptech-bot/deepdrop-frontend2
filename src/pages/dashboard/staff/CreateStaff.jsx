@@ -2,6 +2,7 @@ import { useState } from "react";
 import { staffAPI } from "../../../services/staffService";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { set } from "mongoose";
 
 export default function CreateStaff() {
   const navigate = useNavigate();
@@ -22,6 +23,9 @@ export default function CreateStaff() {
   const handleSubmit = async e => {
   e.preventDefault();
   setLoadingButton(true)
+
+   setError("");  
+  setMessage("");
 
   if (!form.position) {
     alert("Position is required");
@@ -47,14 +51,16 @@ export default function CreateStaff() {
 
   await staffAPI.create(data);
 
-  setMessage(res.data.msg);
-  setTimeout(() => {
-    setSuccess(null);
+  if (res.data.success){
+    setMessage(res.data.msg || "Staff record created successfully!");
+      setTimeout(() => {
     navigate("/dashboard/staff");
-  }, 2000);
+  }, 800);
+  }
+  else setError(res.data.msg || "Failed to create staff record.");
+
 } catch (err) {
   setError(err.response?.data?.msg || "An error occurred while creating staff record.");
-  setMessage("");
 }
 finally {
   setLoadingButton(false)
@@ -187,15 +193,20 @@ if (loading)
       </div>
 
         {message && (
-          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
-            <span className="block sm:inline">{message}</span>
-          </div>
-        )}
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <span className="block sm:inline">{error}</span>
-          </div>
-        )}
+<div className="bg-green-100 border border-green-400 text-green-700 p-3 rounded">
+
+{message}
+
+</div>
+)}
+
+{error && (
+<div className="bg-red-100 border border-red-400 text-red-700 p-3 rounded">
+
+{error}
+
+</div>
+)}
 
       {/* Submit Button */}
       <button

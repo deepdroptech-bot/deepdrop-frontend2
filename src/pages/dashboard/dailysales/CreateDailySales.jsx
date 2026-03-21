@@ -153,6 +153,9 @@ export default function CreateDailySales() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
+  setError("");  
+  setMessage("");
+
   const cleanedForm = {
     ...form,
     salesDate: form.salesDate,
@@ -196,16 +199,23 @@ const handleSubmit = async (e) => {
       amount: Number(i.amount)
     })),
 
-    notes: [...form.notes.filter(n => n.trim() !== "")]
+    notes: form.notes.filter(n => n.trim() !== "")
   };
 
   try {
 
     const res = await dailySalesAPI.create(cleanedForm);
 
-    setMessage(res.data.msg);
+    if(res.data?.success){
+      navigate("/dashboard/daily-sales");
+      return;
+    }
 
-    navigate("/dashboard/daily-sales");
+    setMessage(res.data?.msg || "Daily sales created successfully");
+
+    setTimeout(()=>{
+      navigate("/dashboard/daily-sales");
+    },800);
 
   } catch (err) {
 
@@ -214,7 +224,6 @@ const handleSubmit = async (e) => {
       "An error occurred while creating daily sales record."
     );
 
-    setMessage("");
   }
 };
 

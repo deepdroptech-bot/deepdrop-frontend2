@@ -60,6 +60,7 @@ const [calibrationData,setCalibrationData] = useState([]);
 const handleGenerateSummaryPDF = async () => {
 
 try{
+  setLoadingPDF(true);
 
 const res = await pdfAPI.generateProfitSummaryPDF(from,to);
 
@@ -86,6 +87,7 @@ window.URL.revokeObjectURL(url);
 
 }
 catch(err){
+  setLoadingPDF(false);
 
 console.error(err);
 
@@ -130,6 +132,7 @@ alert("Failed to fetch calibration audit");
 const handleGenerateCalibrationPDF = async ()=>{
 
 try{
+  setLoadingPDF(true);
 const res = await pdfAPI.generateCalibrationPDF(calibrationFrom,calibrationTo);
 
 const blob = new Blob(
@@ -150,6 +153,7 @@ link.remove();
 window.URL.revokeObjectURL(url);
 }
 catch(err){
+  setLoadingPDF(false);
 console.error(err);
 alert("Failed to generate PDF");
 }
