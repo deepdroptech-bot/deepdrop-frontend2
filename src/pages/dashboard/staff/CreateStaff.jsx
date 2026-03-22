@@ -8,9 +8,49 @@ export default function CreateStaff() {
   const [form, setForm] = useState({});
   const [photo, setPhoto] = useState(null);
   const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [loadingButton, setLoadingButton] = useState(false)
+
+  const [preview,setPreview] = useState(null);
+
+const handlePhoto = e => {
+
+const file = e.target.files[0];
+
+if(!file) return;
+
+setPhoto(file);
+
+setPreview(
+
+URL.createObjectURL(file)
+
+);
+
+};
+
+const handleChange = e => {
+
+const {name,value} = e.target;
+
+setForm({
+
+...form,
+
+[name]:value
+
+});
+
+setErrors({
+
+...errors,
+
+[name]:""
+
+});
+
+};
 
     useEffect(() => {
        // Simulate loading time for better UX
@@ -20,50 +60,99 @@ export default function CreateStaff() {
   }, []);
 
   const handleSubmit = async e => {
-  e.preventDefault();
-  setLoadingButton(true)
 
-   setError("");  
-  setMessage("");
+e.preventDefault();
 
-  if (!form.position) {
-    alert("Position is required");
-    return;
-  }
+if(loadingButton) return;
 
-  if (!form.baseSalary || isNaN(form.baseSalary)) {
-    alert("Base Salary must be a number");
-    return;
-  }
+setLoadingButton(true);
 
-  const data = new FormData();
+setErrors({});
 
-  Object.keys(form).forEach(key => {
-    if (form[key] !== undefined && form[key] !== "") {
-      data.append(key, form[key]);
-    }
-  });
+setMessage("");
 
-  if (photo) data.append("photo", photo);
+const data = new FormData();
 
-  try {
+Object.keys(form).forEach(key=>{
 
-  await staffAPI.create(data);
+data.append(key,form[key]);
 
-  if (res.data.success){
-    setMessage(res.data.msg || "Staff record created successfully!");
-      setTimeout(() => {
-    navigate("/dashboard/staff");
-  }, 800);
-  }
-  else setError(res.data.msg || "Failed to create staff record.");
+});
 
-} catch (err) {
-  setError(err.response?.data?.msg || "An error occurred while creating staff record.");
+if(photo){
+
+data.append("photo",photo);
+
 }
-finally {
-  setLoadingButton(false)
+
+try{
+
+const res =
+await staffAPI.create(data);
+
+if(!res.data.success){
+
+if(res.data.errors){
+
+setErrors(res.data.errors);
+
+}else{
+
+setErrors({
+
+general:res.data.msg
+
+});
+
 }
+
+return;
+
+}
+
+setMessage(res.data.msg);
+
+setForm({
+
+staffId:"",
+firstName:"",
+lastName:"",
+phone:"",
+nin:"",
+position:"",
+baseSalary:""
+
+});
+
+setPhoto(null);
+
+setPreview(null);
+
+setTimeout(()=>{
+
+navigate("/dashboard/staff");
+
+},1000);
+
+}catch(err){
+
+setErrors({
+
+general:
+
+err.response?.data?.msg ||
+
+"Server error"
+
+});
+
+}
+finally{
+
+setLoadingButton(false);
+
+}
+
 };
 
 if (loading)
@@ -186,41 +275,82 @@ if (loading)
           <input
             type="file"
             className="hidden"
-            onChange={e => setPhoto(e.target.files[0])}
+            onChange={handlePhoto}
           />
         </label>
+
+        {preview && (
+
+<img
+src={preview}
+className="w-24 h-24 rounded-xl object-cover"
+/>
+
+)}
       </div>
 
-        {message && (
-<div className="bg-green-100 border border-green-400 text-green-700 p-3 rounded">
+<input
+name="staffId"
+onChange={handleChange}
+className="border p-3 rounded-xl w-full"
+/>
+
+{errors.staffId && (
+
+<p className="text-red-500 text-sm">
+
+{errors.staffId}
+
+</p>
+
+)}
+{errors.general && (
+
+<div className="bg-red-100 text-red-700 p-3 rounded-xl">
+
+{errors.general}
+
+</div>
+
+)}
+{message && (
+
+<div className="bg-green-100 text-green-700 p-3 rounded-xl">
 
 {message}
 
 </div>
-)}
 
-{error && (
-<div className="bg-red-100 border border-red-400 text-red-700 p-3 rounded">
-
-{error}
-
-</div>
 )}
 
       {/* Submit Button */}
-      <button
-        type="submit"
-        className="
-          w-full py-4 rounded-2xl
-          text-lg font-bold text-white
-          bg-gradient-to-tr from-red-500 to-blue-600
-          shadow-lg hover:shadow-xl
-          hover:scale-[1.02] active:scale-95
-          transition
-        "
-      >
-        Create Staff
-      </button>
+     <button
+
+disabled={loadingButton}
+
+className={`w-full p-3 rounded-xl text-white font-semibold
+
+${loadingButton
+
+? "bg-gray-400"
+
+: "bg-blue-600 hover:bg-blue-700"
+
+}
+
+`}
+      > 
+{loadingButton ?
+
+"Creating Staff..."
+
+:
+
+"Create Staff"
+
+}
+
+</button>
     </form>
   </div>
 );
