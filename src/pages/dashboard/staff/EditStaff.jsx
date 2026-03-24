@@ -50,6 +50,9 @@ export default function EditStaff() {
     e.preventDefault();
     setSaving(true);
 
+    setError({});
+    setMessage("");
+
     const data = new FormData();
     Object.entries(form).forEach(([key, value]) =>
       data.append(key, value)
@@ -59,14 +62,26 @@ export default function EditStaff() {
 
     try {
 
-    await staffAPI.update(id, data);
+    const res = await staffAPI.update(id, data);
 
-    setSaving(false);
+    if (!res.data.success) {
+      if (res.data.errors) {
+        setError(res.data.errors);
+      } else {
+        setError(res.data.msg || "Failed to update staff record.");
+      }
+      return;
+    }
+
     setMessage(res.data.msg);
-    setError("");
-    navigate(`/dashboard/staff/${id}`);
+setTimeout(() => {
+      navigate(`/dashboard/staff/${id}`);
+}, 1000);
   } catch (err) {
     setError(err.response?.data?.msg || "An error occurred while updating staff record.");
+    setSaving(false);
+  }
+finally {
     setSaving(false);
   }
 };

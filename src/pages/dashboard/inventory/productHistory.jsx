@@ -41,11 +41,11 @@ Product Slot {slot} History
 
 <div className="bg-white rounded-2xl shadow">
 
-<table className="w-full">
+<table className="w-full table-auto border-collapse shadow rounded-xl overflow-hidden">
 
-<thead>
+<thead className="bg-gray-100 text-gray-700 uppercase text-sm">
 
-<tr className="border-b">
+<tr className="border-b text-center">
 
 <th className="p-3">Date</th>
 
@@ -65,7 +65,7 @@ Product Slot {slot} History
 
 {data.map((item,i)=>(
 
-<tr key={i} className="border-b">
+<tr key={i} className="border-b text-center hover:bg-gray-50">
 
 <td className="p-3">
 

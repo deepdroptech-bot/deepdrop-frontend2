@@ -440,13 +440,11 @@ Transaction History
 
 </h2>
 
-<div className="overflow-x-auto">
+<div className="bg-white rounded-2xl shadow">
+        <table className="w-full table-auto border-collapse shadow rounded-xl overflow-hidden">
 
-<table className="w-full text-sm">
-
-<thead>
-
-<tr className="border-b text-gray-600">
+  <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
+    <tr className="border-b text-center">
 
 <th className="p-3 text-left">
 
@@ -505,7 +503,7 @@ history.slice(0,20).map((item,i)=>(
 
 <tr
 key={i}
-className="border-b hover:bg-gray-50"
+className="border-b text-center hover:bg-gray-50"
 >
 
 <td className="p-3">

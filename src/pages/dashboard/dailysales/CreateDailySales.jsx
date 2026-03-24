@@ -7,6 +7,7 @@ export default function CreateDailySales() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
+  const [loadingButton, setLoadingButton] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -153,7 +154,9 @@ export default function CreateDailySales() {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  setError("");  
+  setLoadingButton(true);
+
+setError({});  
   setMessage("");
 
   const cleanedForm = {
@@ -206,25 +209,41 @@ const handleSubmit = async (e) => {
 
     const res = await dailySalesAPI.create(cleanedForm);
 
-    if(res.data?.success){
-      navigate("/dashboard/daily-sales");
-      return;
-    }
+    if(!res.data.success){
 
-    setMessage(res.data?.msg || "Daily sales created successfully");
+if(res.data.errors){
 
+setError(res.data.errors);
+
+}else{
+setError({general: res.data.msg});
+}
+return;
+}
+
+setMessage(res.data.msg);
     setTimeout(()=>{
       navigate("/dashboard/daily-sales");
     },800);
 
-  } catch (err) {
+  } catch(err){
 
-    setError(
-      err.response?.data?.msg ||
-      "An error occurred while creating daily sales record."
-    );
+setError({
 
-  }
+general:
+
+err.response?.data?.msg ||
+
+"Server error"
+
+});
+
+}
+finally{
+
+setLoadingButton(false);
+
+}
 };
 
  const calculatePumpTotals = (pump, pricePerLitre) => {
@@ -626,9 +645,11 @@ if (loading)
           {message && <p className="text-green-500">{message}</p>}
           {error && <p className="text-red-500">{error}</p>}
 
-          <button className="btn-primary w-full">
-            Draft Daily Sales
-          </button>
+              <button  disabled={loadingButton} className="btn-primary w-full"
+              type="submit"
+              >
+              {loadingButton ? "Drafting..." : "Draft Daily Sales"}
+              </button>
         </form>
       </div>
     </div>

@@ -31,37 +31,92 @@ export default function FuelHistory() {
       <h1 className="text-2xl font-bold mb-6">Fuel History {type}</h1>
 
       <div className="bg-white rounded-2xl shadow">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b">
-              <th className="p-3">Date</th>
-              <th>Type</th>
-              <th>Well</th>
-              <th>Quantity</th>
-              <th>User</th>
-              <th>Details</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, i) => (
-              <tr key={i} className="border-b">
-                <td className="p-3">{new Date(item.addedAt).toLocaleString()}</td>
-                <td>{item.type}</td>
-                <td>{item.wellNumber || "-"}</td>
-                <td className="text-green-600">{item.Quantity}</td>
-                <td>{item.addedBy?.name}</td>
-                <td>{item.details}</td>
-              </tr>
-            ))}
-            {data.length === 0 && (
-              <tr>
-                <td colSpan={6} className="text-center p-3 text-gray-500">
-                  No history found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+        <table className="w-full table-auto border-collapse shadow rounded-xl overflow-hidden">
+
+  <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
+    <tr className="border-b text-center">
+
+      <th className="p-3">Date</th>
+
+      <th className="p-3">Type</th>
+
+      <th className="p-3">Well</th>
+
+      <th className="p-3">Quantity</th>
+
+      <th className="p-3">User</th>
+
+      <th className="p-3">Details</th>
+
+    </tr>
+  </thead>
+
+  <tbody>
+
+    {data.map((item, i) => (
+
+      <tr key={i} className="border-b text-center hover:bg-gray-50">
+
+        <td className="p-3">
+
+          {new Date(item.addedAt).toLocaleString()}
+
+        </td>
+
+        <td className="p-3">
+
+          {item.type}
+
+        </td>
+
+        <td className="p-3">
+
+          {item.wellNumber || "-"}
+
+        </td>
+
+        <td className="p-3 text-green-600 font-semibold">
+
+          {item.Quantity}
+
+        </td>
+
+        <td className="p-3">
+
+          {item.addedBy?.name || "-"}
+
+        </td>
+
+        <td className="p-3">
+
+          {item.details || "-"}
+
+        </td>
+
+      </tr>
+
+    ))}
+
+    {data.length === 0 && (
+
+      <tr>
+
+        <td
+          colSpan={6}
+          className="text-center p-6 text-gray-500"
+        >
+
+          No history found
+
+        </td>
+
+      </tr>
+
+    )}
+
+  </tbody>
+
+</table>
       </div>
     </div>
   );

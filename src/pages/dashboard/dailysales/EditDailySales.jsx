@@ -7,6 +7,9 @@ export default function EditDailySales() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   const [form, setForm] = useState({
     salesDate: "",
@@ -75,17 +78,33 @@ export default function EditDailySales() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoadingButton(true);
+    setError({});
+      setMessage("");
+
     if (!form.updateReason.trim()) {
       alert("Please provide a reason for updating this sales record.");
       return;
     }
 
     try {
-      await dailySalesAPI.update(id, form);
-      alert("Daily sales updated successfully.");
+    const res = await dailySalesAPI.update(id, form);
+    if (!res.data.success) {
+      if (res.data.errors) {
+        setError(res.data.errors);
+      } else {
+        setError(res.data.msg || "Failed to update daily sales.");
+      }
+      return;
+    }
+    setMessage(res.data.msg);
+    setTimeout(() => {
       navigate("/dashboard/daily-sales");
+    }, 1000);
     } catch (err) {
-      alert(err.response?.data?.msg || "Update failed");
+      setError(err.response?.data?.msg || "An error occurred while updating daily sales.");
+    }
+finally {      setLoadingButton(false);
     }
   };
 
@@ -404,8 +423,11 @@ return (
         />
       </div>
 
-      <button className="btn-primary w-full text-lg py-4">
-        Update Daily Sales
+      {message && <p className="text-green-500">{message}</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      <button className="btn-primary w-full text-lg py-4" type="submit" disabled={loadingButton}>
+        {loadingButton ? "Updating..." : "Update Daily Sales"}
       </button>
 
     </form>

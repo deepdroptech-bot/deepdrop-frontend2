@@ -277,6 +277,12 @@ if (loading)
             className="hidden"
             onChange={handlePhoto}
           />
+          {preview && (
+<img
+src={preview}
+className="w-24 h-24 rounded-xl object-cover"
+/>
+)}
         </label>
 
         {preview && (
@@ -288,13 +294,6 @@ className="w-24 h-24 rounded-xl object-cover"
 
 )}
       </div>
-
-<input
-name="staffId"
-onChange={handleChange}
-className="border p-3 rounded-xl w-full"
-/>
-
 {errors.staffId && (
 
 <p className="text-red-500 text-sm">

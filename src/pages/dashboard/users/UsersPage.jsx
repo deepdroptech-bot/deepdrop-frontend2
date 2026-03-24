@@ -21,6 +21,23 @@ export default function UsersPage() {
     fetchUsers();
   }, []);
 
+  if (loading)
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-3xl px-12 py-10 shadow-2xl text-center">
+        <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-tr from-red-500 to-blue-600 flex items-center justify-center animate-pulse">
+          <span className="text-white text-2xl font-black">⏳</span>
+        </div>
+        <h2 className="text-2xl font-extrabold text-gray-800 mb-2">
+          Loading Users List
+        </h2>
+        <p className="text-gray-500 text-base">
+          Please wait while we generate the list of users
+        </p>
+      </div>
+    </div>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}

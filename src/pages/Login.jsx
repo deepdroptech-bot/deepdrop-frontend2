@@ -13,6 +13,9 @@ export default function Login({ branchName }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
    const { login, user } = useAuth();
+   const [error, setError] = useState("");
+   const [message, setMessage] = useState("");
+   const [loading, setLoading] = useState(false);
 
   // Simulate page loading animation
   useEffect(() => {
@@ -22,15 +25,26 @@ export default function Login({ branchName }) {
 
  const handleLogin = async e => {
     e.preventDefault()
+    setLoading(true)
+    setError("")
+    setMessage("")
+
     try {
-    await login(
+    const res = await login(
       email,
       password
     )
+    if (res.success) {  
+      setMessage(res.msg)
+    } else {
+      setError(res.msg || "Login failed")
+    }
   }
     catch (err) {
-        alert("Login failed: " + (err.response?.data?.msg || err.message))
-      }
+        setError(err.response?.data?.msg || "Login failed")
+    } finally {
+        setLoading(false)
+    }
   }
 
 useEffect(() => {
@@ -160,12 +174,20 @@ useEffect(() => {
                 </a>
               </div>
 
+            {error && <p className="text-red-500 font-medium">{error}</p>}
+            {message && <p className="text-green-500 font-medium">{message}</p>}
+
               {/* Submit */}
               <BouncyButton
                 type="submit"
                 className="w-full py-4 text-lg shadow-xl shadow-red-200 mt-4"
+                disabled={loading}
               >
-                Sign In
+                {loading ? (
+                  <Zap className="animate-pulse text-white w-6 h-6 mx-auto" />
+                ) : (
+                  "Sign In"
+                )}
               </BouncyButton>
             </form>
           </motion.div>
