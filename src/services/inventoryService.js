@@ -1,6 +1,7 @@
 import api from "./api";
 
 export const inventoryAPI = {
+  
   getInventory: () => api.get("/inventory"),
 
   getFuelInventory: () => api.get("/inventory/fuel"),
@@ -18,5 +19,6 @@ api.get("/inventory/fuel-history",{params}),
 
 getProductHistory:(params)=>
 api.get("/inventory/product-history",{params})
+
 };
 

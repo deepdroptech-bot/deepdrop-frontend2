@@ -5,16 +5,12 @@ import { userAPI } from "../../../services/userService";
 
 
 export default function UserTable({ users, loading, refresh }) {
-  if (loading) {
-    return <p className="text-gradient-to-r from-red-500 to-blue-600">Loading users...</p>;
-  }
 
   const [editUserId, setEditUserId] = useState(null);
   const [error, setError] = useState(null);
   const [message, setMessage] = useState(null);
   const [deleting, setDeleting] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null);
-
 
 const handleDeleteUser = async(id)=>{
 
@@ -31,11 +27,11 @@ const res = await userAPI.deleteUser(id);
 if (res.success) {
 
 setMessage(res.msg);
+
+refresh();
 } else {
 setError(res.msg || "Failed to delete user");
 }
-
-refresh();
 
 }catch{
 
@@ -50,6 +46,9 @@ setDeleting(null);
 
 };
 
+ if (loading) {
+    return <p className="text-gradient-to-r from-red-500 to-blue-600">Loading Users...</p>;
+  }
 
   return (
     <div className="bg-white rounded-2xl shadow">
@@ -57,11 +56,11 @@ setDeleting(null);
 
   <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
     <tr className="border-b text-center">
-            <th className="p-4 text-left">Name</th>
+            <th>Name</th>
             <th>Email</th>
             <th>Role</th>
             <th>Status</th>
-            <th className="text-right p-4">Actions</th>
+            <th>Actions</th>
           </tr>
         </thead>
 
@@ -152,15 +151,24 @@ className="p-2 hover:bg-blue-50 rounded"
         >
           Cancel
         </button>
+
         <button
-          onClick={async () => {
-            await handleDeleteUser(showDeleteConfirm);
-            setShowDeleteConfirm(null);
-          }}
-          className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-        >
-          Delete
-        </button>
+disabled={deleting === showDeleteConfirm}
+onClick={async ()=>{
+
+await handleDeleteUser(showDeleteConfirm);
+
+setShowDeleteConfirm(null);
+
+}}
+className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50"
+>
+
+{deleting === showDeleteConfirm
+? "Deleting..."
+: "Delete"}
+
+</button>
       </div>
     </div>
   </div>
