@@ -85,6 +85,13 @@ const [newPriceInput, setNewPriceInput] = useState("");
     setForm({ ...form, otherIncome: [...form.otherIncome, { itemName: "", amount: "" }] });
   };
 
+  const safeNumber = (v)=> Number(v) || 0;
+
+const formatLitres = (v)=> safeNumber(v).toFixed(2);
+
+const formatMoney = (v)=> 
+"₦" + safeNumber(v).toLocaleString();
+
   /* ===========================
      ADD NEW PRICE SEGMENT
   ============================ */
@@ -316,12 +323,35 @@ const [newPriceInput, setNewPriceInput] = useState("");
                       onChange={(e) => handlePMSPumpChange(pumpIndex, segIndex, "calibrationReason", e.target.value)}
                     />
                   </div>
-                  <div className="text-sm text-gray-700">
-                    <p>Litres: {litres.toFixed(2)} L</p>
-                    <p>Calibration: {calibration.toFixed(2)} L</p>
-                    <p>Litres Sold: {litresSold.toFixed(2)} L</p>
-                    <p>Total Amount: ₦{amount.toLocaleString()}</p>
-                  </div>
+                 <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-700">
+  <p>
+    Litres Sold:
+    <span className="font-semibold">
+      {formatLitres(litres)} L
+    </span>
+  </p>
+
+  <p>
+    Calibration:
+    <span className="font-semibold">
+      {formatLitres(calibration)} L
+    </span>
+  </p>
+
+  <p>
+    Net Litres Sold:
+    <span className="font-semibold">
+      {formatLitres(litresSold)} L
+    </span>
+  </p>
+
+  <p>
+    Total Amount:
+    <span className="font-semibold">
+      {formatMoney(amount)}
+    </span>
+  </p>
+</div>
                 </div>
               );
             })}
