@@ -1,259 +1,736 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useEffect,useState } from "react";
+import { useParams,useNavigate } from "react-router-dom";
 import { dailySalesAPI } from "../../../services/dailySalesService";
 
-export default function EditDailySales() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+export default function EditDailySales(){
 
-  const [loading, setLoading] = useState(true);
-  const [loadingButton, setLoadingButton] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+const {id}=useParams();
 
-  const [form, setForm] = useState({
-    salesDate: "",
+const navigate=useNavigate();
 
-    PMS: {
-      pumps: [
-        { pumpNumber: 1, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" },
-        { pumpNumber: 2, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" },
-        { pumpNumber: 3, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" },
-        { pumpNumber: 4, openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "" }
-      ],
-      pricePerLitre: "",
-      expenses: [{ description: "", amount: "" }]
-    },
+const [loading,setLoading]=useState(true);
 
-    AGO: {
-      openingMeter: "",
-      closingMeter: "",
-      calibrationLitres: "",
-      calibrationReason: "",
-      pricePerLitre: "",
-      expenses: [{ description: "", amount: "" }]
-    },
+const [loadingButton,setLoadingButton]=useState(false);
 
-    productsSold: [
-      { itemName: "", quantitySold: "", pricePerUnit: "" }
-    ],
+const [message,setMessage]=useState("");
 
-    otherIncome: [
-      { itemName: "", amount: "" }
-    ],
+const [error,setError]=useState("");
 
-    notes: [""],
+const [showPriceModal,setShowPriceModal]=useState(false);
 
-    updateReason: ""
-  });
+const [newPrice,setNewPrice]=useState("");
 
-  useEffect(() => {
-    fetchSale();
-  }, []);
+const [segmentTotals,setSegmentTotals]=useState({});
 
-  const fetchSale = async () => {
-    try {
-      const res = await dailySalesAPI.getById(id);
 
-      if (res.data.isLocked) {
-        alert("Approved sales cannot be edited.");
-        navigate("/dashboard/daily-sales");
-        return;
-      }
+const [form,setForm]=useState({
 
-      // Pre-fill entire structure from backend
-      setForm({
-        ...res.data,
-        salesDate: res.data.salesDate?.substring(0, 10),
-        updateReason: ""
-      });
+salesDate:"",
 
-      setLoading(false);
-    } catch (err) {
-      alert("Failed to load sales record");
-      navigate("/dashboard/daily-sales");
-    }
-  };
+PMS:{
+priceSegments:[
+{
+pricePerLitre:"",
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+pumps:[1,2,3,4].map(num=>({
 
-    setLoadingButton(true);
-    setError({});
-      setMessage("");
+pumpNumber:num,
 
-    if (!form.updateReason.trim()) {
-      alert("Please provide a reason for updating this sales record.");
-      return;
-    }
+sales:[{
 
-    try {
-    const res = await dailySalesAPI.update(id, form);
-    if (!res.data.success) {
-      if (res.data.errors) {
-        setError(res.data.errors);
-      } else {
-        setError(res.data.msg || "Failed to update daily sales.");
-      }
-      return;
-    }
-    setMessage(res.data.msg);
-    setTimeout(() => {
-      navigate("/dashboard/daily-sales");
-    }, 1000);
-    } catch (err) {
-      setError(err.response?.data?.msg || "An error occurred while updating daily sales.");
-    }
-finally {      setLoadingButton(false);
-    }
-  };
+openingMeter:"",
 
-  if (loading)
-  return (
-    <div className="min-h-[60vh] flex items-center justify-center">
-      <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-3xl px-12 py-10 shadow-2xl text-center">
-        <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-tr from-red-500 to-blue-600 flex items-center justify-center animate-pulse">
-          <span className="text-white text-2xl font-black">⏳</span>
-        </div>
-        <h2 className="text-2xl font-extrabold text-gray-800 mb-2">
-          Loading Daily Sales Records For Update
-        </h2>
-        <p className="text-gray-500 text-base">
-          Please wait while we fetch daily sales records
-        </p>
-      </div>
-    </div>
-  );
+closingMeter:"",
 
-return (
-  <div className="max-w-6xl mx-auto space-y-10">
+calibrationLitres:"",
 
-    {/* HEADER */}
-    <div className="bg-white rounded-3xl shadow-xl p-6 flex justify-between items-center">
-      <div>
-        <h2 className="text-3xl font-extrabold text-gray-800">
-          Edit Daily Sales
-        </h2>
-        <p className="text-gray-500">
-          Update and adjust the daily sales record
-        </p>
-      </div>
-    </div>
+calibrationReason:""
 
-    <form onSubmit={handleSubmit} className="space-y-10">
+}]
 
-      {/* SALES DATE */}
-      <div className="bg-white rounded-3xl shadow-lg p-6">
-        <label className="block text-sm font-semibold text-gray-700 mb-2">
-          Sales Date
-        </label>
+}))
+}
+]
+},
 
-        <input
-          type="date"
-          value={form.salesDate}
-          onChange={(e) =>
-            setForm({ ...form, salesDate: e.target.value })
-          }
-          className="input-premium"
-          required
-        />
-      </div>
+AGO:{
+openingMeter:"",
+closingMeter:"",
+calibrationLitres:"",
+calibrationReason:"",
+pricePerLitre:"",
+expenses:[{description:"",amount:""}]
+},
 
-      {/* PMS SECTION */}
-      <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-3xl shadow-xl p-6 space-y-6">
-        <h3 className="text-xl font-bold text-blue-800">
-          PMS Pumps
-        </h3>
+productsSold:[
+{itemName:"",quantitySold:"",pricePerUnit:""}
+],
 
-        {form.PMS.pumps.map((pump, index) => (
-          <div
-            key={index}
-            className="bg-white p-5 rounded-2xl shadow-md space-y-4"
-          >
-            <h4 className="font-semibold text-gray-700">
-              Pump {pump.pumpNumber}
-            </h4>
+otherIncome:[
+{itemName:"",amount:""}
+],
 
-            <div className="grid md:grid-cols-2 gap-4">
+notes:[""],
 
-              <input
-                type="number"
-                placeholder="Opening Meter"
-                value={pump.openingMeter}
-                onChange={(e) => {
-                  const updated = [...form.PMS.pumps];
-                  updated[index].openingMeter = e.target.value;
-                  setForm({
-                    ...form,
-                    PMS: { ...form.PMS, pumps: updated }
-                  });
-                }}
-                className="input-premium"
-              />
+updateReason:""
 
-              <input
-                type="number"
-                placeholder="Closing Meter"
-                value={pump.closingMeter}
-                onChange={(e) => {
-                  const updated = [...form.PMS.pumps];
-                  updated[index].closingMeter = e.target.value;
-                  setForm({
-                    ...form,
-                    PMS: { ...form.PMS, pumps: updated }
-                  });
-                }}
-                className="input-premium"
-              />
+});
 
-              <input
-                type="number"
-                placeholder="Calibration Litres"
-                value={pump.calibration}
-                onChange={(e) => {
-                  const updated = [...form.PMS.pumps];
-                  updated[index].calibration = e.target.value;
-                  setForm({
-                    ...form,
-                    PMS: { ...form.PMS, pumps: updated }
-                  });
-                }}
-                className="input-premium"
-              />
 
-              <input
-                type="text"
-                placeholder="Calibration Reason"
-                value={pump.calibrationReason}
-                onChange={(e) => {
-                  const updated = [...form.PMS.pumps];
-                  updated[index].calibrationReason = e.target.value;
-                  setForm({
-                    ...form,
-                    PMS: { ...form.PMS, pumps: updated }
-                  });
-                }}
-                className="input-premium"
-              />
-            </div>
-          </div>
-        ))}
+useEffect(()=>{
 
-        <div className="pt-4 border-t">
-          <input
-            type="number"
-            placeholder="PMS Price Per Litre"
-            value={form.PMS.pricePerLitre}
-            onChange={(e) =>
-              setForm({
-                ...form,
-                PMS: { ...form.PMS, pricePerLitre: e.target.value }
-              })
-            }
-            className="input-premium"
-          />
-        </div>
-      </div>
+fetchSale();
+
+},[]);
+
+
+
+const fetchSale=async()=>{
+
+try{
+
+const res=await dailySalesAPI.getById(id);
+
+if(res.data.isLocked){
+
+alert("Approved sales cannot be edited");
+
+navigate("/dashboard/daily-sales");
+
+return;
+
+}
+
+setForm({
+
+...res.data,
+
+salesDate:
+res.data.salesDate?.substring(0,10),
+
+updateReason:""
+
+});
+
+setLoading(false);
+
+}catch{
+
+alert("Failed to load record");
+
+navigate("/dashboard/daily-sales");
+
+}
+
+};
+
+
+
+/* LIVE SEGMENT TOTALS */
+
+const calculateSegmentTotals=(segment)=>{
+
+let totalLitres=0;
+
+let totalAmount=0;
+
+segment.pumps.forEach(pump=>{
+
+pump.sales.forEach(sale=>{
+
+const opening=
+Number(sale.openingMeter)||0;
+
+const closing=
+Number(sale.closingMeter)||0;
+
+const calibration=
+Number(sale.calibrationLitres)||0;
+
+const litres=
+Math.max(closing-opening,0);
+
+const net=
+Math.max(litres-calibration,0);
+
+const amount=
+net*(Number(segment.pricePerLitre)||0);
+
+totalLitres+=net;
+
+totalAmount+=amount;
+
+});
+
+});
+
+return{
+
+totalLitres,
+
+totalAmount
+
+};
+
+};
+
+
+
+useEffect(()=>{
+
+const totals={};
+
+form.PMS?.priceSegments?.forEach((segment,index)=>{
+
+totals[index]=
+calculateSegmentTotals(segment);
+
+});
+
+setSegmentTotals(totals);
+
+},[form]);
+
+
+
+/* ADD PRICE SEGMENT */
+
+const addPriceSegment=()=>{
+
+if(!newPrice) return;
+
+const lastSegment=
+form.PMS.priceSegments[
+form.PMS.priceSegments.length-1
+];
+
+const newSegment={
+
+pricePerLitre:newPrice,
+
+pumps:[1,2,3,4].map(num=>{
+
+const lastPump=
+lastSegment.pumps.find(
+p=>p.pumpNumber===num
+);
+
+const lastSale=
+lastPump.sales[
+lastPump.sales.length-1
+];
+
+return{
+
+pumpNumber:num,
+
+sales:[{
+
+openingMeter:
+lastSale?.closingMeter||"",
+
+closingMeter:"",
+
+calibrationLitres:"",
+
+calibrationReason:""
+
+}]
+
+};
+
+})
+
+};
+
+setForm({
+
+...form,
+
+PMS:{
+
+...form.PMS,
+
+priceSegments:[
+...form.PMS.priceSegments,
+newSegment
+]
+
+}
+
+});
+
+setNewPrice("");
+
+setShowPriceModal(false);
+
+};
+
+
+
+/* SUBMIT */
+
+const handleSubmit=async(e)=>{
+
+e.preventDefault();
+
+setLoadingButton(true);
+
+setError("");
+
+if(!form.updateReason.trim()){
+
+setError("Update reason required");
+
+setLoadingButton(false);
+
+return;
+
+}
+
+try{
+
+const res=
+await dailySalesAPI.update(id,form);
+
+if(!res.data.success){
+
+setError(res.data.msg);
+
+return;
+
+}
+
+setMessage(res.data.msg);
+
+setTimeout(()=>{
+
+navigate("/dashboard/daily-sales");
+
+},1000);
+
+}catch(err){
+
+setError(
+err.response?.data?.msg ||
+"Update failed"
+);
+
+}
+finally{
+
+setLoadingButton(false);
+
+}
+
+};
+
+
+
+if(loading)
+
+return <div>Loading...</div>;
+
+
+
+return(
+
+<div className="max-w-6xl mx-auto space-y-10">
+
+<h2 className="text-3xl font-bold">
+Edit Daily Sales
+</h2>
+
+
+<form
+onSubmit={handleSubmit}
+className="space-y-10"
+>
+
+
+{/* DATE */}
+
+<input
+
+type="date"
+
+value={form.salesDate}
+
+onChange={(e)=>
+
+setForm({
+...form,
+salesDate:e.target.value
+})
+
+}
+
+className="input-premium"
+
+/>
+
+
+
+{/* PRICE MODAL */}
+
+{showPriceModal &&(
+
+<div className="fixed inset-0 bg-black/40 flex justify-center items-center">
+
+<div className="bg-white p-8 rounded-2xl w-96 space-y-5">
+
+<h3 className="text-xl font-bold">
+
+Change Price
+
+</h3>
+
+
+<input
+
+type="number"
+
+placeholder="New Price"
+
+value={newPrice}
+
+onChange={(e)=>
+setNewPrice(e.target.value)
+}
+
+className="input-premium w-full"
+
+/>
+
+
+<div className="flex gap-4">
+
+<button
+
+type="button"
+
+onClick={addPriceSegment}
+
+className="bg-blue-600 text-white px-6 py-2 rounded-xl">
+
+Confirm
+
+</button>
+
+
+<button
+
+type="button"
+
+onClick={()=>
+setShowPriceModal(false)
+}
+
+className="bg-gray-300 px-6 py-2 rounded-xl">
+
+Cancel
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+)}
+
+
+
+{/* PMS */}
+
+<div className="bg-blue-50 p-6 rounded-3xl space-y-6">
+
+<h3 className="text-xl font-bold">
+
+PMS Sales
+
+</h3>
+
+
+{form.PMS.priceSegments.map(
+(segment,segmentIndex)=>(
+<div
+
+key={segmentIndex}
+
+className={`bg-white p-6 rounded-xl space-y-6
+
+${segmentIndex !==
+form.PMS.priceSegments.length-1
+
+?
+"opacity-60 pointer-events-none"
+:
+""
+}
+
+`}
+
+>
+
+
+<div className="flex justify-between">
+
+<h4 className="font-bold">
+
+Price Segment {segmentIndex+1}
+
+</h4>
+
+
+<div>
+
+₦{segment.pricePerLitre}
+
+</div>
+
+</div>
+
+
+
+{segment.pumps.map(
+(pump,pumpIndex)=>(
+<div
+key={pumpIndex}
+className="bg-gray-50 p-4 rounded-xl space-y-4"
+>
+
+<h5>
+
+Pump {pump.pumpNumber}
+
+</h5>
+
+
+
+{pump.sales.map(
+(sale,saleIndex)=>(
+<div
+key={saleIndex}
+className="grid md:grid-cols-2 gap-4"
+>
+
+<input
+
+type="number"
+
+placeholder="Opening"
+
+value={sale.openingMeter}
+
+onChange={(e)=>{
+
+const updated=
+{...form};
+
+updated.PMS
+.priceSegments
+[segmentIndex]
+
+.pumps[pumpIndex]
+
+.sales[saleIndex]
+
+.openingMeter=
+e.target.value;
+
+setForm(updated);
+
+}}
+
+className="input-premium"
+
+/>
+
+
+<input
+
+type="number"
+
+placeholder="Closing"
+
+value={sale.closingMeter}
+
+onChange={(e)=>{
+
+const updated=
+{...form};
+
+updated.PMS
+.priceSegments
+[segmentIndex]
+
+.pumps[pumpIndex]
+
+.sales[saleIndex]
+
+.closingMeter=
+e.target.value;
+
+setForm(updated);
+
+}}
+
+className="input-premium"
+
+/>
+
+
+<input
+
+type="number"
+
+placeholder="Calibration"
+
+value={sale.calibrationLitres}
+
+onChange={(e)=>{
+
+const updated=
+{...form};
+
+updated.PMS
+.priceSegments
+[segmentIndex]
+
+.pumps[pumpIndex]
+
+.sales[saleIndex]
+
+.calibrationLitres=
+e.target.value;
+
+setForm(updated);
+
+}}
+
+className="input-premium"
+
+/>
+
+
+<input
+
+type="text"
+
+placeholder="Reason"
+
+value={sale.calibrationReason}
+
+onChange={(e)=>{
+
+const updated=
+{...form};
+
+updated.PMS
+.priceSegments
+[segmentIndex]
+
+.pumps[pumpIndex]
+
+.sales[saleIndex]
+
+.calibrationReason=
+e.target.value;
+
+setForm(updated);
+
+}}
+
+className="input-premium"
+
+/>
+
+
+
+<div>
+
+Litres:
+
+{Math.max(
+
+(Number(sale.closingMeter)||0)
+
+-
+
+(Number(sale.openingMeter)||0)
+
+-
+
+(Number(sale.calibrationLitres)||0)
+
+,0)}
+
+</div>
+
+</div>
+
+))
+
+}
+
+</div>
+
+))
+
+}
+
+
+{/* SEGMENT TOTAL */}
+
+<div className="flex justify-between bg-blue-50 p-4 rounded">
+
+<div>
+
+Litres:
+
+{segmentTotals[segmentIndex]?.totalLitres||0}
+
+</div>
+
+
+<div>
+
+Amount:
+
+₦
+{segmentTotals[segmentIndex]
+?.totalAmount?.toLocaleString()||0}
+
+</div>
+
+</div>
+
+
+</div>
+
+))
+
+}
+
+
+
+<button
+
+type="button"
+
+onClick={()=>
+setShowPriceModal(true)
+}
+
+className="bg-blue-600 text-white px-6 py-3 rounded-xl">
+
+Change Price
+
+</button>
+
+</div>
 
       {/* AGO */}
       <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-3xl shadow-xl p-6 space-y-4">

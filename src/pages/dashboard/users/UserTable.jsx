@@ -22,20 +22,24 @@ setMessage(null);
 
 try{
 
-const res = await userAPI.deleteUser(id);
+const res =
+await userAPI.deleteUser(id);
 
-if (res.success) {
+console.log(res);
 
-setMessage(res.msg);
+setMessage(res.msg || "User Deleted Successfully");
 
 refresh();
-} else {
-setError(res.msg || "Failed to delete user");
-}
 
-}catch{
+}catch(error){
 
-setError("An error occurred while deleting user");
+setError(
+
+error?.response?.data?.msg ||
+
+"Delete failed"
+
+);
 
 }
 finally{
@@ -95,7 +99,7 @@ setDeleting(null);
                 </span>
               </td>
 
-              <td className="p-4 flex justify-end gap-4">
+              <td>
                 <button
 onClick={()=>setEditUserId(user._id)}
 className="p-2 hover:bg-blue-50 rounded"

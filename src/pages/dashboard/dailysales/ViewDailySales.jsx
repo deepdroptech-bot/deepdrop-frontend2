@@ -25,6 +25,33 @@ export default function ViewDailySales() {
     }
   };
 
+   const handleDownloadPDF = async (id) => {
+    try {
+      setLoadingPDF(true); // Start loading
+
+      const res = await pdfAPI.generateSalesPDF(id);
+      const blob = new Blob([res.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `Daily_Sales_${id}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (err) {
+      console.error("PDF download failed:", err);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setLoadingPDF(false); // Stop loading
+    }
+  };
+
+  const salesId = sales._id
+
   const formatCurrency = (value) =>
     `₦${Number(value || 0).toLocaleString()}`;
 
@@ -58,33 +85,6 @@ export default function ViewDailySales() {
       </div>
     );
 
-    const handleDownloadPDF = async (id) => {
-    try {
-      setLoadingPDF(true); // Start loading
-
-      const res = await pdfAPI.generateSalesPDF(id);
-      const blob = new Blob([res.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `Daily_Sales_${id}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-
-      link.remove();
-      window.URL.revokeObjectURL(url);
-
-    } catch (err) {
-      console.error("PDF download failed:", err);
-      alert("Failed to generate PDF. Please try again.");
-    } finally {
-      setLoadingPDF(false); // Stop loading
-    }
-  };
-
-  const salesId = sales._id
-
   return (
     <div className="p-6 space-y-8">
 
@@ -116,50 +116,216 @@ export default function ViewDailySales() {
       <div className="grid md:grid-cols-2 gap-6">
 
         {/* PMS */}
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-3xl shadow-lg hover:shadow-2xl transition">
-          <h2 className="text-xl font-bold text-blue-800 mb-4">
-            PMS Sales
-          </h2>
+        {/* PMS */}
+<div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-3xl shadow-lg">
 
-          {sales.PMS.pumps.map((pump) => (
-            <div
-              key={pump.pumpNumber}
-              className="mb-4 p-4 bg-white rounded-xl shadow"
-            >
-              <p className="font-semibold text-gray-700">
-                Pump {pump.pumpNumber}
-              </p>
-              <p>Opening: {pump.openingMeter}</p>
-              <p>Closing: {pump.closingMeter}</p>
-              <p>Meter Litres: {pump.meterLitres}</p>
-              <p>Calibration: {pump.calibrationLitres}</p>
-              <p>calibration Reason: {pump.calibrationReason}</p>
-              <p className="font-medium text-blue-700">
-                Litres Sold: {pump.netLitresSold}
-              </p>
-            </div>
-          ))}
+<h2 className="text-xl font-bold text-blue-800 mb-6">
+PMS Sales
+</h2>
 
-          <div className="border-t pt-4 space-y-1">
-            <p>Price/Litre: {formatCurrency(sales.PMS.pricePerLitre)}</p>
-            <p>Total Litres: {sales.PMS.totalLitres}</p>
-            <p>Total Amount: {formatCurrency(sales.PMS.totalAmount)}</p>
+{sales.PMS.priceSegments?.map((segment,index)=>{
 
-            {/* PMS Expense Details */}
-            {sales.PMS.expenses?.map((expense, i) => (
-              <div key={i} className="flex justify-between text-sm text-gray-600">
-                <span>{expense.description}</span>
-                <span>{formatCurrency(expense.amount)}</span>
-              </div>
-            ))}
+let segmentLitres=0;
 
-            <p>Total Expenses: {formatCurrency(sales.PMS.totalExpenses)}</p>
+let segmentAmount=0;
 
-            <p className="font-bold text-lg text-blue-900 mt-2">
-              Net Sales: {formatCurrency(sales.PMS.pNetSales)}
-            </p>
-          </div>
-        </div>
+segment.pumps.forEach(pump=>{
+
+pump.sales.forEach(sale=>{
+
+const litres=
+Math.max(
+(Number(sale.closingMeter)||0)
+-
+(Number(sale.openingMeter)||0)
+-
+(Number(sale.calibrationLitres)||0)
+,0);
+
+segmentLitres+=litres;
+
+segmentAmount+=
+litres*(Number(segment.pricePerLitre)||0);
+
+});
+
+});
+
+return(
+
+<div
+key={index}
+className="mb-6 bg-white p-5 rounded-2xl shadow space-y-4"
+>
+
+<div className="flex justify-between border-b pb-2">
+
+<h3 className="font-bold text-blue-700">
+
+Price Segment {index+1}
+
+</h3>
+
+<div className="font-semibold">
+
+₦{Number(segment.pricePerLitre)
+.toLocaleString()}/L
+
+</div>
+
+</div>
+
+
+{/* PUMPS */}
+
+{segment.pumps.map((pump)=>(
+<div
+key={pump.pumpNumber}
+className="bg-gray-50 p-4 rounded-xl mb-3"
+>
+
+<p className="font-semibold text-gray-700 mb-2">
+
+Pump {pump.pumpNumber}
+
+</p>
+
+
+{pump.sales.map((sale,i)=>{
+
+const litres=
+Math.max(
+
+(Number(sale.closingMeter)||0)
+
+-
+
+(Number(sale.openingMeter)||0)
+
+-
+
+(Number(sale.calibrationLitres)||0)
+
+,0);
+
+const amount=
+litres*(Number(segment.pricePerLitre)||0);
+
+return(
+
+<div
+key={i}
+className="grid md:grid-cols-3 gap-3 text-sm mb-3"
+>
+
+<div>
+
+Opening: {sale.openingMeter}
+
+</div>
+
+<div>
+
+Closing: {sale.closingMeter}
+
+</div>
+
+<div>
+
+Calibration: {sale.calibrationLitres}
+
+</div>
+
+<div>
+
+Reason: {sale.calibrationReason || "-"}
+
+</div>
+
+<div className="font-medium text-blue-700">
+
+Litres: {litres}
+
+</div>
+
+<div className="font-medium text-green-600">
+
+Amount:
+₦{amount.toLocaleString()}
+
+</div>
+
+</div>
+
+);
+
+})}
+
+</div>
+
+))}
+
+
+{/* SEGMENT TOTAL */}
+
+<div className="border-t pt-3 flex justify-between font-semibold">
+
+<div>
+
+Segment Litres:
+{segmentLitres}
+
+</div>
+
+<div>
+
+Segment Amount:
+₦{segmentAmount.toLocaleString()}
+
+</div>
+
+</div>
+
+</div>
+
+);
+
+})}
+
+
+{/* PMS TOTALS */}
+
+<div className="bg-blue-200 p-5 rounded-xl space-y-2">
+
+<p>
+
+Total PMS Amount:
+
+{formatCurrency(sales.PMS.totalAmount)}
+
+</p>
+
+
+<p>
+
+Total PMS Expenses:
+
+{formatCurrency(sales.PMS.totalExpenses)}
+
+</p>
+
+
+<p className="font-bold text-lg">
+
+Net PMS Sales:
+
+{formatCurrency(sales.PMS.pNetSales)}
+
+</p>
+
+</div>
+
+</div>
 
         {/* AGO */}
         <div className="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-3xl shadow-lg hover:shadow-2xl transition">
