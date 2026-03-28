@@ -895,7 +895,7 @@ Change Price
           onChange={(e) =>
             setForm({ ...form, updateReason: e.target.value })
           }
-          className="input-premium min-h-[120px]"
+          className="input-premium min-h-[80px]"
           required
         />
       </div>

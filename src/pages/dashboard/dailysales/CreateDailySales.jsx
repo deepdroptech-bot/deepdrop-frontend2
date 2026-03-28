@@ -451,28 +451,28 @@ const formatMoney = (v)=>
       <p>
         Litres:{" "}
         <span className="font-semibold">
-          {litres.toFixed(2)} L
+          {formatLitres(litres)} L
         </span>
       </p>
 
         <p>
         Calibration:{" "}
         <span className="font-semibold">
-          {calibration.toFixed(2)} L
+          {formatLitres(calibration)} L
         </span>
       </p>
 
       <p>
         Litres Sold:{" "}
         <span className="font-semibold">
-          {litresSold.toFixed(2)} L
+          {formatLitres(litresSold)} L
         </span>
       </p>
 
       <p>
         Total Amount:{" "}
         <span className="font-semibold">
-          ₦{amount.toLocaleString()}
+          {formatMoney(amount)}
         </span>
       </p>
     </div>
@@ -577,9 +577,9 @@ const formatMoney = (v)=>
           <h3 className="text-xl font-semibold">Notes</h3>
           {form.notes.map((note, index) => (
             <div key={index} className="flex gap-4">
-              <input
+              <textarea
                 placeholder="Add a note (e.g. POS and Cash Amounts)"
-                className="input-premium"
+                className="input-premium min-h-[80px] w-full"
                 value={note}
                 onChange={e => {
                   const updated = [...form.notes];
