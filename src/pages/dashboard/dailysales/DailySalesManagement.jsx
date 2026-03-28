@@ -82,7 +82,7 @@ export default function DailySalesManagement() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">
-            Daily Sales Management
+            Daily Sales Management2
           </h2>
           <p className="text-gray-500 text-sm mt-1">
             Manage, submit and approve daily sales records
