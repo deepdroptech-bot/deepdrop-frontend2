@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { dailySalesAPI } from "../../services/dailySalesService";
+import { dailySalesAPI } from "../services/dailySalesService";
 
 export default function CreateDailySales() {
   const navigate = useNavigate();
