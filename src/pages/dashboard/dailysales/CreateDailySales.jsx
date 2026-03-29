@@ -28,9 +28,9 @@ const [newPriceInput, setNewPriceInput] = useState("");
  { pumpNumber: 3, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"" }] },
  { pumpNumber: 4, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"" }] }
 ],
-      expenses: []
+      expenses: [{ description: "", amount: "" }]
     },
-    AGO: { openingMeter: "", closingMeter: "", calibrationLitres: "", pricePerLitre: "", expenses: [] },
+    AGO: { openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "", pricePerLitre: "", expenses: [{ description: "", amount: "" }] },
     productsSold: [{ itemName: "", quantitySold: "", pricePerUnit: "" }],
     otherIncome: [{ itemName: "", amount: "" }],
     notes: [""]
@@ -179,14 +179,16 @@ const formatMoney = (v)=>
           calibrationReason: s.calibrationReason
         }))
       }));
+      cleanedForm.PMS.expenses = cleanedForm.PMS.expenses.map((e) => ({ description: e.description, amount: Number(e.amount) }));
 
       cleanedForm.AGO = {
         ...cleanedForm.AGO,
         openingMeter: Number(cleanedForm.AGO.openingMeter),
         closingMeter: Number(cleanedForm.AGO.closingMeter),
         calibrationLitres: Number(cleanedForm.AGO.calibrationLitres),
+        calibrationReason: cleanedForm.AGO.calibrationReason,
         pricePerLitre: Number(cleanedForm.AGO.pricePerLitre),
-        expenses: cleanedForm.AGO.expenses.map((e) => ({ ...e, amount: Number(e.amount) }))
+        expenses: cleanedForm.AGO.expenses.map((e) => ({ description: e.description, amount: Number(e.amount) }))
       };
 
       cleanedForm.productsSold = cleanedForm.productsSold.map((p) => ({
@@ -256,7 +258,8 @@ const formatMoney = (v)=>
 
         <div className="flex gap-4 items-center mb-3">
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             placeholder="PMS Price Per Litre"
             className="input-premium"
             value={form.PMS.priceSegments[form.PMS.priceSegments.length - 1]?.pricePerLitre || ""}
@@ -294,7 +297,8 @@ const formatMoney = (v)=>
                   <h5 className="font-semibold">Segment {segIndex + 1} (₦{price})</h5>
                   <div className="grid md:grid-cols-2 gap-2">
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="decimal"
                       placeholder="Opening Meter"
                       className="input-premium"
                       value={segment.openingMeter}
@@ -302,7 +306,8 @@ const formatMoney = (v)=>
                       required
                     />
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="decimal"
                       placeholder="Closing Meter"
                       className="input-premium"
                       value={segment.closingMeter}
@@ -310,13 +315,15 @@ const formatMoney = (v)=>
                       required
                     />
                     <input
-                      type="number"
+                      type="text"
+                      inputMode="decimal"
                       placeholder="Calibration Litres"
                       className="input-premium"
                       value={segment.calibrationLitres}
                       onChange={(e) => handlePMSPumpChange(pumpIndex, segIndex, "calibrationLitres", e.target.value)}
                     />
                     <input
+                      type="text"
                       placeholder="Calibration Reason"
                       className="input-premium"
                       value={segment.calibrationReason || ""}
@@ -373,7 +380,8 @@ const formatMoney = (v)=>
                 }
               />
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Expense Amount"
                 className="input-premium"
                 value={expense.amount}
@@ -391,7 +399,8 @@ const formatMoney = (v)=>
           <h3 className="text-xl font-semibold">AGO</h3>
 
            <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             placeholder="AGO Price Per Litre"
             className="input-premium"
             value={form.AGO.pricePerLitre}
@@ -401,7 +410,8 @@ const formatMoney = (v)=>
           />
 
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             placeholder="Opening Meter"
             className="input-premium"
             value={form.AGO.openingMeter}
@@ -411,7 +421,8 @@ const formatMoney = (v)=>
           />
 
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             placeholder="Closing Meter"
             className="input-premium"
             value={form.AGO.closingMeter}
@@ -425,7 +436,8 @@ const formatMoney = (v)=>
           </h3>
 
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             placeholder="Calibration Litres"
             className="input-premium"
             value={form.AGO.calibrationLitres}
@@ -490,7 +502,8 @@ const formatMoney = (v)=>
                 }
               />
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Expense Amount"
                 className="input-premium"
                 value={expense.amount}
@@ -575,20 +588,24 @@ const formatMoney = (v)=>
 
           {/* ================= NOTES ================= */}
           <h3 className="text-xl font-semibold">Notes</h3>
-          {form.notes.map((note, index) => (
-            <div key={index} className="flex gap-4">
-              <textarea
-                placeholder="Add a note (e.g. POS and Cash Amounts)"
-                className="input-premium min-h-[80px] w-full"
-                value={note}
-                onChange={e => {
-                  const updated = [...form.notes];
-                  updated[index] = e.target.value;
-                  setForm({ ...form, notes: updated });
-                }}
-              />
-            </div>
-          ))}
+          {(form.notes || []).map((note, index) => (
+  <div key={index} className="flex gap-4">
+    <textarea
+      placeholder="Add a note (e.g. POS and Cash Amounts)"
+      className="input-premium min-h-[80px] w-full"
+      value={typeof note === "string" ? note : ""}
+      onChange={e => {
+        const updated = [...(form.notes || [])];
+        updated[index] = e.target.value;
+
+        setForm({
+          ...form,
+          notes: updated
+        });
+      }}
+    />
+  </div>
+))}
 
           {message && <p className="text-green-500">{message}</p>}
           {error && <p className="text-red-500">{error}</p>}

@@ -48,9 +48,40 @@
 
 .input-premium {
   @apply w-full px-4 py-3 rounded-2xl 
-         border border-gray-200 bg-white/70 
-         focus:outline-none focus:ring-2 
-         focus:ring-blue-500 transition;
+         border border-gray-200 
+         bg-white/80 backdrop-blur-sm
+         text-gray-800 font-medium
+         shadow-sm
+         transition-all duration-200;
+
+  outline: none;
+}
+
+/* Better hover */
+.input-premium:hover {
+  @apply border-gray-300 shadow-md;
+}
+
+/* Premium focus feel */
+.input-premium:focus {
+  @apply ring-2 ring-blue-500 border-blue-400 shadow-lg;
+}
+
+/* Remove number arrows (Chrome, Safari, Edge) */
+.input-premium::-webkit-outer-spin-button,
+.input-premium::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove number arrows (Firefox) */
+.input-premium[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Optional: better placeholder */
+.input-premium::placeholder {
+  @apply text-gray-400 font-normal;
 }
 
 .btn-primary {
