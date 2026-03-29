@@ -113,9 +113,7 @@ function App() {
     <Route path="daily-sales" element={<DailySalesManagement />} />
     <Route path="daily-sales/summary" element={<DailySalesSummary />} />
     <Route path="daily-sales/:id/edit" element={<EditDailySales />} />
-    <ErrorBoundary>
     <Route path="daily-sales/new" element={<CCreateDailySales />} />
-    </ErrorBoundary>
     <Route path="daily-sales/:id" element={<ViewDailySales />} />
 
     {/* Inventory management routes */}
@@ -144,8 +142,9 @@ function App() {
 
 
 
-
-<Route path="/test" element={<Test />} />
+<ErrorBoundary>
+  <Route path="/test" element={<Test />} />
+</ErrorBoundary>
 
       </Routes>
     </BrowserRouter>
