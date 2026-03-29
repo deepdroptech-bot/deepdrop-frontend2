@@ -53,6 +53,10 @@ import ViewExpense from "./pages/dashboard/expense/ViewExpense";
 // profit and audit management page
 import ProfitAuditManagement from "./pages/dashboard/profit&audit/Profit&AuditManagement";
 
+
+//Debugging page
+import ErrorBoundary from "./pages/ErrorBoundary";
+
 // import { useState, useEffect } from "react";
 // import Loader from "./components/Loader";
 
@@ -109,7 +113,9 @@ function App() {
     <Route path="daily-sales" element={<DailySalesManagement />} />
     <Route path="daily-sales/summary" element={<DailySalesSummary />} />
     <Route path="daily-sales/:id/edit" element={<EditDailySales />} />
+    <ErrorBoundary>
     <Route path="daily-sales/new" element={<CCreateDailySales />} />
+    </ErrorBoundary>
     <Route path="daily-sales/:id" element={<ViewDailySales />} />
 
     {/* Inventory management routes */}
