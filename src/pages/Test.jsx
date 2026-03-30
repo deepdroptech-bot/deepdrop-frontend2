@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { dailySalesAPI } from "../services/dailySalesService";
+import ErrorBoundary from "./ErrorBoundary";
+
 
 export default function CreateDailySales() {
+  
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
@@ -236,6 +239,7 @@ const formatMoney = (v)=>
     );
 
   return (
+    
     <div className="max-w-6xl mx-auto space-y-8">
       <h2 className="text-2xl font-bold">Create Daily Sales</h2>
 
@@ -294,7 +298,7 @@ const formatMoney = (v)=>
 
               return (
                 <div key={segIndex} className="bg-gray-50 p-3 rounded-lg space-y-2">
-                  <h5 className="font-semibold">Segment {segIndex + 1} (₦{price})</h5>
+                  <h5 className="font-semibold">Section {segIndex + 1} (₦{price})</h5>
                   <div className="grid md:grid-cols-2 gap-2">
                     <input
                       type="text"
@@ -533,7 +537,8 @@ const formatMoney = (v)=>
                 }
               />
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Quantity"
                 className="input-premium"
                 value={product.quantitySold}
@@ -542,7 +547,8 @@ const formatMoney = (v)=>
                 }
               />
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Price Per Unit"
                 className="input-premium"
                 value={product.pricePerUnit}
@@ -571,7 +577,8 @@ const formatMoney = (v)=>
                 }
               />
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Amount"
                 className="input-premium"
                 value={income.amount}

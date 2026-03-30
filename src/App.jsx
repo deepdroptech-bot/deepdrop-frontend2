@@ -87,6 +87,7 @@ function App() {
         <Route path="/login/agbor-rd" element={<Login />} />
         <Route path="/login/ekiosa" element={<Login />} /> */}
         <Route path="/login" element={<Login />} />
+  <Route path="/test" element={<Test />} />
 
  {/* Protected dashboard routes */}
         <Route element={<ProtectedRoute />}>
@@ -139,12 +140,6 @@ function App() {
 
   </Route>
 </Route>
-
-
-
-<ErrorBoundary>
-  <Route path="/test" element={<Test />} />
-</ErrorBoundary>
 
       </Routes>
     </BrowserRouter>
