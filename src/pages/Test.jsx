@@ -614,8 +614,8 @@ const formatMoney = (v)=>
   </div>
 ))}
 
-          {message && <p className="text-green-500">{message}</p>}
-          {error && <p className="text-red-500">{error}</p>}
+          {/* {message && <p className="text-green-500">{message}</p>}
+          {error && <p className="text-red-500">{error}</p>} */}
 
               <button  disabled={loadingButton} className="btn-primary w-full"
               type="submit"
