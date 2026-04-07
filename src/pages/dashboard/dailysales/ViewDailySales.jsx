@@ -12,7 +12,7 @@ export default function ViewDailySales() {
 
   useEffect(() => {
     fetchSales();
-  }, []);
+  }, [id]);
 
   const fetchSales = async () => {
     try {
@@ -50,7 +50,7 @@ export default function ViewDailySales() {
     }
   };
 
-  const salesId = sales._id
+  // const salesId = sales._id
 
   const formatCurrency = (value) =>
     `₦${Number(value || 0).toLocaleString()}`;
@@ -453,7 +453,7 @@ Net PMS Sales:
       
         <button
         
-        onClick={() => handleDownloadPDF(salesId)}
+        onClick={() => handleDownloadPDF(id)}
         className="px-6 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
         disabled={loadingPDF}
       >

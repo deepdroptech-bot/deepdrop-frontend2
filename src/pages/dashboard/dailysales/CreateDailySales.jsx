@@ -147,10 +147,11 @@ const formatMoney = (v)=>
   const calculateAGOTotals = () => {
     const opening = Number(form.AGO.openingMeter) || 0;
     const closing = Number(form.AGO.closingMeter) || 0;
+    const litres = Math.max(closing - opening, 0);
     const calibration = Number(form.AGO.calibrationLitres) || 0;
-    const litresSold = Math.max(closing - opening - calibration, 0);
+    const litresSold = Math.max(litres - calibration, 0);
     const amount = litresSold * (Number(form.AGO.pricePerLitre) || 0);
-    return { litresSold, amount };
+    return { litresSold, amount, litres, calibration };
   };
 
   /* ===========================
@@ -176,7 +177,8 @@ const formatMoney = (v)=>
           openingMeter: Number(s.openingMeter),
           closingMeter: Number(s.closingMeter),
           calibrationLitres: Number(s.calibrationLitres),
-          calibrationReason: s.calibrationReason
+          calibrationReason: s.calibrationReason,
+          priceIndex: index 
         }))
       }));
       cleanedForm.PMS.expenses = cleanedForm.PMS.expenses.map((e) => ({ description: e.description, amount: Number(e.amount) }));
