@@ -162,7 +162,7 @@ const formatMoney = (v)=>
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingButton(true);
-    setError({});
+    setError("");
     setMessage("");
 
     try {
@@ -208,14 +208,14 @@ const formatMoney = (v)=>
       const res = await dailySalesAPI.create(cleanedForm);
 
       if (!res.data.success) {
-        setError(res.data.errors || { general: res.data.msg });
+        setError(res.data.error || "Failed to create daily sales record");
         return;
       }
 
       setMessage(res.data.msg);
       setTimeout(() => navigate("/dashboard/daily-sales"), 800);
     } catch (err) {
-      setError({ general: err.response?.data?.msg || "Server error" });
+      setError(err.response?.data?.msg || "Unexpected error occurred" );
     } finally {
       setLoadingButton(false);
     }
@@ -614,8 +614,8 @@ const formatMoney = (v)=>
   </div>
 ))}
 
-          {/* {message && <p className="text-green-500">{message}</p>}
-          {error && <p className="text-red-500">{error}</p>} */}
+          {message && <p className="text-green-500">{message}</p>}
+          {error && <p className="text-red-500">{error}</p>}
 
               <button  disabled={loadingButton} className="btn-primary w-full"
               type="submit"
