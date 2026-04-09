@@ -41,8 +41,8 @@ PMS:{
    calibrationReason:"",
    priceIndex:0
   }]
-
- }))
+ })),
+ expenses:[{description:"",amount:""}]
 },
 
 AGO:{
@@ -127,6 +127,91 @@ navigate("/dashboard/daily-sales");
 
 }
 
+};
+
+const updateExpense = (type, index, field, value) => {
+  const updated = { ...form };
+
+  updated[type] = { ...form[type] };
+
+  updated[type].expenses = [...form[type].expenses];
+
+  updated[type].expenses[index] = {
+    ...updated[type].expenses[index],
+    [field]: value
+  };
+
+  setForm(updated);
+};
+
+const addExpense = (type) => {
+  setForm({
+    ...form,
+    [type]: {
+      ...form[type],
+      expenses: [
+        ...form[type].expenses,
+        { description: "", amount: "" }
+      ]
+    }
+  });
+};
+
+const updateProduct = (index, field, value) => {
+  const updated = [...form.productsSold];
+
+  updated[index] = {
+    ...updated[index],
+    [field]: value
+  };
+
+  setForm({ ...form, productsSold: updated });
+};
+
+const addProduct = () => {
+  setForm({
+    ...form,
+    productsSold: [
+      ...form.productsSold,
+      { itemName: "", quantitySold: "", pricePerUnit: "" }
+    ]
+  });
+};
+
+const updateIncome = (index, field, value) => {
+  const updated = [...form.otherIncome];
+
+  updated[index] = {
+    ...updated[index],
+    [field]: value
+  };
+
+  setForm({ ...form, otherIncome: updated });
+};
+
+const addIncome = () => {
+  setForm({
+    ...form,
+    otherIncome: [
+      ...form.otherIncome,
+      { itemName: "", amount: "" }
+    ]
+  });
+};
+
+const updateNote = (index, value) => {
+  const updated = [...form.notes];
+
+  updated[index] = value;
+
+  setForm({ ...form, notes: updated });
+};
+
+const addNote = () => {
+  setForm({
+    ...form,
+    notes: [...form.notes, ""]
+  });
 };
 
 
@@ -270,6 +355,31 @@ setShowPriceModal(false);
 
 };
 
+const updateSale = (pumpIndex, segmentIndex, field, value) => {
+
+const updated = {...form};
+
+updated.PMS = {...form.PMS};
+
+updated.PMS.pumps = [...form.PMS.pumps];
+
+updated.PMS.pumps[pumpIndex] = {
+  ...updated.PMS.pumps[pumpIndex]
+};
+
+updated.PMS.pumps[pumpIndex].sales = [
+  ...updated.PMS.pumps[pumpIndex].sales
+];
+
+updated.PMS.pumps[pumpIndex].sales[segmentIndex] = {
+  ...updated.PMS.pumps[pumpIndex].sales[segmentIndex],
+  [field]: value
+};
+
+setForm(updated);
+
+};
+
 /* SUBMIT */
 
 const handleSubmit=async(e)=>{
@@ -313,8 +423,12 @@ navigate("/dashboard/daily-sales");
 
 }catch(err){
 
+console.log(err.response?.data);
+console.log(err.response?.status); 
+
 setError(
 err.response?.data?.msg ||
+err.response?.data?.error ||
 "Update failed"
 );
 
@@ -511,29 +625,7 @@ Pump {pump.pumpNumber}
 type="number"
 placeholder="Opening"
 value={sale.openingMeter || ""}
-onChange={(e)=>{
-
-const updated = {...form};
-
-updated.PMS = {...form.PMS};
-
-updated.PMS.pumps = [...form.PMS.pumps];
-
-updated.PMS.pumps[pumpIndex] = {
-  ...updated.PMS.pumps[pumpIndex]
-};
-
-updated.PMS.pumps[pumpIndex].sales = [
-  ...updated.PMS.pumps[pumpIndex].sales
-];
-
-updated.PMS.pumps[pumpIndex].sales[segmentIndex] = {
-  ...updated.PMS.pumps[pumpIndex].sales[segmentIndex],
-  openingMeter:e.target.value
-};
-
-setForm(updated);
-}}
+onChange={(e)=>updateSale(pumpIndex,segmentIndex,"openingMeter",e.target.value)}
 className="input-premium"
 />
 
@@ -542,30 +634,7 @@ className="input-premium"
 type="number"
 placeholder="Closing"
 value={sale.closingMeter || ""}
-onChange={(e)=>{
-
-const updated = {...form};
-
-updated.PMS = {...form.PMS};
-
-updated.PMS.pumps = [...form.PMS.pumps];
-
-updated.PMS.pumps[pumpIndex] = {
-  ...updated.PMS.pumps[pumpIndex]
-};
-
-updated.PMS.pumps[pumpIndex].sales = [
-  ...updated.PMS.pumps[pumpIndex].sales
-];
-
-updated.PMS.pumps[pumpIndex].sales[segmentIndex] = {
-  ...updated.PMS.pumps[pumpIndex].sales[segmentIndex],
-  openingMeter:e.target.value
-};
-
-setForm(updated);
-
-}}
+onChange={(e)=>updateSale(pumpIndex,segmentIndex,"closingMeter",e.target.value)}
 className="input-premium"
 />
 
@@ -574,65 +643,17 @@ className="input-premium"
 type="number"
 placeholder="Calibration"
 value={sale.calibrationLitres || ""}
-onChange={(e)=>{
-
-const updated = {...form};
-
-updated.PMS = {...form.PMS};
-
-updated.PMS.pumps = [...form.PMS.pumps];
-
-updated.PMS.pumps[pumpIndex] = {
-  ...updated.PMS.pumps[pumpIndex]
-};
-
-updated.PMS.pumps[pumpIndex].sales = [
-  ...updated.PMS.pumps[pumpIndex].sales
-];
-
-updated.PMS.pumps[pumpIndex].sales[segmentIndex] = {
-  ...updated.PMS.pumps[pumpIndex].sales[segmentIndex],
-  openingMeter:e.target.value
-};
-
-setForm(updated);
-
-}}
+onChange={(e)=>updateSale(pumpIndex,segmentIndex,"calibrationLitres",e.target.value)}
 className="input-premium"
 />
-
 
 <input
 type="text"
 placeholder="Reason"
 value={sale.calibrationReason || ""}
-onChange={(e)=>{
-
-const updated = {...form};
-
-updated.PMS = {...form.PMS};
-
-updated.PMS.pumps = [...form.PMS.pumps];
-
-updated.PMS.pumps[pumpIndex] = {
-  ...updated.PMS.pumps[pumpIndex]
-};
-
-updated.PMS.pumps[pumpIndex].sales = [
-  ...updated.PMS.pumps[pumpIndex].sales
-];
-
-updated.PMS.pumps[pumpIndex].sales[segmentIndex] = {
-  ...updated.PMS.pumps[pumpIndex].sales[segmentIndex],
-  openingMeter:e.target.value
-};
-
-setForm(updated);
-
-}}
+onChange={(e)=>updateSale(pumpIndex,segmentIndex,"calibrationReason",e.target.value)}
 className="input-premium"
 />
-
 
 <div>
 
@@ -679,6 +700,32 @@ Amount:
 
 ))}
 
+{/* EXPENSES */}
+{form.PMS.expenses.map((exp, index) => (
+
+<div key={index} className="grid md:grid-cols-2 gap-4">
+
+<input
+type="text"
+value={exp.description}
+onChange={(e)=>updateExpense("PMS", index, "description", e.target.value)}
+className="input-premium"
+/>
+
+<input
+type="number"
+value={exp.amount}
+onChange={(e)=>updateExpense("PMS", index, "amount", e.target.value)}
+className="input-premium"
+/>
+
+</div>
+
+))}
+
+<button type="button" onClick={()=>addExpense("PMS")}>
+Add PMS Expense
+</button>
 
 
 <button
@@ -742,7 +789,58 @@ Change Price
             }
             className="input-premium"
           />
+
+          <input
+            type="number"
+            placeholder="Calibration Litres"
+            value={form.AGO.calibrationLitres}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                AGO: { ...form.AGO, calibrationLitres: e.target.value }
+              })
+            }
+            className="input-premium"
+          />
+
+          <input
+            type="text"
+            placeholder="Calibration Reason"  
+            value={form.AGO.calibrationReason}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                AGO: { ...form.AGO, calibrationReason: e.target.value }
+              })
+            }
+            className="input-premium"
+          />
         </div>
+        {form.AGO.expenses.map((exp, index) => (
+
+<div key={index} className="grid md:grid-cols-2 gap-4">
+
+<input
+type="text"
+value={exp.description}
+onChange={(e)=>updateExpense("AGO", index, "description", e.target.value)}
+className="input-premium"
+/>
+
+<input
+type="number"
+value={exp.amount}
+onChange={(e)=>updateExpense("AGO", index, "amount", e.target.value)}
+className="input-premium"
+/>
+
+</div>
+
+))}
+
+<button type="button" onClick={()=>addExpense("AGO")}>
+Add AGO Expense
+</button>
       </div>
 
       {/* PRODUCTS */}
@@ -752,44 +850,34 @@ Change Price
         </h3>
 
         {form.productsSold.map((item, index) => (
-          <div key={index} className="grid md:grid-cols-3 gap-4">
-            <input
-              type="text"
-              placeholder="Item Name"
-              value={item.itemName}
-              onChange={(e) => {
-                const updated = [...form.productsSold];
-                updated[index].itemName = e.target.value;
-                setForm({ ...form, productsSold: updated });
-              }}
-              className="input-premium"
-            />
 
-            <input
-              type="number"
-              placeholder="Quantity"
-              value={item.quantitySold}
-              onChange={(e) => {
-                const updated = [...form.productsSold];
-                updated[index].quantitySold = e.target.value;
-                setForm({ ...form, productsSold: updated });
-              }}
-              className="input-premium"
-            />
+<div key={index} className="grid md:grid-cols-3 gap-4">
 
-            <input
-              type="number"
-              placeholder="Price Per Unit"
-              value={item.pricePerUnit}
-              onChange={(e) => {
-                const updated = [...form.productsSold];
-                updated[index].pricePerUnit = e.target.value;
-                setForm({ ...form, productsSold: updated });
-              }}
-              className="input-premium"
-            />
-          </div>
-        ))}
+<input
+type="text"
+value={item.itemName}
+onChange={(e)=>updateProduct(index,"itemName",e.target.value)}
+/>
+
+<input
+type="number"
+value={item.quantitySold}
+onChange={(e)=>updateProduct(index,"quantitySold",e.target.value)}
+/>
+
+<input
+type="number"
+value={item.pricePerUnit}
+onChange={(e)=>updateProduct(index,"pricePerUnit",e.target.value)}
+/>
+
+</div>
+
+))}
+
+<button type="button" onClick={addProduct}>
+Add Product
+</button>
       </div>
 
       {/* OTHER INCOME */}
@@ -799,55 +887,43 @@ Change Price
         </h3>
 
         {form.otherIncome.map((item, index) => (
-          <div key={index} className="grid md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Income Source"
-              value={item.itemName}
-              onChange={(e) => {
-                const updated = [...form.otherIncome];
-                updated[index].itemName = e.target.value;
-                setForm({ ...form, otherIncome: updated });
-              }}
-              className="input-premium"
-            />
 
-            <input
-              type="number"
-              placeholder="Amount"
-              value={item.amount}
-              onChange={(e) => {
-                const updated = [...form.otherIncome];
-                updated[index].amount = e.target.value;
-                setForm({ ...form, otherIncome: updated });
-              }}
-              className="input-premium"
-            />
-          </div>
-        ))}
+<div key={index} className="grid md:grid-cols-2 gap-4">
+
+<input
+type="text"
+value={item.itemName}
+onChange={(e)=>updateIncome(index,"itemName",e.target.value)}
+/>
+
+<input
+type="number"
+value={item.amount}
+onChange={(e)=>updateIncome(index,"amount",e.target.value)}
+/>
+
+</div>
+
+))}
+
+<button type="button" onClick={addIncome}>
+Add Income
+</button>
       </div>
 
-      {/* NOTES */}
-      <div className="bg-white rounded-3xl shadow-xl p-6 space-y-4">
-        <h3 className="text-xl font-bold text-gray-700">
-          Notes
-        </h3>
+{form.notes.map((note, index) => (
 
-        {form.notes.map((note, index) => (
-          <input
-            key={index}
-            type="text"
-            placeholder="Add note..."
-            value={note}
-            onChange={(e) => {
-              const updated = [...form.notes];
-              updated[index] = e.target.value;
-              setForm({ ...form, notes: updated });
-            }}
-            className="input-premium"
-          />
-        ))}
-      </div>
+<input
+key={index}
+value={note}
+onChange={(e)=>updateNote(index,e.target.value)}
+/>
+
+))}
+
+<button type="button" onClick={addNote}>
+Add Note
+</button>
 
       {/* UPDATE REASON */}
       <div className="bg-white rounded-3xl shadow-xl p-6 space-y-3">

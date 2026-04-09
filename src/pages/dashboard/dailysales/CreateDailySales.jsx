@@ -160,7 +160,7 @@ const formatMoney = (v)=>
   const handleSubmit = async (e) => {
   e.preventDefault();
   setLoadingButton(true);
-  setError({});
+  setError("");
   setMessage("");
 
   try {
