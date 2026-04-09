@@ -50,7 +50,7 @@ export default function EditStaff() {
     e.preventDefault();
     setSaving(true);
 
-    setError({});
+    setError("");
     setMessage("");
 
     const data = new FormData();
@@ -65,8 +65,8 @@ export default function EditStaff() {
     const res = await staffAPI.update(id, data);
 
     if (!res.data.success) {
-      if (res.data.errors) {
-        setError(res.data.errors);
+      if (res.data.error) {
+        setError(res.data.error);
       } else {
         setError(res.data.msg || "Failed to update staff record.");
       }

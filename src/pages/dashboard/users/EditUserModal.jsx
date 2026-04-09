@@ -29,7 +29,7 @@ export default function EditUserModal({ userId, onClose, refresh }) {
     return () => clearTimeout(timer);
   }, [userId]);
 
-  const submit = async () => {
+  const submit = async (e) => {
     e.preventDefault();
     setLoadingButton(true);
     setError("");

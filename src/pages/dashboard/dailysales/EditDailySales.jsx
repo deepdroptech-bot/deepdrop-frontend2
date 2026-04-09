@@ -158,10 +158,10 @@ const calibration =
 Number(sale.calibrationLitres)||0;
 
 const litres =
-closing - opening;
+Math.max(closing - opening,0);
 
 const net =
-litres - calibration;
+Math.max(litres - calibration,0);
 
 totalLitres+=net;
 
@@ -188,7 +188,7 @@ const totals={};
 form.PMS?.priceSegments?.forEach((segment,index)=>{
 
 totals[index]=
-calculateSegmentTotals(segment);
+calculateSegmentTotals(index);
 
 });
 
@@ -212,7 +212,7 @@ const newSegments = [
 ...form.PMS.priceSegments,
 
 {
- pricePerLitre:newPrice,
+ pricePerLitre:Number(newPrice),
  startTime:new Date()
 }
 
@@ -329,9 +329,22 @@ setLoadingButton(false);
 
 
 
-if(loading)
-
-return <div>Loading...</div>;
+ if (loading)
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-3xl px-12 py-10 shadow-2xl text-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-tr from-red-500 to-blue-600 flex items-center justify-center animate-pulse">
+            <span className="text-white text-2xl font-black">⏳</span>
+          </div>
+          <h2 className="text-2xl font-extrabold text-gray-800 mb-2">
+            Loading Daily Sales Record
+          </h2>
+          <p className="text-gray-500 text-base">
+            Please wait while we fetch the daily sales record
+          </p>
+        </div>
+      </div>
+    );
 
 
 
@@ -458,12 +471,8 @@ PMS Sales
 {form.PMS?.priceSegments?.map((segment, segmentIndex) => (
 
 <div
-key={segmentIndex}
-className={`bg-white p-6 rounded-xl space-y-6
-${segmentIndex !== form.PMS.priceSegments.length-1
-? "opacity-60 pointer-events-none"
-: ""}
-`}
+  key={segmentIndex}
+  className="bg-white p-6 rounded-xl space-y-6"
 >
 
 <div className="flex justify-between">
@@ -506,12 +515,24 @@ onChange={(e)=>{
 
 const updated = {...form};
 
-updated.PMS.pumps[pumpIndex]
-.sales[segmentIndex]
-.openingMeter = e.target.value;
+updated.PMS = {...form.PMS};
+
+updated.PMS.pumps = [...form.PMS.pumps];
+
+updated.PMS.pumps[pumpIndex] = {
+  ...updated.PMS.pumps[pumpIndex]
+};
+
+updated.PMS.pumps[pumpIndex].sales = [
+  ...updated.PMS.pumps[pumpIndex].sales
+];
+
+updated.PMS.pumps[pumpIndex].sales[segmentIndex] = {
+  ...updated.PMS.pumps[pumpIndex].sales[segmentIndex],
+  openingMeter:e.target.value
+};
 
 setForm(updated);
-
 }}
 className="input-premium"
 />
@@ -525,9 +546,22 @@ onChange={(e)=>{
 
 const updated = {...form};
 
-updated.PMS.pumps[pumpIndex]
-.sales[segmentIndex]
-.closingMeter = e.target.value;
+updated.PMS = {...form.PMS};
+
+updated.PMS.pumps = [...form.PMS.pumps];
+
+updated.PMS.pumps[pumpIndex] = {
+  ...updated.PMS.pumps[pumpIndex]
+};
+
+updated.PMS.pumps[pumpIndex].sales = [
+  ...updated.PMS.pumps[pumpIndex].sales
+];
+
+updated.PMS.pumps[pumpIndex].sales[segmentIndex] = {
+  ...updated.PMS.pumps[pumpIndex].sales[segmentIndex],
+  openingMeter:e.target.value
+};
 
 setForm(updated);
 
@@ -544,9 +578,22 @@ onChange={(e)=>{
 
 const updated = {...form};
 
-updated.PMS.pumps[pumpIndex]
-.sales[segmentIndex]
-.calibrationLitres = e.target.value;
+updated.PMS = {...form.PMS};
+
+updated.PMS.pumps = [...form.PMS.pumps];
+
+updated.PMS.pumps[pumpIndex] = {
+  ...updated.PMS.pumps[pumpIndex]
+};
+
+updated.PMS.pumps[pumpIndex].sales = [
+  ...updated.PMS.pumps[pumpIndex].sales
+];
+
+updated.PMS.pumps[pumpIndex].sales[segmentIndex] = {
+  ...updated.PMS.pumps[pumpIndex].sales[segmentIndex],
+  openingMeter:e.target.value
+};
 
 setForm(updated);
 
@@ -563,9 +610,22 @@ onChange={(e)=>{
 
 const updated = {...form};
 
-updated.PMS.pumps[pumpIndex]
-.sales[segmentIndex]
-.calibrationReason = e.target.value;
+updated.PMS = {...form.PMS};
+
+updated.PMS.pumps = [...form.PMS.pumps];
+
+updated.PMS.pumps[pumpIndex] = {
+  ...updated.PMS.pumps[pumpIndex]
+};
+
+updated.PMS.pumps[pumpIndex].sales = [
+  ...updated.PMS.pumps[pumpIndex].sales
+];
+
+updated.PMS.pumps[pumpIndex].sales[segmentIndex] = {
+  ...updated.PMS.pumps[pumpIndex].sales[segmentIndex],
+  openingMeter:e.target.value
+};
 
 setForm(updated);
 

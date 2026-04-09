@@ -11,6 +11,8 @@ export default function StaffProfile() {
   const [staff, setStaff] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadingPDF, setLoadingPDF] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [payModal, setPayModal] = useState(false);
 
   const [bonus, setBonus] = useState({ amount: "", reason: "" });
   const [deduction, setDeduction] = useState({ amount: "", reason: "" });
@@ -98,6 +100,7 @@ export default function StaffProfile() {
     await staffAPI.paySalary(id);
     const updated = await staffAPI.getById(id);
     setStaff(updated.data);
+    setPayModal(false);
   };
 
   const toggleStatus = async () => {
@@ -110,8 +113,8 @@ export default function StaffProfile() {
   };
 
   const deleteStaff = async () => {
-    if (!confirm("Are you sure you want to delete this staff?")) return;
     await staffAPI.delete(id);
+    setDeleteModal(false);
     navigate("/dashboard/staff");
   };
 
@@ -285,7 +288,7 @@ export default function StaffProfile() {
     <Permissions permission="AD_AC">
       <button
         className="px-6 py-3 rounded-2xl font-semibold bg-blue-500 text-white shadow hover:shadow-lg transition"
-        onClick={handlePaySalary}
+        onClick={() => setPayModal(true)}
       >
         Pay Salary
       </button>
@@ -312,7 +315,7 @@ export default function StaffProfile() {
       <Permissions permission="AD_AC">
       <button
         className="px-6 py-3 rounded-2xl font-semibold text-white bg-red-600 hover:bg-red-700 shadow transition"
-        onClick={deleteStaff}
+        onClick={() => setDeleteModal(true)}
       >
         Delete Staff
       </button>
@@ -352,5 +355,61 @@ View History
 </td>
     </div>
 
+  {deleteModal && (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-3xl p-8 shadow-lg text-center">
+        <h3 className="text-xl font-bold text-gray-800 mb-4">
+          Confirm Deletion
+        </h3>
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to delete this staff member? This action cannot be undone.
+        </p>
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={() => setDeleteModal(false)
+
+            }
+            className="px-6 py-3 rounded-2xl font-semibold text-white bg-gray-500 hover:bg-gray-600 shadow transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={deleteStaff}
+            className="px-6 py-3 rounded-2xl font-semibold text-white bg-red-600 hover:bg-red-700 shadow transition"
+          >
+            Yes, Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+
+  {payModal && (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-3xl p-8 shadow-lg text-center">
+        <h3 className="text-xl font-bold text-gray-800 mb-4">
+          Confirm Salary Payment
+        </h3>
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to pay the salary for this staff member?
+        </p>
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={() => setPayModal(false)}
+            className="px-6 py-3 rounded-2xl font-semibold text-white bg-gray-500 hover:bg-gray-600 shadow transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handlePaySalary}
+            className="px-6 py-3 rounded-2xl font-semibold text-white bg-green-600 hover:bg-green-700 shadow transition"
+          >
+            Yes, Pay Salary
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
   </div>
-);}
+);
+}

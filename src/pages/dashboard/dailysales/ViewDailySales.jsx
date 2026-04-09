@@ -129,11 +129,13 @@ let segmentLitres=0;
 
 let segmentAmount=0;
 
-segment.pumps.forEach(pump=>{
+sales.PMS.pumps.forEach(pump=>{
 
 pump.sales.forEach(sale=>{
 
-const litres=
+if(sale.priceIndex !== index) return;
+
+const litres =
 Math.max(
 (Number(sale.closingMeter)||0)
 -
@@ -142,9 +144,9 @@ Math.max(
 (Number(sale.calibrationLitres)||0)
 ,0);
 
-segmentLitres+=litres;
+segmentLitres += litres;
 
-segmentAmount+=
+segmentAmount +=
 litres*(Number(segment.pricePerLitre)||0);
 
 });
@@ -178,7 +180,7 @@ Price Segment {index+1}
 
 {/* PUMPS */}
 
-{segment.pumps.map((pump)=>(
+{sales.PMS.pumps.map((pump)=>(
 <div
 key={pump.pumpNumber}
 className="bg-gray-50 p-4 rounded-xl mb-3"
@@ -191,7 +193,9 @@ Pump {pump.pumpNumber}
 </p>
 
 
-{pump.sales.map((sale,i)=>{
+{pump.sales
+.filter(sale=>sale.priceIndex===index)
+.map((sale,i)=>{
 
 const litres=
 Math.max(

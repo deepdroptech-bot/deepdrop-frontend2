@@ -158,67 +158,53 @@ const formatMoney = (v)=>
      SUBMIT FORM
   ============================ */
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoadingButton(true);
-    setError({});
-    setMessage("");
+  e.preventDefault();
+  setLoadingButton(true);
+  setError({});
+  setMessage("");
 
-    try {
-      const cleanedForm = { ...form };
+  try {
+    const cleanedForm = { ...form };
 
-      cleanedForm.PMS.priceSegments = cleanedForm.PMS.priceSegments.map((p) => ({
+    cleanedForm.PMS.priceSegments =
+      cleanedForm.PMS.priceSegments.map((p) => ({
         ...p,
-        pricePerLitre: Number(p.pricePerLitre)
+        pricePerLitre: Number(p.pricePerLitre) || 0
       }));
 
-      cleanedForm.PMS.pumps = cleanedForm.PMS.pumps.map((pump) => ({
+    cleanedForm.PMS.pumps =
+      cleanedForm.PMS.pumps.map((pump) => ({
         pumpNumber: pump.pumpNumber,
         sales: pump.sales.map((s) => ({
-          openingMeter: Number(s.openingMeter),
-          closingMeter: Number(s.closingMeter),
-          calibrationLitres: Number(s.calibrationLitres),
+          openingMeter: Number(s.openingMeter) || 0,
+          closingMeter: Number(s.closingMeter) || 0,
+          calibrationLitres: Number(s.calibrationLitres) || 0,
           calibrationReason: s.calibrationReason,
-          priceIndex: index 
+          priceIndex: Number(s.priceIndex) || 0   // FIX
         }))
       }));
-      cleanedForm.PMS.expenses = cleanedForm.PMS.expenses.map((e) => ({ description: e.description, amount: Number(e.amount) }));
 
-      cleanedForm.AGO = {
-        ...cleanedForm.AGO,
-        openingMeter: Number(cleanedForm.AGO.openingMeter),
-        closingMeter: Number(cleanedForm.AGO.closingMeter),
-        calibrationLitres: Number(cleanedForm.AGO.calibrationLitres),
-        calibrationReason: cleanedForm.AGO.calibrationReason,
-        pricePerLitre: Number(cleanedForm.AGO.pricePerLitre),
-        expenses: cleanedForm.AGO.expenses.map((e) => ({ description: e.description, amount: Number(e.amount) }))
-      };
+    const res = await dailySalesAPI.create(cleanedForm);
 
-      cleanedForm.productsSold = cleanedForm.productsSold.map((p) => ({
-        ...p,
-        quantitySold: Number(p.quantitySold),
-        pricePerUnit: Number(p.pricePerUnit)
-      }));
+    setMessage(res.data.msg);
 
-      cleanedForm.otherIncome = cleanedForm.otherIncome.map((i) => ({
-        ...i,
-        amount: Number(i.amount)
-      }));
+    setTimeout(() =>
+      navigate("/dashboard/daily-sales"),800);
 
-      const res = await dailySalesAPI.create(cleanedForm);
+  } catch (err) {
 
-      if (!res.data.success) {
-        setError(res.data.error || "Failed to create daily sales record");
-        return;
-      }
+    console.log(err.response);   // DEBUG
 
-      setMessage(res.data.msg);
-      setTimeout(() => navigate("/dashboard/daily-sales"), 800);
-    } catch (err) {
-      setError(err.response?.data?.msg || "Unexpected error occurred" );
-    } finally {
-      setLoadingButton(false);
-    }
-  };
+    setError(
+      err.response?.data?.msg ||
+      err.response?.data?.error ||
+      "Unexpected error occurred"
+    );
+
+  } finally {
+    setLoadingButton(false);
+  }
+};
 
 
   if (loading)
