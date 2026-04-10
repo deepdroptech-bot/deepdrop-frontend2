@@ -102,10 +102,16 @@ salesDate:data.salesDate?.substring(0,10),
 PMS:{
  priceSegments:data.PMS?.priceSegments || [],
 
- pumps:data.PMS?.pumps || []
+ pumps:data.PMS?.pumps || [],
+
+expenses: data.PMS?.expenses || [{ description:"", amount:"" }]
 },
 
-AGO:data.AGO || form.AGO,
+AGO: {
+    ...form.AGO,
+    ...data.AGO,
+    expenses: data.AGO?.expenses || [{ description:"", amount:"" }] // ✅ FIX
+  },
 
 productsSold:data.productsSold || [],
 
@@ -304,7 +310,7 @@ const newSegments = [
 ];
 
 const newPumps =
-form.PMS.pumps.map(pump=>{
+form.PMS?.pumps.map(pump=>{
 
 const lastSale =
 pump.sales[pump.sales.length-1];
@@ -701,7 +707,7 @@ Amount:
 ))}
 
 {/* EXPENSES */}
-{form.PMS.expenses.map((exp, index) => (
+{(form.PMS.expenses || []).map((exp, index) => (
 
 <div key={index} className="grid md:grid-cols-2 gap-4">
 
@@ -816,7 +822,7 @@ Change Price
             className="input-premium"
           />
         </div>
-        {form.AGO.expenses.map((exp, index) => (
+        {(form.AGO.expenses || []).map((exp, index) => (
 
 <div key={index} className="grid md:grid-cols-2 gap-4">
 

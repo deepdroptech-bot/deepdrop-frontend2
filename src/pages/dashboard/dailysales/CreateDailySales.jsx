@@ -23,10 +23,10 @@ const [newPriceInput, setNewPriceInput] = useState("");
         { pricePerLitre: "", startTime: new Date().toISOString() }
       ],
       pumps: [
- { pumpNumber: 1, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"" }] },
- { pumpNumber: 2, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"" }] },
- { pumpNumber: 3, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"" }] },
- { pumpNumber: 4, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"" }] }
+ { pumpNumber: 1, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"", priceIndex: 0 }] },
+ { pumpNumber: 2, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"", priceIndex: 0 }] },
+ { pumpNumber: 3, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"", priceIndex: 0 }] },
+ { pumpNumber: 4, sales: [{ openingMeter:"", closingMeter:"", calibrationLitres:"", calibrationReason:"", priceIndex: 0 }] }
 ],
       expenses: [{ description: "", amount: "" }]
     },
@@ -657,7 +657,8 @@ const formatMoney = (v)=>
                     openingMeter: lastClosing,
                     closingMeter: "",
                     calibrationLitres: 0,
-                    calibrationReason: ""
+                    calibrationReason: "",
+                    priceIndex: lastSales.length
                   }
                 ]
               };
