@@ -93,20 +93,6 @@ const formatMoney = (v)=>
 "₦" + safeNumber(v).toLocaleString();
 
   /* ===========================
-     ADD NEW PRICE SEGMENT
-  ============================ */
-  const addPriceSegment = () => {
-    const lastPrice = Number(form.PMS.priceSegments[form.PMS.priceSegments.length - 1]?.pricePerLitre) || 0;
-    setForm({
-      ...form,
-      PMS: {
-        ...form.PMS,
-        priceSegments: [...form.PMS.priceSegments, { pricePerLitre: lastPrice, startTime: new Date().toISOString() }]
-      }
-    });
-  };
-
-  /* ===========================
      CALCULATE LIVE TOTALS
   ============================ */
   const calculatePumpSegmentTotals = (pump, segment, price) => {
@@ -119,20 +105,6 @@ const formatMoney = (v)=>
     return { litres, calibration, litresSold, amount };
   };
 
-  const calculatePumpTotals = (pump, pricePerLitre) => {
-  const lastSale = pump.sales[pump.sales.length - 1];
-  const opening = Number(lastSale.openingMeter) || 0;
-  const closing = Number(lastSale.closingMeter) || 0;
-  const calibration = Number(lastSale.calibrationLitres) || 0;
-  const price = Number(pricePerLitre) || 0;
-
-  const litres = Math.max(closing - opening, 0);
-  const litresSold = Math.max(litres - calibration, 0);
-  const amount = litresSold * price;
-
-  return { litres, calibration, litresSold, amount };
-};
-
   const calculatePMSTotals = () => {
     return form.PMS.pumps.reduce((acc, pump) => {
       pump.sales.forEach((segment, idx) => {
@@ -144,6 +116,14 @@ const formatMoney = (v)=>
     }, 0);
   };
 
+  const calculatePmsExpensesTotal = () => {
+    return (form.PMS.expenses || []).reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+  };
+
+  const calculatePmsNetSales = () => {
+    return calculatePMSTotals() - calculatePmsExpensesTotal();
+  }
+
   const calculateAGOTotals = () => {
     const opening = Number(form.AGO.openingMeter) || 0;
     const closing = Number(form.AGO.closingMeter) || 0;
@@ -153,6 +133,27 @@ const formatMoney = (v)=>
     const amount = litresSold * (Number(form.AGO.pricePerLitre) || 0);
     return { litresSold, amount, litres, calibration };
   };
+
+  const calculateAGOExpensesTotal = () => {
+    return (form.AGO.expenses || []).reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+  };
+
+  const calculateAGONetSales = () => {
+    const { amount } = calculateAGOTotals();
+    return amount - calculateAGOExpensesTotal();
+  };
+
+  const calculateProductsTotal = () => {
+    return form.productsSold.reduce((sum, p) => sum + ((Number(p.quantitySold) || 0) * (Number(p.pricePerUnit) || 0)), 0);
+  };
+
+  const calculateOtherIncomeTotal = () => {
+    return form.otherIncome.reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
+  };
+
+  const calculateGrandTotal = () => {
+    return calculatePmsNetSales() + calculateAGONetSales() + calculateProductsTotal() + calculateOtherIncomeTotal();
+  }
 
   /* ===========================
      SUBMIT FORM
@@ -180,9 +181,55 @@ const formatMoney = (v)=>
           closingMeter: Number(s.closingMeter) || 0,
           calibrationLitres: Number(s.calibrationLitres) || 0,
           calibrationReason: s.calibrationReason,
-          priceIndex: Number(s.priceIndex) || 0   // FIX
+          priceIndex: Number(s.priceIndex) || 0 
         }))
       }));
+
+    cleanedForm.PMS.expenses =
+  (form.PMS.expenses || []).map(e => ({
+    description: e.description,
+    amount: Number(e.amount) || 0
+  }));
+
+      cleanedForm.AGO = {
+  ...cleanedForm.AGO,
+  openingMeter: Number(form.AGO.openingMeter) || 0,
+  closingMeter: Number(form.AGO.closingMeter) || 0,
+  calibrationLitres: Number(form.AGO.calibrationLitres) || 0,
+  pricePerLitre: Number(form.AGO.pricePerLitre) || 0,
+  expenses: (form.AGO.expenses || []).map(e => ({
+    description: e.description,
+    amount: Number(e.amount) || 0
+  }))
+};
+
+// ✅ products
+cleanedForm.productsSold =
+  form.productsSold.map(p => ({
+    itemName: p.itemName,
+    quantitySold: Number(p.quantitySold) || 0,
+    pricePerUnit: Number(p.pricePerUnit) || 0
+  }));
+
+// ✅ income
+cleanedForm.otherIncome =
+  form.otherIncome.map(i => ({
+    itemName: i.itemName,
+    amount: Number(i.amount) || 0
+  }));
+
+  for (const pump of form.PMS.pumps) {
+  for (const sale of pump.sales) {
+    const opening = Number(sale.openingMeter) || 0;
+    const closing = Number(sale.closingMeter) || 0;
+
+    if (closing !== 0 && closing < opening) {
+      setError(`Pump ${pump.pumpNumber}: Closing cannot be less than opening`);
+      setLoadingButton(false);
+      return;
+    }
+  }
+}
 
     const res = await dailySalesAPI.create(cleanedForm);
 
@@ -193,7 +240,7 @@ const formatMoney = (v)=>
 
   } catch (err) {
 
-    console.log(err.response);   // DEBUG
+    console.log(err.response);
 
     setError(
       err.response?.data?.msg ||
@@ -290,7 +337,7 @@ const formatMoney = (v)=>
                       inputMode="decimal"
                       placeholder="Opening Meter"
                       className="input-premium"
-                      value={segment.openingMeter}
+                      value={segment.openingMeter ?? ""}
                       onChange={(e) => handlePMSPumpChange(pumpIndex, segIndex, "openingMeter", e.target.value)}
                       required
                     />
@@ -299,7 +346,7 @@ const formatMoney = (v)=>
                       inputMode="decimal"
                       placeholder="Closing Meter"
                       className="input-premium"
-                      value={segment.closingMeter}
+                      value={segment.closingMeter ?? ""}
                       onChange={(e) => handlePMSPumpChange(pumpIndex, segIndex, "closingMeter", e.target.value)}
                       required
                     />
@@ -308,7 +355,7 @@ const formatMoney = (v)=>
                       inputMode="decimal"
                       placeholder="Calibration Litres"
                       className="input-premium"
-                      value={segment.calibrationLitres}
+                      value={segment.calibrationLitres ?? ""}
                       onChange={(e) => handlePMSPumpChange(pumpIndex, segIndex, "calibrationLitres", e.target.value)}
                     />
                     <input
@@ -354,7 +401,7 @@ const formatMoney = (v)=>
           </div>
         ))}
 
-        <div className="text-right text-lg font-bold text-blue-600">
+        <div className="text-right text-lg font-bold text-blue-500">
           PMS Total: ₦{calculatePMSTotals().toLocaleString()}
         </div>
 
@@ -373,16 +420,24 @@ const formatMoney = (v)=>
                 inputMode="decimal"
                 placeholder="Expense Amount"
                 className="input-premium"
-                value={expense.amount}
+                value={expense.amount ?? ""}
                 onChange={e =>
                   handleNestedExpenseChange("PMS", index, "amount", e.target.value)
                 }
               />
             </div>
           ))}
+
+          <div className="text-left text-lg font-semibold text-red-400">
+            PMS Expenses Total: ₦{calculatePmsExpensesTotal().toLocaleString()}
+          </div>
           <button type="button" onClick={() => addExpense("PMS")} className="btn-secondary">
             + Add PMS Expense
           </button>
+
+          <div className="text-right text-lg font-bold text-green-600">
+            PMS Net Sales: ₦{calculatePmsNetSales().toLocaleString()}
+          </div>
 
           {/* ================= AGO ================= */}
           <h3 className="text-xl font-semibold">AGO</h3>
@@ -392,7 +447,7 @@ const formatMoney = (v)=>
             inputMode="decimal"
             placeholder="AGO Price Per Litre"
             className="input-premium"
-            value={form.AGO.pricePerLitre}
+            value={form.AGO.pricePerLitre ?? ""}
             onChange={e =>
               handleSectionChange("AGO", "pricePerLitre", e.target.value)
             }
@@ -403,7 +458,7 @@ const formatMoney = (v)=>
             inputMode="decimal"
             placeholder="Opening Meter"
             className="input-premium"
-            value={form.AGO.openingMeter}
+            value={form.AGO.openingMeter ?? ""}
             onChange={e =>
               handleSectionChange("AGO", "openingMeter", e.target.value)
             }
@@ -414,7 +469,7 @@ const formatMoney = (v)=>
             inputMode="decimal"
             placeholder="Closing Meter"
             className="input-premium"
-            value={form.AGO.closingMeter}
+            value={form.AGO.closingMeter ?? ""}
             onChange={e =>
               handleSectionChange("AGO", "closingMeter", e.target.value)
             }
@@ -429,7 +484,7 @@ const formatMoney = (v)=>
             inputMode="decimal"
             placeholder="Calibration Litres"
             className="input-premium"
-            value={form.AGO.calibrationLitres}
+            value={form.AGO.calibrationLitres ?? ""}
             onChange={e =>
               handleSectionChange("AGO", "calibrationLitres", e.target.value)
             }
@@ -495,7 +550,7 @@ const formatMoney = (v)=>
                 inputMode="decimal"
                 placeholder="Expense Amount"
                 className="input-premium"
-                value={expense.amount}
+                value={expense.amount ?? ""}
                 onChange={e =>
                   handleNestedExpenseChange("AGO", index, "amount", e.target.value)
                 }
@@ -503,10 +558,17 @@ const formatMoney = (v)=>
             </div>
           ))}
 
+            <div className="text-left text-lg font-semibold text-red-400">
+            AGO Expenses Total: ₦{calculateAGOExpensesTotal().toLocaleString()}
+          </div>
 
           <button type="button" onClick={() => addExpense("AGO")} className="btn-secondary">
             + Add AGO Expense
           </button>
+
+          <div className="text-right text-lg font-bold text-green-600">
+            AGO Net Sales: ₦{calculateAGONetSales().toLocaleString()}
+          </div>
 
           {/* ================= PRODUCTS ================= */}
           <h3 className="text-xl font-semibold">Products Sold</h3>
@@ -525,7 +587,7 @@ const formatMoney = (v)=>
                 type="number"
                 placeholder="Quantity"
                 className="input-premium"
-                value={product.quantitySold}
+                value={product.quantitySold ?? ""}
                 onChange={e =>
                   handleTopArrayChange("productsSold", index, "quantitySold", e.target.value)
                 }
@@ -534,13 +596,17 @@ const formatMoney = (v)=>
                 type="number"
                 placeholder="Price Per Unit"
                 className="input-premium"
-                value={product.pricePerUnit}
+                value={product.pricePerUnit ?? ""}
                 onChange={e =>
                   handleTopArrayChange("productsSold", index, "pricePerUnit", e.target.value)
                 }
               />
             </div>
           ))}
+
+        <div className="text-left text-lg font-semibold text-purple-400">
+          Products Total: ₦{calculateProductsTotal().toLocaleString()}
+        </div>
 
           <button type="button" onClick={addProduct} className="btn-secondary">
             + Add Product
@@ -563,13 +629,17 @@ const formatMoney = (v)=>
                 type="number"
                 placeholder="Amount"
                 className="input-premium"
-                value={income.amount}
+                value={income.amount ?? ""}
                 onChange={e =>
                   handleTopArrayChange("otherIncome", index, "amount", e.target.value)
                 }
               />
             </div>
           ))}
+
+          <div className="text-left text-lg font-semibold text-purple-700">
+            Other Income Total: ₦{calculateOtherIncomeTotal().toLocaleString()}
+          </div>
 
           <button type="button" onClick={addOtherIncome} className="btn-secondary">
             + Add Income
@@ -595,6 +665,10 @@ const formatMoney = (v)=>
     />
   </div>
 ))}
+
+          <div className="text-center text-lg font-bold text-black">
+            Grand Total: ₦{calculateGrandTotal().toLocaleString()}
+          </div>
 
           {message && (
         <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
@@ -646,8 +720,9 @@ const formatMoney = (v)=>
             const updatedPumps = form.PMS.pumps.map((pump) => {
               const lastSales = pump.sales || [];
               const lastClosing = lastSales.length
-                ? Number(lastSales[lastSales.length - 1].closingMeter)
-                : Number(pump.openingMeter) || 0;
+  ? Number(lastSales[lastSales.length - 1].closingMeter) ||
+    Number(lastSales[lastSales.length - 1].openingMeter) || 0
+  : 0;
 
               return {
                 ...pump,
@@ -658,7 +733,7 @@ const formatMoney = (v)=>
                     closingMeter: "",
                     calibrationLitres: 0,
                     calibrationReason: "",
-                    priceIndex: lastSales.length
+                    priceIndex: form.PMS.priceSegments.length
                   }
                 ]
               };

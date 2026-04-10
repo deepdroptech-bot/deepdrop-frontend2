@@ -729,7 +729,7 @@ className="input-premium"
 
 ))}
 
-<button type="button" onClick={()=>addExpense("PMS")}>
+<button type="button" onClick={()=>addExpense("PMS")} className="btn-secondary">
 Add PMS Expense
 </button>
 
@@ -844,7 +844,7 @@ className="input-premium"
 
 ))}
 
-<button type="button" onClick={()=>addExpense("AGO")}>
+<button type="button" onClick={()=>addExpense("AGO")} className="btn-secondary">
 Add AGO Expense
 </button>
       </div>
@@ -863,25 +863,28 @@ Add AGO Expense
 type="text"
 value={item.itemName}
 onChange={(e)=>updateProduct(index,"itemName",e.target.value)}
+className="input-premium"
 />
 
 <input
 type="number"
 value={item.quantitySold}
 onChange={(e)=>updateProduct(index,"quantitySold",e.target.value)}
+className="input-premium"
 />
 
 <input
 type="number"
 value={item.pricePerUnit}
 onChange={(e)=>updateProduct(index,"pricePerUnit",e.target.value)}
+className="input-premium"
 />
 
 </div>
 
 ))}
 
-<button type="button" onClick={addProduct}>
+<button type="button" onClick={addProduct} className="btn-secondary">
 Add Product
 </button>
       </div>
@@ -900,19 +903,21 @@ Add Product
 type="text"
 value={item.itemName}
 onChange={(e)=>updateIncome(index,"itemName",e.target.value)}
+className="input-premium"
 />
 
 <input
 type="number"
 value={item.amount}
 onChange={(e)=>updateIncome(index,"amount",e.target.value)}
+className="input-premium"
 />
 
 </div>
 
 ))}
 
-<button type="button" onClick={addIncome}>
+<button type="button" onClick={addIncome} className="btn-secondary">
 Add Income
 </button>
       </div>
@@ -923,11 +928,13 @@ Add Income
 key={index}
 value={note}
 onChange={(e)=>updateNote(index,e.target.value)}
+placeholder={`Note ${index + 1}`}
+className="input-premium w-full"
 />
 
 ))}
 
-<button type="button" onClick={addNote}>
+<button type="button" onClick={addNote} className="btn-secondary">
 Add Note
 </button>
 
