@@ -454,6 +454,17 @@ Net PMS Sales:
           </span>
         )}
       </div>
+
+      {/* ================= ACTIONS ================= */}
+      <div className="flex gap-4">
+        {!sales.isLocked && (
+          <button
+            onClick={() => navigate(`/dashboard/daily-sales/${id}/edit`)}
+            className="px-6 py-2 rounded-lg bg-yellow-600 text-white hover:bg-yellow-700 transition"
+          >
+            Edit Daily Sales
+          </button>
+        )}
       
         <button
         
@@ -469,6 +480,7 @@ Net PMS Sales:
           Please wait while your PDF is being generated.
         </p>
       )}
+      </div>
     </div>
   );
 }

@@ -10,6 +10,15 @@ export default function DailySalesManagement() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const [submitModal, setSubmitModal] = useState({
+    isOpen: false,
+    saleId: null
+  });
+  const [approveModal, setApproveModal] = useState({
+    isOpen: false,
+    saleId: null
+  });
+
   const fetchSales = async () => {
     try {
       const params = {
@@ -38,13 +47,13 @@ export default function DailySalesManagement() {
   }, [activeTab, searchDate]);
 
   const handleSubmit = async (id) => {
-    if (!window.confirm("Submit this daily sales?")) return;
+    setSubmitModal({ isOpen: false, saleId: null });
     await dailySalesAPI.submit(id);
     fetchSales();
   };
 
   const handleApprove = async (id) => {
-    if (!window.confirm("Approve this submitted sales?")) return;
+    setApproveModal({ isOpen: false, saleId: null });
     await dailySalesAPI.approve(id);
     fetchSales();
   };
@@ -181,7 +190,7 @@ export default function DailySalesManagement() {
                 </button>
 
                 <button
-                  onClick={() => handleSubmit(sale._id)}
+                  onClick={() => setSubmitModal({ isOpen: true, saleId: sale._id })}
                   className="btn-primary"
                 >
                   Submit
@@ -193,7 +202,7 @@ export default function DailySalesManagement() {
             {sale.approvalStatus === "submitted" && (
               <Permissions permission="AD_AC">
               <button
-                onClick={() => handleApprove(sale._id)}
+                onClick={() => setApproveModal({ isOpen: true, saleId: sale._id })}
                 className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
               >
                 Approve
@@ -203,6 +212,54 @@ export default function DailySalesManagement() {
           </div>
         </div>
       ))}
+
+        {/* SUBMIT CONFIRMATION MODAL */}
+        {submitModal.isOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <h2 className="text-xl font-bold mb-4">Confirm Submission</h2>
+              <p className="mb-6">Are you sure you want to submit this daily sales record?</p>
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setSubmitModal({ isOpen: false, saleId: null })}
+                  className="btn-outline"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleSubmit(submitModal.saleId)}
+                  className="btn-primary"
+                >
+                  Confirm
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* APPROVE CONFIRMATION MODAL */}
+        {approveModal.isOpen && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <h2 className="text-xl font-bold mb-4">Confirm Approval</h2>
+              <p className="mb-6">Are you sure you want to approve this submitted sales record?</p>
+              <div className="flex justify-end gap-4">
+                <button
+                  onClick={() => setApproveModal({ isOpen: false, saleId: null })}
+                  className="btn-outline"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleApprove(approveModal.saleId)}
+                  className="btn-primary"
+                >
+                  Confirm 
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
     </div>
   );
