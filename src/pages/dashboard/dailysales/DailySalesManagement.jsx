@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { dailySalesAPI } from "../../../services/dailySalesService";
 import Permissions from "../../../components/Permission ";
+import ResponseModal from "../../../components/dashboard/responseModal";
 
 export default function DailySalesManagement() {
   const [sales, setSales] = useState([]);
@@ -9,6 +10,8 @@ export default function DailySalesManagement() {
   const [searchDate, setSearchDate] = useState("");
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [approving, setApproving] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const [submitModal, setSubmitModal] = useState({
     isOpen: false,
@@ -18,6 +21,11 @@ export default function DailySalesManagement() {
     isOpen: false,
     saleId: null
   });
+  const [modal, setModal] = useState({
+  isOpen: false,
+  type: "",
+  message: ""
+});
 
   const fetchSales = async () => {
     try {
@@ -47,16 +55,65 @@ export default function DailySalesManagement() {
   }, [activeTab, searchDate]);
 
   const handleSubmit = async (id) => {
+    setSubmitting(true);
     setSubmitModal({ isOpen: false, saleId: null });
-    await dailySalesAPI.submit(id);
-    fetchSales();
-  };
+    try {
+   const res = await dailySalesAPI.submit(id);
+    if (res.success) {      setModal({
+        isOpen: true,
+        type: "success",
+        message: res.msg
+      });
+      fetchSales();
+    } else {      
+      setModal({
+        isOpen: true,
+        type: "error",
+        message: res.msg || "Submission failed"
+      });
+    }
+  }
+  catch (err) {
+    setModal({
+      isOpen: true,
+      type: "error",
+      message: err.response?.data?.msg || "Something went wrong"
+    });
+  }
+  finally {
+    setSubmitting(false);
+  }
+};
 
   const handleApprove = async (id) => {
     setApproveModal({ isOpen: false, saleId: null });
-    await dailySalesAPI.approve(id);
-    fetchSales();
-  };
+    setApproving(true);
+    try {
+    const res = await dailySalesAPI.approve(id);
+    if (res.success) {
+      setModal({
+        isOpen: true,
+        type: "success",
+        message: res.msg
+      });
+      fetchSales();
+    } else {
+      setModal({
+        isOpen: true,
+        type: "error",
+        message: res.msg || "Approval failed"
+      });
+    }
+    }
+    catch (err) {
+    setModal({
+      isOpen: true,
+      type: "error",
+      message: err.response?.data?.msg || "Something went wrong"
+    });
+  } finally {    setApproving(false);
+  }
+};
 
   const getStatusBadge = (status) => {
     if (status === "draft")
@@ -228,9 +285,10 @@ export default function DailySalesManagement() {
                 </button>
                 <button
                   onClick={() => handleSubmit(submitModal.saleId)}
+                  disabled={submitting}
                   className="btn-primary"
                 >
-                  Confirm
+                  {submitting ? "Submitting..." : "Confirm"}
                 </button>
               </div>
             </div>
@@ -252,14 +310,23 @@ export default function DailySalesManagement() {
                 </button>
                 <button
                   onClick={() => handleApprove(approveModal.saleId)}
+                  disabled={approving}
                   className="btn-primary"
                 >
-                  Confirm 
+                  {approving ? "Approving..." : "Confirm"}
                 </button>
               </div>
             </div>
           </div>
         )}
+
+        {/* RESPONSE MODAL */}
+        <ResponseModal
+  isOpen={modal.isOpen}
+  type={modal.type}
+  message={modal.message}
+  onClose={() => setModal({ ...modal, isOpen: false })}
+/>
 
     </div>
   );

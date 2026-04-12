@@ -14,20 +14,20 @@ export default function OperationalDashboard() {
   const { dashboardData } = useOutletContext();
 
   const inventory = dashboardData?.inventory || {};
-  const lowProducts = dashboardData?.lowProducts || [];
+  const bank = dashboardData?.bank || {};
 
   const pieData = [
     { name: "PMS", value: inventory.pmsQty || 0 },
     { name: "AGO", value: inventory.agoQty || 0 }
   ];
 
-  const COLORS = ["#1d4ed8", "#dc2626"];
+  const COLORS = ["#16a34a", "#dc2626"];
 
   return (
     <div className="grid md:grid-cols-2 gap-6">
 
-      {/* Inventory Pie */}
-      <ChartCard title="Inventory Distribution">
+      {/* INVENTORY PIE */}
+      <ChartCard title="Fuel Inventory Distribution">
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
             <Pie
@@ -36,7 +36,7 @@ export default function OperationalDashboard() {
               outerRadius={100}
               label
             >
-              {pieData.map((entry, index) => (
+              {pieData.map((_, index) => (
                 <Cell key={index} fill={COLORS[index]} />
               ))}
             </Pie>
@@ -45,31 +45,45 @@ export default function OperationalDashboard() {
         </ResponsiveContainer>
       </ChartCard>
 
-      {/* Low Products */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100">
-        <h3 className="text-blue-700 font-semibold mb-4">
-          Low Stock Products
+      {/* LOW STOCK */}
+      <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+
+        <h3 className="text-green-700 font-semibold mb-4">
+          📦 Low Stock Alert ({inventory.lowProductsCount || 0})
         </h3>
 
-        {lowProducts.length === 0 ? (
+        {inventory.lowProductsCount === 0 ? (
           <p className="text-gray-500">
-            All products sufficiently stocked.
+            All products are sufficiently stocked.
           </p>
         ) : (
-          <ul className="space-y-2">
-            {lowProducts.map((product, i) => (
-              <motion.li
-                key={i}
-                animate={{ x: [0, -5, 5, 0] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="text-red-600 font-medium"
-              >
-                {product.itemName} — {product.quantity} left
-              </motion.li>
-            ))}
-          </ul>
+          <motion.p
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ repeat: Infinity, duration: 2 }}
+            className="text-red-600 font-medium"
+          >
+            ⚠️ Some products are running low. Check inventory module.
+          </motion.p>
         )}
       </div>
+
+      {/* BANK STATUS */}
+      <div className="bg-white p-6 rounded-2xl shadow-lg">
+
+        <h3 className="font-semibold text-blue-700 mb-3">
+          🏦 Bank Overview
+        </h3>
+
+        <p>Total Balance: ₦{bank.totalBalance || 0}</p>
+
+        <div className="mt-2 text-sm text-gray-600">
+          PMS: ₦{bank.breakdown?.PMS || 0} <br />
+          AGO: ₦{bank.breakdown?.AGO || 0} <br />
+          Products: ₦{bank.breakdown?.products || 0} <br />
+          Other Income: ₦{bank.breakdown?.otherIncome || 0}
+        </div>
+      </div>
+
     </div>
   );
 }
