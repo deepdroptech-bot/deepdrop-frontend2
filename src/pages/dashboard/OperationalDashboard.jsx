@@ -7,7 +7,11 @@ import {
   PieChart,
   Pie,
   Cell,
-  Tooltip
+  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis
 } from "recharts";
 
 export default function OperationalDashboard() {
@@ -16,17 +20,53 @@ export default function OperationalDashboard() {
   const inventory = dashboardData?.inventory || {};
   const bank = dashboardData?.bank || {};
 
+  /* =========================
+     FORMAT HELPERS
+  ========================= */
+  const formatMoney = (value) =>
+    (value || 0).toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    });
+
+  const formatDecimal = (value) =>
+    Number(value || 0).toFixed(2);
+
+  /* =========================
+     PIE DATA (rounded)
+  ========================= */
   const pieData = [
-    { name: "PMS", value: inventory.pmsQty || 0 },
-    { name: "AGO", value: inventory.agoQty || 0 }
+    { name: "PMS", value: parseFloat(formatDecimal(inventory.pmsQty)) },
+    { name: "AGO", value: parseFloat(formatDecimal(inventory.agoQty)) }
   ];
 
   const COLORS = ["#16a34a", "#dc2626"];
 
+  /* =========================
+     BAR DATA (inventory breakdown)
+  ========================= */
+  const barData = [
+    { name: "PMS", value: inventory.pmsQty || 0 },
+    { name: "AGO", value: inventory.agoQty || 0 }
+  ];
+
+  const productBarData =
+  inventory?.products?.slots
+    ?.filter(p => p.itemName)
+    ?.slice(0, 10)
+    ?.map(p => ({
+      name: p.itemName.length > 10
+        ? p.itemName.slice(0, 10) + "..."
+        : p.itemName,
+      value: p.quantity
+    })) || [];
+
   return (
     <div className="grid md:grid-cols-2 gap-6">
 
-      {/* INVENTORY PIE */}
+      {/* =========================
+          INVENTORY PIE
+      ========================= */}
       <ChartCard title="Fuel Inventory Distribution">
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
@@ -45,7 +85,25 @@ export default function OperationalDashboard() {
         </ResponsiveContainer>
       </ChartCard>
 
-      {/* LOW STOCK */}
+      {/* =========================
+          INVENTORY BAR CHART
+      ========================= */}
+      <ChartCard title="Product Inventory Levels">
+
+  <ResponsiveContainer width="100%" height={300}>
+    <BarChart data={productBarData}>
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip />
+      <Bar dataKey="value" fill="#3b82f6" />
+    </BarChart>
+  </ResponsiveContainer>
+
+</ChartCard>
+
+      {/* =========================
+          LOW STOCK
+      ========================= */}
       <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
 
         <h3 className="text-green-700 font-semibold mb-4">
@@ -67,21 +125,55 @@ export default function OperationalDashboard() {
         )}
       </div>
 
-      {/* BANK STATUS */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg">
+      {/* =========================
+          BANK OVERVIEW + HISTORY
+      ========================= */}
+      <div className="bg-white p-6 rounded-2xl shadow-lg flex justify-between gap-6">
 
-        <h3 className="font-semibold text-blue-700 mb-3">
-          🏦 Bank Overview
-        </h3>
+        {/* BANK SUMMARY */}
+        <div className="w-1/2">
+          <h3 className="font-semibold text-blue-700 mb-3">
+            🏦 Bank Overview
+          </h3>
 
-        <p>Total Balance: ₦{bank.totalBalance || 0}</p>
+          <p>
+            Total Balance: ₦{formatMoney(bank.totalBalance)}
+          </p>
 
-        <div className="mt-2 text-sm text-gray-600">
-          PMS: ₦{bank.breakdown?.PMS || 0} <br />
-          AGO: ₦{bank.breakdown?.AGO || 0} <br />
-          Products: ₦{bank.breakdown?.products || 0} <br />
-          Other Income: ₦{bank.breakdown?.otherIncome || 0}
+          <div className="mt-2 text-sm text-gray-600">
+            PMS: ₦{formatMoney(bank.breakdown?.PMS)} <br />
+            AGO: ₦{formatMoney(bank.breakdown?.AGO)} <br />
+            Products: ₦{formatMoney(bank.breakdown?.products)} <br />
+            Other Income: ₦{formatMoney(bank.breakdown?.otherIncome)}
+          </div>
         </div>
+
+        {/* BANK HISTORY */}
+        <div className="w-1/2 border-l pl-4">
+          <h3 className="font-semibold text-gray-700 mb-3">
+            📜 Recent Transactions
+          </h3>
+
+          {bank.recentTransactions?.length > 0 ? (
+            <div className="space-y-2 text-sm">
+              {bank.recentTransactions.map((tx, i) => (
+                <div key={i} className="flex justify-between text-gray-600">
+                  <span>
+                    {new Date(tx.addedAt).toLocaleDateString()}
+                  </span>
+                  <span className="font-medium">
+                    ₦{formatMoney(tx.amount || 0)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-400 text-sm">
+              No recent transactions
+            </p>
+          )}
+        </div>
+
       </div>
 
     </div>
