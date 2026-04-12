@@ -54,33 +54,49 @@ export default function DailySalesManagement() {
     fetchSales().finally(() => setLoading(false));
   }, [activeTab, searchDate]);
 
-  const handleSubmit = async (id) => {
-    setSubmitting(true);
-    setSubmitModal({ isOpen: false, saleId: null });
-    try {
-   const res = await dailySalesAPI.submit(id);
-    if (res.success) {      setModal({
+const handleSubmit = async (id) => {
+  setSubmitting(true);
+  setSubmitModal({ isOpen: false, saleId: null });
+
+  try {
+    const res = await dailySalesAPI.submit(id);
+
+    // ✅ IMPORTANT: extract data properly
+    const data = res?.data;
+
+    console.log("Submit response:", data);
+
+    if (data?.success) {
+      setModal({
         isOpen: true,
         type: "success",
-        message: res.msg
+        message: data?.msg || "Submitted successfully"
       });
+
       fetchSales();
-    } else {      
+    } else {
       setModal({
         isOpen: true,
         type: "error",
-        message: res.msg || "Submission failed"
+        message: data?.msg || "Submission failed"
       });
     }
-  }
-  catch (err) {
+
+  } catch (err) {
+    console.log("Submit error:", err);
+    console.log("Backend error:", err.response?.data);
+
     setModal({
       isOpen: true,
       type: "error",
-      message: err.response?.data?.msg || "Something went wrong"
+      message:
+        err.response?.data?.msg ||
+        err.response?.data?.message ||
+        err.message ||
+        "Something went wrong"
     });
-  }
-  finally {
+
+  } finally {
     setSubmitting(false);
   }
 };
@@ -89,30 +105,40 @@ export default function DailySalesManagement() {
     setApproveModal({ isOpen: false, saleId: null });
     setApproving(true);
     try {
-    const res = await dailySalesAPI.approve(id);
-    if (res.success) {
-      setModal({
-        isOpen: true,
-        type: "success",
-        message: res.msg
-      });
-      fetchSales();
-    } else {
+      const res = await dailySalesAPI.approve(id);
+
+      const data = res?.data;
+      console.log("Approve response:", data);
+
+      if (data?.success) {
+        setModal({
+          isOpen: true,
+          type: "success",
+          message: data?.msg || "Approved successfully"
+        });
+        fetchSales();
+      } else {
+        setModal({
+          isOpen: true,
+          type: "error",
+          message: data?.msg || "Approval failed"
+        });
+      }
+    } catch (err) {
+      console.log("Approve error:", err);
+      console.log("Backend error:", err.response?.data);
       setModal({
         isOpen: true,
         type: "error",
-        message: res.msg || "Approval failed"
+        message:
+          err.response?.data?.msg ||
+          err.response?.data?.message ||
+          err.message ||
+          "Something went wrong"
       });
+    } finally {
+      setApproving(false);
     }
-    }
-    catch (err) {
-    setModal({
-      isOpen: true,
-      type: "error",
-      message: err.response?.data?.msg || "Something went wrong"
-    });
-  } finally {    setApproving(false);
-  }
 };
 
   const getStatusBadge = (status) => {

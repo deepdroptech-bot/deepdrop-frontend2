@@ -9,8 +9,8 @@ export default function Dashboard() {
 
   const loadDashboard = async () => {
     try {
-      const data = await dashboardAPI.getOverview();
-      setDashboardData(data);
+      const res = await dashboardAPI.getOverview();
+setDashboardData(res.data);
     } catch (error) {
       console.error("Dashboard load failed:", error);
     } finally {
