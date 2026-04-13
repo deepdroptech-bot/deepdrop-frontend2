@@ -26,7 +26,6 @@ import StaffAdjustments from "./pages/dashboard/staff/StaffAdjustments";
 import StaffHistory from "./pages/dashboard/staff/StaffHistory";
 
 // Daily Sales Management pages
-import DailySalesSummary from "./pages/dashboard/dailysales/DailySalesSummary";
 import DailySalesManagement from "./pages/dashboard/dailysales/DailySalesManagement";
 import EditDailySales from "./pages/dashboard/dailysales/EditDailySales";
 import CCreateDailySales from "./pages/dashboard/dailysales/CreateDailySales";
@@ -52,6 +51,9 @@ import ViewExpense from "./pages/dashboard/expense/ViewExpense";
 
 // profit and audit management page
 import ProfitAuditManagement from "./pages/dashboard/profit&audit/Profit&AuditManagement";
+
+// Unauthorized page
+import Unauthorized from "./pages/dashboard/Unauthorized";
 
 
 //Debugging page
@@ -88,6 +90,8 @@ function App() {
         <Route path="/login/ekiosa" element={<Login />} /> */}
         <Route path="/login" element={<Login />} />
   <Route path="/test" element={<Test />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="*" element={<Navigate to="/login" />} />
 
  {/* Protected dashboard routes */}
         <Route element={<ProtectedRoute />}>
@@ -95,48 +99,40 @@ function App() {
 
     <Route index element={<Overview />} />
 
-    {/* User management routes */}
-    <Route path="myprofile" element={<ProfilePage />} />
-    <Route path="allusers" element={<UsersPage />} />
-    <Route path="createuser" element={<CreateUserModal />} />
-    <Route path="edituser" element={<EditUserModal />} />
+    {/* Admin only */}
+    <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+      <Route path="allusers" element={<UsersPage />} />
+      <Route path="createuser" element={<CreateUserModal />} />
+      <Route path="edituser/:id" element={<EditUserModal />} />
+    </Route>
 
-    {/* Staff management routes */}
+    {/* Admin  and Accountant */}
+      <Route element={<ProtectedRoute allowedRoles={["admin", "accountant"]} />}>
+      <Route path="expenses" element={<ExpenseManagement />} />
+    <Route path="expenses/:id" element={<ViewExpense />} />
+    <Route path="pmspl" element={<PMSPLManagement />} />
+    <Route path="retained-earnings" element={<RetainedEarningsPage />} />
+    <Route path="bank" element={<BankManagement />} />
+      </Route>
+
+    {/* All authenticated users */}
+    <Route path="profile" element={<ProfilePage />} />
+    <Route path="daily-sales/new" element={<CCreateDailySales />} />
+    <Route path="daily-sales/:id" element={<ViewDailySales />} />
+    <Route path="daily-sales/:id/edit" element={<EditDailySales />} />
+    <Route path="inventory/fuel-history" element={<FuelHistory />} />
+    <Route path="inventory" element={<InventoryManagement />} />
+    <Route path="inventory/product-history" element={<ProductHistory />} />
+    <Route path="daily-sales" element={<DailySalesManagement />} />
+    <Route path="profit-audit" element={<ProfitAuditManagement />} />
     <Route path="staff" element={<StaffList />} />
     <Route path="staff/new" element={<CreateStaff />} />
     <Route path="staff/:id/edit" element={<EditStaff />} />
     <Route path="staff/adjustments/:id" element={<StaffAdjustments />} />
     <Route path="staff/:id" element={<StaffProfile />} />
-    <Route path="/dashboard/staff/:id/history" element={<StaffHistory/>}
+    <Route path="staff/:id/history" element={<StaffHistory/>}
 />
-
-    {/* Daily sales management routes */}
-    <Route path="daily-sales" element={<DailySalesManagement />} />
-    <Route path="daily-sales/summary" element={<DailySalesSummary />} />
-    <Route path="daily-sales/:id/edit" element={<EditDailySales />} />
-    <Route path="daily-sales/new" element={<CCreateDailySales />} />
-    <Route path="daily-sales/:id" element={<ViewDailySales />} />
-
-    {/* Inventory management routes */}
-    <Route path="inventory" element={<InventoryManagement />} />
-    <Route path="inventory/fuel-history" element={<FuelHistory />} />
-    <Route path="inventory/product-history" element={<ProductHistory />} />
-
-    {/* Bank management routes */}
-    <Route path="bank" element={<BankManagement />} />
-
-    {/* Retained earnings management route */}
-    <Route path="retained-earnings" element={<RetainedEarningsPage />} />
-
-    {/* PMSPL management route */}
-    <Route path="pmspl" element={<PMSPLManagement />} />
-
-    {/* Expense management route */}
-    <Route path="expenses" element={<ExpenseManagement />} />
-    <Route path="expenses/:id" element={<ViewExpense />} />
-
-    {/* Profit and audit management route */}
-    <Route path="profit-audit" element={<ProfitAuditManagement />} />
+    
 
   </Route>
 </Route>

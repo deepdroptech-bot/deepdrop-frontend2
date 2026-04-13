@@ -51,6 +51,8 @@ export default function OperationalDashboard() {
 
   const productBarData = inventory.productChart || [];
 
+  const productSalesBarData = inventory.productSalesChart || [];
+
   return (
     <div className="grid md:grid-cols-2 gap-6 max-w-full overflow-x-hidden">
 
@@ -79,6 +81,21 @@ export default function OperationalDashboard() {
       {/* =========================
           Inventory
       ========================= */}
+
+       <ChartCard title="Product Sales Levels">
+
+  <ResponsiveContainer width="100%" height={300}>
+    <BarChart data={productSalesBarData}>
+      <XAxis dataKey="name" />
+      <YAxis />
+      <Tooltip />
+      <Bar dataKey="value" fill="#3b82f6" />
+    </BarChart>
+  </ResponsiveContainer>
+
+</ChartCard>
+
+
       <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
 
         <ChartCard title="Product Inventory Levels">
@@ -88,7 +105,7 @@ export default function OperationalDashboard() {
       <XAxis dataKey="name" />
       <YAxis />
       <Tooltip />
-      <Bar dataKey="value" fill="#3b82f6" />
+      <Bar dataKey="value" fill="#bef63b" />
     </BarChart>
   </ResponsiveContainer>
 
