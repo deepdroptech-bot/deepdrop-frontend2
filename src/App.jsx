@@ -91,7 +91,7 @@ function App() {
         <Route path="/login" element={<Login />} />
   <Route path="/test" element={<Test />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Login />} />
 
  {/* Protected dashboard routes */}
         <Route element={<ProtectedRoute />}>
