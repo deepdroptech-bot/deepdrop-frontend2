@@ -584,7 +584,8 @@ cleanedForm.otherIncome =
                 }
               />
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Quantity"
                 className="input-premium"
                 value={product.quantitySold ?? ""}
@@ -593,7 +594,8 @@ cleanedForm.otherIncome =
                 }
               />
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Price Per Unit"
                 className="input-premium"
                 value={product.pricePerUnit ?? ""}
@@ -626,7 +628,8 @@ cleanedForm.otherIncome =
                 }
               />
               <input
-                type="number"
+                type="text"
+                inputMode="decimal"
                 placeholder="Amount"
                 className="input-premium"
                 value={income.amount ?? ""}

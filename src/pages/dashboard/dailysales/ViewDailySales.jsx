@@ -55,11 +55,17 @@ export default function ViewDailySales() {
   const formatCurrency = (value) =>
     `₦${Number(value || 0).toLocaleString()}`;
 
+  const formatNumber = (value) =>
+    (value || 0).toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    });
+
   
 
   if (loading)
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
+    <div className="min-h-[60vh] flex items-center justify-center max-w-full overflow-x-hidden">
       <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-3xl px-12 py-10 shadow-2xl text-center">
         <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-tr from-red-500 to-blue-600 flex items-center justify-center animate-pulse">
           <span className="text-white text-2xl font-black">⏳</span>
@@ -224,19 +230,19 @@ className="grid md:grid-cols-3 gap-3 text-sm mb-3"
 
 <div>
 
-Opening: {sale.openingMeter}
+Opening: {formatNumber(sale.openingMeter)}
 
 </div>
 
 <div>
 
-Closing: {sale.closingMeter}
+Closing: {formatNumber(sale.closingMeter)}
 
 </div>
 
 <div>
 
-Calibration: {sale.calibrationLitres}
+Calibration: {formatNumber(sale.calibrationLitres)}
 
 </div>
 
@@ -248,7 +254,7 @@ Reason: {sale.calibrationReason || "-"}
 
 <div className="font-medium text-blue-700">
 
-Litres: {litres}
+Litres: {formatNumber(litres)}
 
 </div>
 
@@ -277,7 +283,7 @@ Amount:
 <div>
 
 Segment Litres:
-{segmentLitres}
+{formatNumber(segmentLitres)}
 
 </div>
 
@@ -338,12 +344,12 @@ Net PMS Sales:
           </h2>
 
           <div className="space-y-1">
-            <p>Opening: {sales.AGO?.openingMeter}</p>
-            <p>Closing: {sales.AGO?.closingMeter}</p>
-            <p>Calibration: {sales.AGO?.calibrationLitres}</p>
+            <p>Opening: {formatNumber(sales.AGO?.openingMeter)}</p>
+            <p>Closing: {formatNumber(sales.AGO?.closingMeter)}</p>
+            <p>Calibration: {formatNumber(sales.AGO?.calibrationLitres)}</p>
             <p>Calibration Reason: {sales.AGO?.calibrationReason}</p>
             <p className="font-medium text-green-700">
-              Litres Sold: {sales.AGO?.litresSold}
+              Litres Sold: {formatNumber(sales.AGO?.litresSold)}
             </p>
             <p>Price/Litre: {formatCurrency(sales.AGO?.pricePerLitre)}</p>
             <p>Total Amount: {formatCurrency(sales.AGO?.totalAmount)}</p>
@@ -377,7 +383,7 @@ Net PMS Sales:
             className="flex justify-between border-b py-2 hover:bg-gray-50 transition"
           >
             <span>
-              {item.itemName} ({item.quantitySold} × {formatCurrency(item.pricePerUnit)})
+              {item.itemName} ({formatNumber(item.quantitySold)} × {formatCurrency(item.pricePerUnit)})
             </span>
             <span className="font-semibold text-purple-700">
               {formatCurrency(item.totalAmount)}

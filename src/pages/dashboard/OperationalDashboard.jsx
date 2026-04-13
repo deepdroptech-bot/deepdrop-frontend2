@@ -30,7 +30,10 @@ export default function OperationalDashboard() {
     });
 
   const formatDecimal = (value) =>
-    Number(value || 0).toFixed(2);
+    (value || 0).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
   /* =========================
      PIE DATA (rounded)
@@ -45,24 +48,11 @@ export default function OperationalDashboard() {
   /* =========================
      BAR DATA (inventory breakdown)
   ========================= */
-  const barData = [
-    { name: "PMS", value: inventory.pmsQty || 0 },
-    { name: "AGO", value: inventory.agoQty || 0 }
-  ];
 
-  const productBarData =
-  inventory?.products?.slots
-    ?.filter(p => p.itemName)
-    ?.slice(0, 10)
-    ?.map(p => ({
-      name: p.itemName.length > 10
-        ? p.itemName.slice(0, 10) + "..."
-        : p.itemName,
-      value: p.quantity
-    })) || [];
+  const productBarData = inventory.productChart || [];
 
   return (
-    <div className="grid md:grid-cols-2 gap-6">
+    <div className="grid md:grid-cols-2 gap-6 max-w-full overflow-x-hidden">
 
       {/* =========================
           INVENTORY PIE
@@ -84,11 +74,14 @@ export default function OperationalDashboard() {
           </PieChart>
         </ResponsiveContainer>
       </ChartCard>
+      
 
       {/* =========================
-          INVENTORY BAR CHART
+          Inventory
       ========================= */}
-      <ChartCard title="Product Inventory Levels">
+      <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
+
+        <ChartCard title="Product Inventory Levels">
 
   <ResponsiveContainer width="100%" height={300}>
     <BarChart data={productBarData}>
@@ -100,11 +93,6 @@ export default function OperationalDashboard() {
   </ResponsiveContainer>
 
 </ChartCard>
-
-      {/* =========================
-          LOW STOCK
-      ========================= */}
-      <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
 
         <h3 className="text-green-700 font-semibold mb-4">
           📦 Low Stock Alert ({inventory.lowProductsCount || 0})
@@ -160,6 +148,17 @@ export default function OperationalDashboard() {
                 <div key={i} className="flex justify-between text-gray-600">
                   <span>
                     {new Date(tx.addedAt).toLocaleDateString()}
+                  </span>
+                  <span className={`font-medium ${
+tx.type === "PMS"
+? "text-blue-400"
+: tx.type === "AGO"
+? "text-green-400"
+: tx.type === "products"
+? "text-purple-400"
+: "text-pink-400"
+}`} >
+                    {tx.type}
                   </span>
                   <span className="font-medium">
                     ₦{formatMoney(tx.amount || 0)}

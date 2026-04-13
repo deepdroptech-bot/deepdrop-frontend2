@@ -152,7 +152,7 @@ const handleSubmit = async (id) => {
 
   if (loading)
     return (
-      <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="min-h-[60vh] flex items-center justify-center max-w-full overflow-x-hidden">
         <div className="bg-white/70 backdrop-blur-xl border border-white/30 rounded-3xl px-12 py-10 shadow-2xl text-center">
           <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-tr from-red-500 to-blue-600 flex items-center justify-center animate-pulse">
             <span className="text-white text-2xl font-black">⏳</span>

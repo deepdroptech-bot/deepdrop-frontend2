@@ -17,16 +17,22 @@ import {
 export default function ExecutiveDashboard() {
   const { dashboardData: data } = useOutletContext();
 
+  const formatMoney = (value) =>
+    (value || 0).toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2
+    });
+
   const monthlyNetSales =
     data?.charts?.monthlyNetSales?.map(item => ({
       date: item._id,
-      amount: item.total
+      amount: formatMoney(item.total)
     })) || [];
 
   const growthTrend =
     data?.charts?.monthlyNetSales?.map(item => ({
       date: item._id,
-      value: item.total
+      value: formatMoney(item.total)
     })) || [];
 
   const insights = data?.insights || [];

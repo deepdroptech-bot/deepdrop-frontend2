@@ -27,7 +27,7 @@ export default function FuelHistory() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-full overflow-x-hidden">
       <h1 className="text-2xl font-bold mb-6">Fuel History {type}</h1>
 
       <div className="bg-white rounded-2xl shadow">
