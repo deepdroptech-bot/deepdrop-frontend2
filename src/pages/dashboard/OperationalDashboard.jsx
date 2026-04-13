@@ -2,6 +2,8 @@ import ChartCard from "../../components/dashboard/ChartCard";
 import { motion } from "framer-motion";
 import { useOutletContext } from "react-router-dom";
 
+import Permissions from "../../components/Permission ";
+
 import {
   ResponsiveContainer,
   PieChart,
@@ -39,11 +41,11 @@ export default function OperationalDashboard() {
      PIE DATA (rounded)
   ========================= */
   const pieData = [
-    { name: "PMS", value: parseFloat(formatDecimal(inventory.pmsQty)) },
-    { name: "AGO", value: parseFloat(formatDecimal(inventory.agoQty)) }
-  ];
+  { name: "PMS", value: inventory.pmsQty || 0 },
+  { name: "AGO", value: inventory.agoQty || 0 }
+];
 
-  const COLORS = ["#16a34a", "#dc2626"];
+  const COLORS = ["#a33716", "#26a9dc"];
 
   /* =========================
      BAR DATA (inventory breakdown)
@@ -72,7 +74,7 @@ export default function OperationalDashboard() {
                 <Cell key={index} fill={COLORS[index]} />
               ))}
             </Pie>
-            <Tooltip />
+            <Tooltip formatter={(value) => formatDecimal(value)} />
           </PieChart>
         </ResponsiveContainer>
       </ChartCard>
@@ -136,6 +138,7 @@ export default function OperationalDashboard() {
       <div className="bg-white p-6 rounded-2xl shadow-lg flex justify-between gap-6">
 
         {/* BANK SUMMARY */}
+        <Permissions permission="AD_AC">
         <div className="w-1/2">
           <h3 className="font-semibold text-blue-700 mb-3">
             🏦 Bank Overview
@@ -152,12 +155,16 @@ export default function OperationalDashboard() {
             Other Income: ₦{formatMoney(bank.breakdown?.otherIncome)}
           </div>
         </div>
+        </Permissions>
 
         {/* BANK HISTORY */}
         <div className="w-1/2 border-l pl-4">
           <h3 className="font-semibold text-gray-700 mb-3">
             📜 Recent Transactions
           </h3>
+
+        <Permissions permission="AD_AC">
+          <h4 className="text-lg border-b font-semibold mb-3">💰 Bank Activity</h4>
 
           {bank.recentTransactions?.length > 0 ? (
             <div className="space-y-2 text-sm">
@@ -188,6 +195,22 @@ tx.type === "PMS"
               No recent transactions
             </p>
           )}
+          </Permissions>
+
+             <h4 className="text-lg border-b font-semibold mb-3">⛽ Fuel Activity</h4>
+
+    {data?.inventory?.recentFuelHistory?.map((item, i) => (
+      <div key={i} className="text-sm text-gray-700 mb-2">
+        {item.type} • {item.quantity}L • Well {item.wellNumber || "-"}
+      </div>
+    ))}
+
+      <h4 className="text-lg border-b font-semibold mb-3">📦 Product Activity</h4>
+         {data?.inventory?.recentProductHistory?.map((item, i) => (
+      <div key={i} className="text-sm text-gray-700 mb-2">
+        {item.name} • {item.quantity} pcs
+      </div>
+    ))}
         </div>
 
       </div>

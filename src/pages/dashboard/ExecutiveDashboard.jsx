@@ -24,16 +24,16 @@ export default function ExecutiveDashboard() {
     });
 
   const monthlyNetSales =
-    data?.charts?.monthlyNetSales?.map(item => ({
-      date: item._id,
-      amount: formatMoney(item.total)
-    })) || [];
+  data?.charts?.monthlyNetSales?.map(item => ({
+    date: item._id,
+    amount: item.total 
+  })) || [];
 
-  const growthTrend =
-    data?.charts?.monthlyNetSales?.map(item => ({
-      date: item._id,
-      value: formatMoney(item.total)
-    })) || [];
+const growthTrend =
+  data?.charts?.monthlyNetSales?.map(item => ({
+    date: item._id,
+    value: item.total 
+  })) || [];
 
   const insights = data?.insights || [];
 
@@ -89,7 +89,7 @@ export default function ExecutiveDashboard() {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
-              <Tooltip />
+              <Tooltip formatter={(value) => formatMoney(value)} />
 
               <Area
                 type="monotone"
@@ -109,7 +109,7 @@ export default function ExecutiveDashboard() {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
               <YAxis />
-              <Tooltip />
+              <Tooltip formatter={(value) => formatMoney(value)} />
 
               <Line
                 type="monotone"
