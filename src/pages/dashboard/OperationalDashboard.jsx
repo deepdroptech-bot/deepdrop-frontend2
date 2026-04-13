@@ -199,14 +199,14 @@ tx.type === "PMS"
 
              <h4 className="text-lg border-b font-semibold mb-3">⛽ Fuel Activity</h4>
 
-    {data?.inventory?.recentFuelHistory?.map((item, i) => (
+    {inventory?.recentFuelHistory?.map((item, i) => (
       <div key={i} className="text-sm text-gray-700 mb-2">
         {item.type} • {item.quantity}L • Well {item.wellNumber || "-"}
       </div>
     ))}
 
       <h4 className="text-lg border-b font-semibold mb-3">📦 Product Activity</h4>
-         {data?.inventory?.recentProductHistory?.map((item, i) => (
+         {inventory?.recentProductHistory?.map((item, i) => (
       <div key={i} className="text-sm text-gray-700 mb-2">
         {item.name} • {item.quantity} pcs
       </div>
