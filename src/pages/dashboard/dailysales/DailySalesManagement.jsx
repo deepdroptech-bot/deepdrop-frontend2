@@ -168,7 +168,7 @@ const handleSubmit = async (id) => {
     );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 w-full overflow-x-hidden">
 
       {/* HEADER */}
       <div className="flex justify-between items-center">

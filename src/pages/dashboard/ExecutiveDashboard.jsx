@@ -88,7 +88,7 @@ const growthTrend =
             <AreaChart data={monthlyNetSales}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
-              <YAxis />
+              <YAxis formatter={(value) => formatMoney(value)} />
               <Tooltip formatter={(value) => formatMoney(value)} />
 
               <Area
@@ -108,7 +108,7 @@ const growthTrend =
             <LineChart data={growthTrend}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="date" />
-              <YAxis />
+              <YAxis formatter={(value) => formatMoney(value)} />
               <Tooltip formatter={(value) => formatMoney(value)} />
 
               <Line

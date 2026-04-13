@@ -89,8 +89,8 @@ export default function OperationalDashboard() {
   <ResponsiveContainer width="100%" height={300}>
     <BarChart data={productSalesBarData}>
       <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
+      <YAxis formatter={(value) => formatMoney(value)} />
+      <Tooltip formatter={(value) => formatMoney(value)} />
       <Bar dataKey="value" fill="#3b82f6" />
     </BarChart>
   </ResponsiveContainer>
@@ -105,8 +105,8 @@ export default function OperationalDashboard() {
   <ResponsiveContainer width="100%" height={300}>
     <BarChart data={productBarData}>
       <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
+      <YAxis formatter={(value) => formatDecimal(value)} />
+      <Tooltip formatter={(value) => formatDecimal(value)} />
       <Bar dataKey="value" fill="#bef63b" />
     </BarChart>
   </ResponsiveContainer>
@@ -127,7 +127,7 @@ export default function OperationalDashboard() {
             transition={{ repeat: Infinity, duration: 2 }}
             className="text-red-600 font-medium"
           >
-            ⚠️ Some products are running low. Check inventory module.
+            ⚠️ Some products are running low. Check inventory.
           </motion.p>
         )}
       </div>
@@ -160,14 +160,14 @@ export default function OperationalDashboard() {
         {/* BANK HISTORY */}
         <div className="w-1/2 border-l pl-4">
           <h3 className="font-semibold text-gray-700 mb-3">
-            📜 Recent Transactions
+            📜 Recent Activities
           </h3>
 
         <Permissions permission="AD_AC">
-          <h4 className="text-lg border-b font-semibold mb-3">💰 Bank Activity</h4>
+          <h4 className="border-b-t font-semibold mb-3">💰 Bank Activity</h4>
 
           {bank.recentTransactions?.length > 0 ? (
-            <div className="space-y-2 text-sm">
+            <div className="space-y-3 text-sm pb-4 border-b">
               {bank.recentTransactions.map((tx, i) => (
                 <div key={i} className="flex justify-between text-gray-600">
                   <span>
@@ -192,25 +192,70 @@ tx.type === "PMS"
             </div>
           ) : (
             <p className="text-gray-400 text-sm">
-              No recent transactions
+              No recent bank activities
             </p>
           )}
           </Permissions>
 
-             <h4 className="text-lg border-b font-semibold mb-3">⛽ Fuel Activity</h4>
+             <h4 className=" border-b-t font-semibold mb-3 mt-6">⛽ Fuel Activity</h4>
 
-    {inventory?.recentFuelHistory?.map((item, i) => (
-      <div key={i} className="text-sm text-gray-700 mb-2">
-        {item.type} • {item.quantity}L • Well {item.wellNumber || "-"}
+{inventory?.fuelHistory?.length > 0 ? (
+  <div className="space-y-3 text-sm pb-4 border-b">
+    {inventory.fuelHistory.map((item, i) => (
+      <div key={i} className="flex justify-between text-gray-600">
+
+        <span>
+          {new Date(item.addedAt).toLocaleDateString()}
+        </span>
+
+        <span
+          className={`font-medium ${
+            item.type === "PMS"
+              ? "text-blue-400"
+              : "text-green-400"
+          }`}
+        >
+          {item.type}
+        </span>
+
+        <span className="font-medium text-gray-800">
+          {item.quantity}L • Well {item.wellNumber || "-"}
+        </span>
+
       </div>
     ))}
+  </div>
+) : (
+  <p className="text-gray-400 text-sm">No recent fuel activities</p>
+)}
 
-      <h4 className="text-lg border-b font-semibold mb-3">📦 Product Activity</h4>
-         {inventory?.recentProductHistory?.map((item, i) => (
-      <div key={i} className="text-sm text-gray-700 mb-2">
-        {item.name} • {item.quantity} pcs
+      <h4 className=" border-b-t font-semibold mb-3 mt-6">
+  📦 Product Activity
+</h4>
+
+{inventory?.productHistory?.length > 0 ? (
+  <div className="space-y-3 text-sm pb-4 border-b">
+    {inventory.productHistory.map((item, i) => (
+      <div key={i} className="flex justify-between text-gray-600">
+
+        <span>
+          {new Date(item.createdAt).toLocaleDateString()}
+        </span>
+
+        <span className="font-medium text-purple-500">
+          {item.itemName}
+        </span>
+
+        <span className="font-medium text-gray-800">
+          {item.quantity} pcs
+        </span>
+
       </div>
     ))}
+  </div>
+) : (
+  <p className="text-gray-400 text-sm">No recent product activities</p>
+)}
         </div>
 
       </div>

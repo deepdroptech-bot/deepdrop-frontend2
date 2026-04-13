@@ -39,6 +39,7 @@ export default function UsersPage() {
   );
 
   return (
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 w-full overflow-x-hidden">
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
@@ -68,5 +69,6 @@ export default function UsersPage() {
         />
       )}
     </motion.div>
+  </div>
   );
 }

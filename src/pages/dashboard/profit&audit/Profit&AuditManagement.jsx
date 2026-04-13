@@ -177,7 +177,7 @@ alert("Failed to generate PDF");
   );
 
   return (
-    <div className="p-6 space-y-8 max-w-full overflow-x-hidden">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 w-full overflow-x-hidden">
 
       {/* ================= HEADER ================= */}
       <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-8 rounded-3xl shadow-xl">

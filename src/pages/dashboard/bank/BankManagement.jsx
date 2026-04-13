@@ -145,7 +145,9 @@ if(loading)
 
 return(
 
-<div className="min-h-[60vh] flex items-center justify-center max-w-full overflow-x-hidden">
+<div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 w-full overflow-x-hidden">
+
+<div className="min-h-[60vh] flex items-center justify-center">
 
 <div className="bg-white/70 backdrop-blur-xl border rounded-3xl px-12 py-10 shadow-2xl text-center">
 
@@ -568,6 +570,8 @@ No transactions yet
 </tbody>
 
 </table>
+
+</div>
 
 </div>
 
