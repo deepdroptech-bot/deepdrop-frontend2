@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 @layer components {
+
+  *,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
   .input-field {
     @apply
       w-full
@@ -43,7 +50,8 @@
 
   .card-premium {
   @apply bg-white/60 backdrop-blur-2xl border border-white/30 
-         rounded-3xl shadow-2xl p-8;
+         rounded-3xl shadow-2xl
+         p-4 sm:p-6 md:p-8;
 }
 
 .input-premium {
@@ -85,9 +93,13 @@
 }
 
 .btn-primary {
-  @apply px-6 py-3 rounded-2xl font-bold text-white
+  @apply px-4 sm:px-6 py-3 rounded-2xl font-bold text-white
          bg-gradient-to-tr from-red-500 to-blue-600
-         shadow-lg hover:scale-[1.03] transition;
+         shadow-lg transition w-full sm:w-auto;
+}
+
+.btn-primary:hover {
+  transform: scale(1.02);
 }
 
 .btn-secondary {

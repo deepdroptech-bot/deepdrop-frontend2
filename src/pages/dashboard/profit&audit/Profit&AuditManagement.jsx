@@ -228,7 +228,7 @@ alert("Failed to generate PDF");
             />
             <button
               onClick={fetchDailyReport}
-              className="bg-indigo-600 text-white px-6 rounded-xl"
+              className="bg-indigo-600 text-white px-6 py-3 rounded-xl"
             >
               Generate
             </button>
@@ -280,7 +280,7 @@ alert("Failed to generate PDF");
           <div className="flex flex-col md:flex-row gap-4">
             <input type="date" className="border p-3 rounded-xl" value={from} onChange={e => setFrom(e.target.value)} />
             <input type="date" className="border p-3 rounded-xl" value={to} onChange={e => setTo(e.target.value)} />
-            <button onClick={fetchSummary} className="bg-purple-600 text-white px-6 rounded-xl">
+            <button onClick={fetchSummary} className="bg-purple-600 text-white px-6 py-3 rounded-xl">
               Generate
             </button>
           </div>
@@ -507,7 +507,7 @@ onChange={e=>setCalibrationTo(e.target.value)}
 
 onClick={fetchCalibrationAudit}
 
-className="bg-red-600 text-white px-6 rounded-xl"
+className="bg-red-600 text-white px-6 py-3 rounded-xl"
 
 >
 
@@ -644,7 +644,7 @@ No calibration records
             />
             <button
               onClick={fetchAuditTrail}
-              className="bg-gray-800 text-white px-6 rounded-xl"
+              className="bg-gray-800 text-white px-6 py-3 rounded-xl"
             >
               Check
             </button>
