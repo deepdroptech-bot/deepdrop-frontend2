@@ -168,10 +168,10 @@ const handleSubmit = async (id) => {
     );
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 w-full overflow-x-hidden">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 ">
 
       {/* HEADER */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold">
             Daily Sales Management
@@ -190,7 +190,7 @@ const handleSubmit = async (id) => {
       </div>
 
       {/* DATE SEARCH */}
-      <div className="card-premium flex items-center gap-4">
+      <div className="card-premium flex flex-col md:flex-row md:items-center gap-4">
         <input
           type="date"
           value={searchDate}
@@ -207,7 +207,7 @@ const handleSubmit = async (id) => {
       </div>
 
       {/* TABS */}
-      <div className="flex gap-4 border-b pb-3">
+      <div className="flex gap-4 border-b pb-3 overflow-x-auto no-scrollbar">
         {["all", "draft", "submitted", "approved"].map(tab => (
           <button
             key={tab}
@@ -232,8 +232,7 @@ const handleSubmit = async (id) => {
       {sales.map(sale => (
         <div
           key={sale._id}
-          className="card-premium flex justify-between items-center"
-        >
+          className="card-premium flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           {/* LEFT */}
           <div
             className="cursor-pointer"
@@ -251,7 +250,7 @@ const handleSubmit = async (id) => {
           </div>
 
           {/* RIGHT */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
 
             <span
               className={`px-3 py-1 text-sm rounded-full font-medium ${getStatusBadge(

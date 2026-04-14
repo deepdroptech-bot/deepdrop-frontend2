@@ -145,8 +145,6 @@ if(loading)
 
 return(
 
-<div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 w-full overflow-x-hidden">
-
 <div className="min-h-[60vh] flex items-center justify-center">
 
 <div className="bg-white/70 backdrop-blur-xl border rounded-3xl px-12 py-10 shadow-2xl text-center">
@@ -184,7 +182,9 @@ const totalBalance =
 
 return(
 
-<div className="p-6 space-y-8">
+<div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+
+  <div className="space-y-8 py-6">
 
 {/* HEADER */}
 
@@ -239,7 +239,7 @@ Total Bank Balance
 
 {/* CATEGORY */}
 
-<div className="grid md:grid-cols-4 gap-6">
+<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
 
 {[
 
@@ -444,8 +444,8 @@ Transaction History
 
 </h2>
 
-<div className="bg-white rounded-2xl shadow">
-        <table className="w-full table-auto border-collapse shadow rounded-xl overflow-hidden">
+<div className="w-full overflow-x-auto">
+  <table className="w-full min-w-[700px] table-auto border-collapse shadow rounded-xl">
 
   <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
     <tr className="border-b text-center">

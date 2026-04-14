@@ -55,8 +55,9 @@ setDeleting(null);
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow">
-        <table className="w-full table-auto border-collapse shadow rounded-xl overflow-hidden">
+    <div className="bg-white rounded-2xl shadow w-full">
+  <div className="w-full overflow-x-auto">
+        <table className="w-full min-w-[700px] table-auto border-collapse shadow rounded-xl">
 
   <thead className="bg-gray-100 text-gray-700 uppercase text-sm">
     <tr className="border-b text-center">
@@ -99,7 +100,8 @@ setDeleting(null);
                 </span>
               </td>
 
-              <td>
+              <td className="p-3">
+  <div className="flex items-center justify-center gap-2 flex-wrap">
                 <button
 onClick={()=>setEditUserId(user._id)}
 className="p-2 hover:bg-blue-50 rounded"
@@ -114,6 +116,7 @@ className="p-2 hover:bg-blue-50 rounded"
                 >
                   <Trash2 className="cursor-pointer text-red-500" />
                 </button>
+                </div>
               </td>
             </tr>
           ))}
@@ -178,6 +181,7 @@ className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:
   </div>
 )}
 
+    </div>
     </div>
   );
 }

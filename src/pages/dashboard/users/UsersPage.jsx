@@ -39,14 +39,14 @@ export default function UsersPage() {
   );
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 w-full overflow-x-hidden">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       className="p-8"
     >
       {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
         <h1 className="text-3xl font-black text-gray-800">Users</h1>
 
         <button

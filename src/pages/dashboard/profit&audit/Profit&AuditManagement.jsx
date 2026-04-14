@@ -93,7 +93,9 @@ console.error(err);
 
 alert("Failed to generate PDF");
 
-}
+} finally{
+  setLoadingPDF(false);
+};
 
 };
 
@@ -156,7 +158,9 @@ catch(err){
   setLoadingPDF(false);
 console.error(err);
 alert("Failed to generate PDF");
-}
+} finally{
+  setLoadingPDF(false);
+};
 };
 
   if (loading)
@@ -177,7 +181,7 @@ alert("Failed to generate PDF");
   );
 
   return (
-    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 w-full overflow-x-hidden">
+    <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
       {/* ================= HEADER ================= */}
       <div className="bg-gradient-to-r from-indigo-700 to-purple-700 text-white p-8 rounded-3xl shadow-xl">
@@ -190,7 +194,7 @@ alert("Failed to generate PDF");
       </div>
 
       {/* ================= TABS ================= */}
-      <div className="flex gap-4">
+      <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
         {["daily","summary", "calibration","audit"].map(tab => (
           <button
             key={tab}
@@ -215,7 +219,7 @@ alert("Failed to generate PDF");
       {activeTab === "daily" && (
         <div className="bg-white p-6 rounded-3xl shadow-xl space-y-6">
 
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <input
               type="date"
               className="border p-3 rounded-xl"
@@ -273,7 +277,7 @@ alert("Failed to generate PDF");
       {activeTab === "summary" && (
         <div className="bg-white p-6 rounded-3xl shadow-xl space-y-6">
 
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <input type="date" className="border p-3 rounded-xl" value={from} onChange={e => setFrom(e.target.value)} />
             <input type="date" className="border p-3 rounded-xl" value={to} onChange={e => setTo(e.target.value)} />
             <button onClick={fetchSummary} className="bg-purple-600 text-white px-6 rounded-xl">
@@ -282,7 +286,7 @@ alert("Failed to generate PDF");
           </div>
 
           {summary && (
-  <div className="grid md:grid-cols-3 gap-8 mt-6">
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
     {/* ================= PMS CARD ================= */}
     <div className="relative overflow-hidden bg-white border border-gray-100 rounded-3xl p-7 shadow-lg hover:shadow-xl transition-all">
@@ -483,7 +487,7 @@ Other Income
 
 <div className="bg-white p-6 rounded-3xl shadow-xl space-y-6">
 
-<div className="flex gap-4">
+<div className="flex flex-col md:flex-row gap-4">
 
 <input
 type="date"
@@ -513,7 +517,8 @@ Generate
 
 </div>
 
-<table className="w-full">
+<div className="w-full overflow-x-auto">
+  <table className="w-full min-w-[600px]">
 
 <thead className="bg-gray-100">
 
@@ -599,6 +604,7 @@ No calibration records
 </tbody>
 
 </table>
+</div>
 
 <div className="flex justify-end mt-8">
 
@@ -628,7 +634,7 @@ No calibration records
       {activeTab === "audit" && (
         <div className="bg-white p-6 rounded-3xl shadow-xl space-y-6">
 
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <input
               type="date"
               placeholder="Enter Sales Date (YYYY-MM-DD)"
