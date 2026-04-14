@@ -2,6 +2,8 @@ import KpiCard from "../../components/dashboard/KpiCard";
 import ChartCard from "../../components/dashboard/ChartCard";
 import { useOutletContext } from "react-router-dom";
 
+import Permissions from "../../components/Permission ";
+
 import {
   ResponsiveContainer,
   AreaChart,
@@ -47,23 +49,32 @@ const growthTrend =
           value={data?.totals?.totalNetSales || 0}
         />
 
+<Permissions permission="AD_AC">
         <KpiCard
           title="Total Profit"
           value={data?.totals?.totalProfit || 0}
         />
+        </Permissions>
 
+<Permissions permission="AD_AC">
         <KpiCard
           title="Profit Margin (%)"
           value={data?.totals?.profitMargin || 0}
         />
+</Permissions>
 
+          <Permissions permission="AD_AC">
         <KpiCard
           title="Growth Rate (%)"
           value={data?.performance?.growthRate || 0}
           highlight
         />
+</Permissions>
       </div>
+      
 
+
+<Permissions permission="AD_AC">
       {/* INSIGHTS SECTION (NEW 🔥) */}
       <div className="mt-6 bg-white p-6 rounded-2xl shadow">
         <h3 className="text-lg font-semibold text-gray-800 mb-3">
@@ -120,8 +131,8 @@ const growthTrend =
             </LineChart>
           </ResponsiveContainer>
         </ChartCard>
-
-      </div>
+         </div>
+</Permissions>
 
       {/* BEST PRODUCT */}
       <div className="mt-6 bg-white p-6 rounded-2xl shadow">
@@ -139,18 +150,22 @@ const growthTrend =
         )}
       </div>
 
+
       {/* BANK SUMMARY */}
       <div className="mt-6 grid md:grid-cols-3 gap-4">
 
+<Permissions permission="AD_AC"></Permissions>
         <KpiCard
           title="Bank Balance"
           value={data?.bank?.totalBalance || 0}
         />
 
+<Permissions permission="AD_AC">
         <KpiCard
           title="Total Expenses"
           value={data?.totals?.totalExpenses || 0}
         />
+        </Permissions>
 
         <KpiCard
           title="Low Stock Items"
