@@ -1,13 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@layer components {
 
-  *,
+   * {
+  outline: 1px solid red;
+}
+
 *::before,
 *::after {
   box-sizing: border-box;
 }
+
+@layer components {
 
   .input-field {
     @apply
@@ -82,11 +86,6 @@
   margin: 0;
 }
 
-/* Remove number arrows (Firefox) */
-.input-premium[type=number] {
-  -moz-appearance: textfield;
-}
-
 /* Optional: better placeholder */
 .input-premium::placeholder {
   @apply text-gray-400 font-normal;
@@ -95,15 +94,16 @@
 .btn-primary {
   @apply px-4 sm:px-6 py-3 rounded-2xl font-bold text-white
          bg-gradient-to-tr from-red-500 to-blue-600
-         shadow-lg transition w-full sm:w-auto;
+         shadow-lg transition;
 }
 
-.btn-primary:hover {
-  transform: scale(1.02);
+@media (min-width: 768px) {
+  .btn-primary:hover {
+    transform: scale(1.02);
+  }
 }
-
 .btn-secondary {
-  @apply px-6 py-3 rounded-2xl font-semibold
+  @apply px-4 sm:px-6 py-3 rounded-2xl font-semibold
          bg-gray-100 hover:bg-gray-200 transition;
 }
 
