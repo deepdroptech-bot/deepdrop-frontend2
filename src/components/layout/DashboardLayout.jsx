@@ -19,11 +19,12 @@ export default function DashboardLayout({ children }) {
 
         {/* Main Section */}
         <div
-          className={`
-            flex-1 flex flex-col min-h-screen transition-all duration-300
-            ${collapsed ? "md:ml-20" : "md:ml-64"}
-          `}
-        >
+  className={`
+    flex-1 flex flex-col min-h-screen transition-all duration-300
+    min-w-0
+    ${collapsed ? "md:ml-20" : "md:ml-64"}
+  `}
+>
           {/* Topbar */}
           <header className="bg-white shadow-sm border-b border-blue-100 p-4 flex justify-between items-center">
 
@@ -32,7 +33,7 @@ export default function DashboardLayout({ children }) {
             </h2>
 
             <Link
-              to="/dashboard/myprofile"
+              to="/dashboard/profile"
               className="flex items-center gap-2 text-blue-700 hover:text-blue-900 transition"
             >
               <UserCircleIcon className="w-8 h-8" />
@@ -40,7 +41,7 @@ export default function DashboardLayout({ children }) {
           </header>
 
           {/* Content */}
-          <main className="flex-1 p-6 pb-24 md:pb-20">
+          <main className="flex-1 p-4 md:p-6 pb-24 md:pb-20 w-full max-w-full overflow-x-hidden">
             {children}
           </main>
 
