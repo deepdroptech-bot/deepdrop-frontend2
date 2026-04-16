@@ -4,7 +4,12 @@ import Permissions from "../../../components/Permission ";
 
 export default function BankManagement(){
 
-const [bank,setBank] = useState(null);
+const [bank, setBank] = useState({
+  PMS: 0,
+  AGO: 0,
+  products: 0,
+  otherIncome: 0
+});
 const [loading,setLoading] = useState(true);
 const [submitting,setSubmitting] = useState(false);
 const [history,setHistory] = useState([]);
@@ -18,7 +23,7 @@ narration:""
 
 });
 
-const LOW_BALANCE_THRESHOLD = 100000;
+const LOW_BALANCE_THRESHOLD = 10000000;
 
 useEffect(()=>{
 

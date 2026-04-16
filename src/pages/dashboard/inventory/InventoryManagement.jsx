@@ -4,7 +4,15 @@ import Permissions from "../../../components/Permission ";
 import { useNavigate } from "react-router-dom";
 
 export default function InventoryManagement() {
-  const [inventory, setInventory] = useState(null);
+  const [inventory, setInventory] = useState({
+  fuel: {
+    PMS: { totalQuantity: 0, wells: [] },
+    AGO: { quantityLitres: 0 }
+  },
+  products: {
+    slots: []
+  }
+});
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 

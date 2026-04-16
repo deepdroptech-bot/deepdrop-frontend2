@@ -11,6 +11,8 @@ export default {
     bounceSoft: "bounceSoft 1.8s ease-in-out infinite",
     gradientMove: "gradientMove 6s ease infinite",
     glow: "glow 1.5s ease-in-out infinite alternate",
+     successPop: "successPop 0.4s ease-out forwards",
+  checkBounce: "checkBounce 0.5s ease-out",
   },
   keyframes: {
     bounceSoft: {

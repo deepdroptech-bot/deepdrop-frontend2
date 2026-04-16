@@ -59,7 +59,7 @@ export default function MobileNav() {
           to={item.path}
           className={({ isActive }) =>
             `flex flex-col items-center justify-center
-            w-1/4 flex-shrink-0 text-xs snap-start
+           basis-1/4 min-w-[25%] flex-shrink-0 text-xs snap-start px-2 py-1
             ${isActive ? "text-blue-700" : "text-gray-500"}`
           }
         >
