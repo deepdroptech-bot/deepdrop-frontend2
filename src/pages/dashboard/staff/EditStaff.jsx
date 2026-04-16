@@ -107,20 +107,22 @@ return (
   <div className="max-w-5xl mx-auto px-4 md:px-0 py-10 space-y-10">
 
     {/* HEADER */}
-    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-          Edit Staff
-        </h1>
-        <p className="text-gray-500 mt-1">
-          Update staff information and employment details
-        </p>
-      </div>
+<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
 
-      <div className="text-sm text-gray-400 bg-gray-50 px-4 py-2 rounded-lg border">
-        Staff Management / Edit
-      </div>
-    </div>
+  <div>
+    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight">
+      Edit Staff
+    </h1>
+    <p className="text-gray-500 mt-2 text-sm md:text-base">
+      Update staff information and employment details
+    </p>
+  </div>
+
+  <div className="text-xs font-medium text-gray-500 bg-white/70 backdrop-blur-md px-4 py-2 rounded-xl border border-gray-200 shadow-sm">
+    Staff Management / Edit
+  </div>
+
+</div>
 
 
     <form
@@ -129,14 +131,18 @@ return (
     >
 
       {/* PROFILE CARD */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 flex flex-col md:flex-row md:items-center gap-8">
+      <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-white/60 p-8">
 
-        <div className="relative">
-          <img
-            src={preview || "/avatar.png"}
-            alt="Profile"
-            className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
-          />
+        <div className="relative group">
+  <img
+    src={preview || "/avatar.png"}
+    alt="Profile"
+    className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl transition duration-300 group-hover:scale-105 cursor-pointer"
+  />
+
+  <div className="absolute -bottom-2 -right-2 bg-gradient-to-tr from-blue-600 to-indigo-500 text-white text-xs px-3 py-1 rounded-full shadow-lg">
+    Photo
+  </div>
 
           <div className="absolute -bottom-2 -right-2 bg-blue-600 text-white text-xs px-2 py-1 rounded-full shadow">
             Photo
@@ -167,18 +173,18 @@ return (
 
 
       {/* PERSONAL INFO */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 space-y-6">
+      <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-white/60 p-8">
 
-        <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-800">
-              Personal Information
-            </h2>
-            <p className="text-sm text-gray-400">
-              Basic personal details of the staff member
-            </p>
-          </div>
-        </div>
+       <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+  <div>
+    <h2 className="text-lg font-semibold text-gray-900">
+      Personal Information
+    </h2>
+    <p className="text-sm text-gray-400">
+      Basic personal details of the staff member
+    </p>
+  </div>
+</div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -224,7 +230,7 @@ return (
 
 
       {/* EMPLOYMENT DETAILS */}
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 space-y-6">
+      <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-white/60 p-8">
 
         <div className="border-b border-gray-100 pb-4">
           <h2 className="text-lg font-semibold text-gray-800">
@@ -293,13 +299,19 @@ return (
       )}
 
       {/* ACTION BAR */}
-      <div className="sticky bottom-0 bg-white border-t border-gray-200 rounded-xl p-4 flex justify-between items-center shadow-md">
-
+      <div className="
+  sticky bottom-4
+  bg-white/80 backdrop-blur-xl
+  border border-gray-200
+  rounded-2xl
+  px-6 py-4
+  flex justify-between items-center
+  shadow-[0_10px_30px_rgba(0,0,0,0.1)]
+">
         <button
           type="button"
           onClick={() => navigate(-1)}
-          className="px-6 py-3 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-50 transition"
-        >
+          className="px-6 py-3 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-100 transition font-medium"        >
           Cancel
         </button>
 
@@ -307,16 +319,13 @@ return (
           type="submit"
           disabled={saving}
           className="
-            px-8 py-3
-            rounded-xl
-            bg-gradient-to-tr from-red-500 to-blue-600
-            text-white font-semibold
-            shadow-md hover:shadow-xl
-            hover:scale-[1.02] active:scale-95
-            transition
-            min-w-[180px]
-          "
-        >
+  px-8 py-3 rounded-xl
+  bg-gradient-to-tr from-red-500 via-pink-500 to-blue-600
+  text-white font-semibold
+  shadow-lg hover:shadow-2xl
+  hover:scale-[1.03] active:scale-95
+  transition duration-300
+">
           {saving ? "Saving changes…" : "Save Changes"}
         </button>
 

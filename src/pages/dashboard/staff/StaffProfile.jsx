@@ -14,6 +14,8 @@ export default function StaffProfile() {
   const [deleteModal, setDeleteModal] = useState(false);
   const [payModal, setPayModal] = useState(false);
 
+const [preview, setPreview] = useState(null);
+
   const [bonus, setBonus] = useState({ amount: "", reason: "" });
   const [deduction, setDeduction] = useState({ amount: "", reason: "" });
 
@@ -125,10 +127,11 @@ export default function StaffProfile() {
     <div className="bg-white/70 backdrop-blur-2xl border border-white/40 shadow-2xl rounded-3xl p-8 flex flex-col md:flex-row items-center gap-6">
 
       <img
-        src={staff.photo?.url || "/avatar.png"}
-        className="w-28 h-28 rounded-3xl object-cover border-4 border-white shadow-lg"
-        alt="staff"
-      />
+  src={staff.photo?.url || "/avatar.png"}
+  className="w-28 h-28 rounded-3xl object-cover border-4 border-white shadow-lg cursor-pointer"
+  alt="staff"
+  onClick={() => setPreview(staff.photo?.url || "/avatar.png")}
+/>
 
       <div className="flex-1 text-center md:text-left">
         <h1 className="text-3xl font-extrabold text-gray-900">
@@ -410,6 +413,21 @@ View History
       </div>
     </div>
   )}
+
+  {preview && (
+  <div
+    className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+    onClick={() => setPreview(null)}
+  >
+    <img
+      src={preview}
+      alt="preview"
+      className="max-w-[90%] max-h-[90%] rounded-xl shadow-2xl"
+      onClick={(e) => e.stopPropagation()} // prevents closing when clicking image
+    />
+  </div>
+)}
+
   </div>
 );
 }

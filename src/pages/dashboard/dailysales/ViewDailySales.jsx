@@ -421,12 +421,12 @@ Net PMS Sales:
         <h2 className="text-2xl font-bold mb-4">Financial Summary</h2>
         <p>Total PMS Sales: {formatCurrency(sales.PMS.totalAmount)}</p>
         <p>Total AGO Sales: {formatCurrency(sales.AGO.totalAmount)}</p>
+         <p>Total Products Sales: {formatCurrency(sales.totalProductsSales)}</p>
         <p>Total Other Income: {formatCurrency(sales.totalOtherIncome)}</p>
-        <p>Total Products Sales: {formatCurrency(sales.totalProductsSales)}</p>
-        <p>Total Net Sales: {formatCurrency(sales.totalSalesAmount)}</p>
+        <p>Total Gross Sales: {formatCurrency(sales.totalSalesAmount)}</p>
         <p>Total Expenses: {formatCurrency(sales.totalExpenses)}</p>
         <p className="text-2xl font-extrabold mt-4">
-          Net Sales: {formatCurrency(sales.netSales)}
+        Total  Net Sales: {formatCurrency(sales.netSales)}
         </p>
       </div>
 

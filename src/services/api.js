@@ -22,7 +22,7 @@ api.interceptors.response.use(
       localStorage.removeItem("token");
 
       // 🔥 Force redirect
-      window.location.href = "/login";
+      window.location.href = "https://ddeepdrop.netlify.app/get-started";
     }
 
     return Promise.reject(error);

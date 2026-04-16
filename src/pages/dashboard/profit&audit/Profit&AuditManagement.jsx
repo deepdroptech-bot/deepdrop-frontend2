@@ -24,7 +24,10 @@ const [calibrationTo,setCalibrationTo] = useState("");
 const [calibrationData,setCalibrationData] = useState([]);
 
   const formatCurrency = (val) =>
-    `₦${Number(val || 0).toLocaleString()}`;
+    `₦${Number(val || 0).toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    })}`;
 
   useEffect(() => {
     // Simulate loading time for better UX
@@ -182,6 +185,8 @@ alert("Failed to generate PDF");
 
   return (
     <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
+
+      <div className="space-y-8 py-6">
 
 
       {/* ================= HEADER ================= */}
@@ -668,6 +673,7 @@ No calibration records
         </div>
       )}
 
+    </div>
     </div>
   );
 }

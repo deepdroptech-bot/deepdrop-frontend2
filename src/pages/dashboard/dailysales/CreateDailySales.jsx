@@ -90,7 +90,7 @@ const [newPriceInput, setNewPriceInput] = useState("");
 const formatLitres = (v)=> safeNumber(v).toFixed(2);
 
 const formatMoney = (v)=> 
-"₦" + safeNumber(v).toLocaleString("en-NG", { minimumFractionDigits: 2 });
+"₦" + safeNumber(v).toLocaleString();
 
   /* ===========================
      CALCULATE LIVE TOTALS

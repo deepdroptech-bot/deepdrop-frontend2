@@ -170,6 +170,8 @@ const handleSubmit = async (id) => {
   return (
     <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 overflow-x-hidden">
 
+      <div className="space-y-8 py-6">
+
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
@@ -353,6 +355,7 @@ const handleSubmit = async (id) => {
   onClose={() => setModal({ ...modal, isOpen: false })}
 />
 
+    </div>
     </div>
   );
 }

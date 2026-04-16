@@ -88,6 +88,12 @@
   @apply text-gray-400 font-normal;
 }
 
+.input-primary {
+  @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-white/70 backdrop-blur-sm
+  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+  transition shadow-sm hover:shadow-md;
+}
+
 .btn-primary {
   @apply px-4 sm:px-6 py-3 rounded-2xl font-bold text-white
          bg-gradient-to-tr from-red-500 to-blue-600

@@ -50,13 +50,16 @@ export default function MobileNav() {
       ${visible ? "translate-y-0" : "translate-y-full"}
       `}
     >
+      <div className="
+  flex overflow-x-auto snap-x snap-mandatory no-scrollbar
+">
       {filteredNavItems.map((item) => (
         <NavLink
           key={item.name}
           to={item.path}
           className={({ isActive }) =>
             `flex flex-col items-center justify-center
-            flex-1 text-xs
+            w-1/4 flex-shrink-0 text-xs snap-start
             ${isActive ? "text-blue-700" : "text-gray-500"}`
           }
         >
@@ -64,6 +67,7 @@ export default function MobileNav() {
           <span className="text-[10px]">{item.name}</span>
         </NavLink>
       ))}
+    </div>
     </div>
   );
 }
