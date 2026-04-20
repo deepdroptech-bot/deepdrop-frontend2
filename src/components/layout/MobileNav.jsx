@@ -41,33 +41,45 @@ export default function MobileNav() {
   }, []);
 
   return (
-    <div
-      className={`
+  <div
+    className={`
       md:hidden fixed bottom-0 left-0 right-0
       bg-white border-t border-blue-100 shadow-2xl
-      flex overflow-x-auto py-2 z-50
-      transition-transform duration-300
+      z-50 transition-transform duration-300
       ${visible ? "translate-y-0" : "translate-y-full"}
-      `}
+    `}
+  >
+    <div
+      className="
+        flex overflow-x-auto no-scrollbar
+        snap-x snap-mandatory
+        px-1 py-2
+      "
     >
-      <div className="
-  flex overflow-x-auto snap-x snap-mandatory no-scrollbar
-">
       {filteredNavItems.map((item) => (
         <NavLink
           key={item.name}
           to={item.path}
           className={({ isActive }) =>
-            `flex flex-col items-center justify-center
-           basis-1/4 min-w-[25%] flex-shrink-0 text-xs snap-start px-2 py-1
-            ${isActive ? "text-blue-700" : "text-gray-500"}`
+            `
+            flex-shrink-0 w-1/4 snap-start
+            flex flex-col items-center justify-center
+            gap-1 py-2 rounded-xl transition-all duration-200
+            ${
+              isActive
+                ? "text-blue-700 bg-blue-50"
+                : "text-gray-500 hover:text-blue-600"
+            }
+            `
           }
         >
           <item.icon size={20} />
-          <span className="text-[10px]">{item.name}</span>
+          <span className="text-[10px] font-medium truncate">
+            {item.name}
+          </span>
         </NavLink>
       ))}
     </div>
-    </div>
-  );
+  </div>
+);
 }
