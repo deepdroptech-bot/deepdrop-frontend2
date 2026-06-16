@@ -11,8 +11,8 @@ export const pdfAPI = {
   generateStaffSalaryPDF: () =>
     api.get(`/pdf/staff-salary`, { responseType: "blob" }),
   
-  generateExpensePDF: () =>
-    api.get(`/pdf/expenses`, { responseType: "blob" }),
+  generateExpensePDF: (id) =>
+    api.get(`/pdf/expenses/${id}`, { responseType: "blob" }),
 
   generateCalibrationPDF: (from, to) =>
     api.get(`/pdf/calibration?from=${from}&to=${to}`, { responseType: "blob" }),
