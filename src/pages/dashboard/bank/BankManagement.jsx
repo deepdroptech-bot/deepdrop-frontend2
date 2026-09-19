@@ -32,8 +32,7 @@ fetchData();
 },[]);
 
 const fetchData = async()=>{
-
-setLoading(true);
+setLoadingButton(true);
 
 try{
 
@@ -181,6 +180,7 @@ const totalBalance =
 
 (bank?.PMS || 0) +
 (bank?.AGO || 0) +
+(bank?.LPG || 0) +
 (bank?.products || 0) +
 (bank?.otherIncome || 0);
 
@@ -251,6 +251,8 @@ Total Bank Balance
 {label:"PMS",value:bank.PMS},
 
 {label:"AGO",value:bank.AGO},
+
+{label:"LPG",value:bank.LPG},
 
 {label:"Products",value:bank.products},
 
@@ -352,6 +354,8 @@ type:e.target.value
 <option value="PMS">PMS</option>
 
 <option value="AGO">AGO</option>
+
+<option value="LPG">LPG</option>
 
 <option value="products">Products</option>
 
@@ -526,6 +530,12 @@ item.type === "PMS"
 ? "text-blue-600"
 : item.type === "AGO"
 ? "text-green-600"
+: item.type === "LPG"
+? "text-yellow-600"
+: item.type === "products"
+? "text-orange-600"
+: item.type === "otherIncome"
+? "text-purple-600"
 : "text-purple-600"
 }`} >
 

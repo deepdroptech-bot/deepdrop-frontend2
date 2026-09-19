@@ -240,6 +240,7 @@ if (loading)
         >
           <option value="">Select Position</option>
           <option value="Pump Attendant">Pump Attendant</option>
+          <option value="Gas Attendant">Gas Attendant</option>
           <option value="Supervisor">Supervisor</option>
           <option value="Cashier">Cashier</option>
           <option value="Manager">Manager</option>

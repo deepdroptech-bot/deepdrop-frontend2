@@ -7,6 +7,7 @@ export default function EditStaff() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState(false);
   const [saving, setSaving] = useState(false);
 
   const [message, setMessage] = useState("");
@@ -47,6 +48,7 @@ export default function EditStaff() {
   };
 
   const handleSubmit = async e => {
+    setLoadingButton(true);
     e.preventDefault();
     setSaving(true);
 
@@ -83,6 +85,7 @@ setTimeout(() => {
   }
 finally {
     setSaving(false);
+    setLoadingButton(false);
   }
 };
 
@@ -252,6 +255,7 @@ return (
           >
             <option value="">Select Position</option>
             <option value="Pump Attendant">Pump Attendant</option>
+            <option value="Gas Attendant">Gas Attendant</option>
             <option value="Cashier">Cashier</option>
             <option value="Supervisor">Supervisor</option>
             <option value="Manager">Manager</option>

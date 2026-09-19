@@ -1,4 +1,5 @@
 import KpiCard from "../../components/dashboard/KpiCard";
+import KpiCard2 from "../../components/dashboard/KpiCard";
 import ChartCard from "../../components/dashboard/ChartCard";
 import { useOutletContext } from "react-router-dom";
 
@@ -57,14 +58,14 @@ const growthTrend =
         </Permissions>
 
 <Permissions permission="AD_AC">
-        <KpiCard
+        <KpiCard2
           title="Profit Margin (%)"
           value={data?.totals?.profitMargin || 0}
         />
 </Permissions>
 
           <Permissions permission="AD_AC">
-        <KpiCard
+        <KpiCard2
           title="Growth Rate (%)"
           value={data?.performance?.growthRate || 0}
           highlight

@@ -54,6 +54,15 @@ AGO:{
  expenses:[{description:"",amount:""}]
 },
 
+LPG:{
+ openingMeter:"",
+ closingMeter:"",
+  calibrationKG:"",
+  calibrationReason:"",
+  pricePerKG:"",
+  expenses:[{description:"",amount:""}]
+},
+
 productsSold:[
  {itemName:"",quantitySold:"",pricePerUnit:""}
 ],
@@ -111,6 +120,12 @@ AGO: {
     ...form.AGO,
     ...data.AGO,
     expenses: data.AGO?.expenses || [{ description:"", amount:"" }] // ✅ FIX
+  },
+
+LPG: {
+    ...form.LPG,
+    ...data.LPG,
+    expenses: data.LPG?.expenses || [{ description:"", amount:"" }] // ✅ FIX
   },
 
 productsSold:data.productsSold || [],
@@ -846,6 +861,104 @@ className="input-premium"
 
 <button type="button" onClick={()=>addExpense("AGO")} className="btn-secondary">
 Add AGO Expense
+</button>
+      </div>
+
+  {/* LPG */}
+      <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-3xl shadow-xl p-6 space-y-4">
+        <h3 className="text-xl font-bold text-yellow-800">
+          LPG Sales
+        </h3>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          <input
+            type="number"
+            placeholder="Opening Meter"
+            value={form.LPG.openingMeter}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                LPG: { ...form.LPG, openingMeter: e.target.value }
+              })
+            }
+            className="input-premium"
+          />
+
+          <input
+            type="number"
+            placeholder="Closing Meter"
+            value={form.LPG.closingMeter}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                LPG: { ...form.LPG, closingMeter: e.target.value }
+              })
+            }
+            className="input-premium"
+          />
+
+          <input
+            type="number"
+            placeholder="Price Per KG"
+            value={form.LPG.pricePerKG}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                LPG: { ...form.LPG, pricePerKG: e.target.value }
+              })
+            }
+            className="input-premium"
+          />
+
+          <input
+            type="number"
+            placeholder="Calibration KG"
+            value={form.LPG.calibrationKG}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                LPG: { ...form.LPG, calibrationKG: e.target.value }
+              })
+            }
+            className="input-premium"
+          />
+
+          <input
+            type="text"
+            placeholder="Calibration Reason"
+            value={form.LPG.calibrationReason}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                LPG: { ...form.LPG, calibrationReason: e.target.value }
+              })
+            }
+
+            className="input-premium"
+          />
+        </div>
+        {(form.LPG.expenses || []).map((exp, index) => (
+<div key={index} className="grid md:grid-cols-2 gap-4">
+
+<input
+type="text"
+value={exp.description}
+onChange={(e)=>updateExpense("LPG", index, "description", e.target.value)}
+className="input-premium"
+/>
+
+<input
+type="number"
+value={exp.amount}
+onChange={(e)=>updateExpense("LPG", index, "amount", e.target.value)}
+className="input-premium"
+/>
+
+</div>
+))}
+
+<button type="button" onClick={()=>addExpense("LPG")} className="btn-secondary">
+Add LPG Expense
 </button>
       </div>
 

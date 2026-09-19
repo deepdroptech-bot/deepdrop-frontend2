@@ -10,6 +10,7 @@ export default function StaffProfile() {
 
   const [staff, setStaff] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState(false);
   const [loadingPDF, setLoadingPDF] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [payModal, setPayModal] = useState(false);
@@ -85,24 +86,49 @@ const [preview, setPreview] = useState(null);
   );
 
   const handleBonus = async () => {
+    setLoadingButton(true);
+    try {
     await staffAPI.addBonus(id, bonus);
     const updated = await staffAPI.getById(id);
     setStaff(updated.data);
     setBonus({ amount: "", reason: "" });
-  };
+    }
+    catch(err) {
+    console.error(err);
+    alert("Failed to add bonus");
+    } finally {
+    setLoadingButton(false);
+    }
+  }
 
   const handleDeduction = async () => {
-    await staffAPI.addDeduction(id, deduction);
-    const updated = await staffAPI.getById(id);
-    setStaff(updated.data);
-    setDeduction({ amount: "", reason: "" });
+    setLoadingButton(true);
+    try {
+      await staffAPI.addDeduction(id, deduction);
+      const updated = await staffAPI.getById(id);
+      setStaff(updated.data);
+      setDeduction({ amount: "", reason: "" });
+    } catch (err) {
+      console.error(err);
+      alert("Failed to add deduction");
+    } finally {
+      setLoadingButton(false);
+    }
   };
 
   const handlePaySalary = async () => {
+    setLoadingButton(true);
+    try {
     await staffAPI.paySalary(id);
     const updated = await staffAPI.getById(id);
     setStaff(updated.data);
     setPayModal(false);
+  } catch (err) {
+    console.error(err);
+    alert("Failed to pay salary");
+  } finally {
+    setLoadingButton(false);
+  }
   };
 
   const toggleStatus = async () => {
@@ -115,9 +141,17 @@ const [preview, setPreview] = useState(null);
   };
 
   const deleteStaff = async () => {
-    await staffAPI.delete(id);
-    setDeleteModal(false);
-    navigate("/dashboard/staff");
+    setLoadingButton(true);
+    try {
+      await staffAPI.delete(id);
+      setDeleteModal(false);
+      navigate("/dashboard/staff");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete staff member");
+    } finally {
+      setLoadingButton(false);
+    }
   };
 
   return (
@@ -248,8 +282,9 @@ const [preview, setPreview] = useState(null);
         <button
           className="w-full py-3 rounded-xl font-semibold text-white bg-green-500 hover:bg-green-600 transition shadow"
           onClick={handleBonus}
+          disabled={loadingButton}
         >
-          Add Bonus
+          {loadingButton ? "Adding Bonus..." : "Add Bonus"}
         </button>
       </div>
 
@@ -278,8 +313,9 @@ const [preview, setPreview] = useState(null);
         <button
           className="w-full py-3 rounded-xl font-semibold text-white bg-red-500 hover:bg-red-600 transition shadow"
           onClick={handleDeduction}
+          disabled={loadingButton}
         >
-          Apply Deduction
+          {loadingButton ? "Making Deduction..." : "Apply Deduction"}
         </button>
       </div>
     </div>
@@ -369,18 +405,18 @@ View History
         </p>
         <div className="flex justify-center gap-4">
           <button
-            onClick={() => setDeleteModal(false)
+            onClick={() => setDeleteModal(false)}
 
-            }
             className="px-6 py-3 rounded-2xl font-semibold text-white bg-gray-500 hover:bg-gray-600 shadow transition"
           >
             Cancel
           </button>
           <button
             onClick={deleteStaff}
+            disabled={loadingButton}
             className="px-6 py-3 rounded-2xl font-semibold text-white bg-red-600 hover:bg-red-700 shadow transition"
           >
-            Yes, Delete
+            {loadingButton ? "Deleting..." : "Yes, Delete"}
           </button>
         </div>
       </div>
@@ -405,9 +441,10 @@ View History
           </button>
           <button
             onClick={handlePaySalary}
+            disabled={loadingButton}
             className="px-6 py-3 rounded-2xl font-semibold text-white bg-green-600 hover:bg-green-700 shadow transition"
           >
-            Yes, Pay Salary
+            {loadingButton ? "Paying..." : "Yes, Pay Salary"}
           </button>
         </div>
       </div>

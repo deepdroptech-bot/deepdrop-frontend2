@@ -169,5 +169,5 @@ return (
       </button>
     </div>
   </div>
-);
+)
 }

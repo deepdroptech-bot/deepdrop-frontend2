@@ -7,18 +7,21 @@ export default function InventoryManagement() {
   const [inventory, setInventory] = useState({
   fuel: {
     PMS: { totalQuantity: 0, wells: [] },
-    AGO: { quantityLitres: 0 }
+    AGO: { quantityLitres: 0 },
+    LPG: { quantityLitres: 0 }
   },
   products: {
     slots: []
   }
 });
   const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState(false);
   const navigate = useNavigate();
 
   const PMS_THRESHOLD = 5000;   // total PMS litres warning level
 const WELL_THRESHOLD = 2000;  // per well warning
 const AGO_THRESHOLD = 3000;   // AGO warning
+const LPG_THRESHOLD = 200; // low stock warning level
 
 const PRODUCT_THRESHOLD = 10; // low stock warning level
 const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
@@ -52,18 +55,36 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
   };
 
   const handleFuelSubmit = async (e) => {
-    e.preventDefault();
-    await inventoryAPI.addFuelStock(fuelForm);
-    fetchInventory();
-    setFuelForm({ fuelType: "PMS", wellNumber: 1, quantity: "" });
+    try {
+      e.preventDefault();
+      setLoadingButton(true);
+
+      await inventoryAPI.addFuelStock(fuelForm);
+      fetchInventory();
+      setFuelForm({ fuelType: "PMS", wellNumber: 1, quantity: "" });
+    } catch (err) {
+      console.error("Failed to add fuel stock:", err);
+      alert("Failed to add fuel stock. Please try again.");
+    } finally {
+      setLoadingButton(false);
+    }
   };
 
   const handleProductSubmit = async (e) => {
-    e.preventDefault();
-    await inventoryAPI.addProductQuantity(productForm);
-    fetchInventory();
-    setProductForm({ slotNumber: "", itemName: "", quantity: "" });
-  };
+    try {
+      e.preventDefault();
+      setLoadingButton(true);
+      await inventoryAPI.addProductQuantity(productForm);
+      fetchInventory();
+      setProductForm({ slotNumber: "", itemName: "", quantity: "" });
+    } catch (err) {
+      console.error("Failed to add product quantity:", err);
+      alert("Failed to add product quantity. Please try again.");
+    }
+    finally {
+      setLoadingButton(false);
+    }
+};
 
   if (loading)
   return (
@@ -175,6 +196,24 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
     )}
   </div>
 
+  {/* LPG TOTAL */}
+  <div className={`p-6 rounded-2xl shadow-lg ${
+    inventory.fuel.LPG.quantityLitres < LPG_THRESHOLD
+      ? "bg-red-50 border border-red-300"
+      : "bg-yellow-50"
+  }`}>
+    <h3 className="font-semibold text-gray-700">Total LPG</h3>
+    <p className="text-2xl font-bold">
+      {formatNumber(inventory.fuel.LPG.quantityLitres)} L
+    </p>
+
+    {inventory.fuel.LPG.quantityLitres < LPG_THRESHOLD && (
+      <p className="text-red-600 text-sm mt-2 font-semibold">
+        ⚠ Low LPG Stock
+      </p>
+    )}
+  </div>
+
   {/* PRODUCTS TOTAL */}
   <div className={`p-6 rounded-2xl shadow-lg ${
     inventory.products.slots.reduce((sum, slot) => sum + slot.quantity, 0) < PRODUCT_THRESHOLD * inventory.products.slots.length
@@ -193,7 +232,6 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
     )}
   </div>
 </div>
-
 
       {/* ================= ADD FUEL STOCK ================= */}
       <Permissions permission="AD_AC">
@@ -215,6 +253,7 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
           >
             <option value="PMS">PMS</option>
             <option value="AGO">AGO</option>
+            <option value="LPG">LPG</option>
           </select>
 
           {fuelForm.fuelType === "PMS" && (
@@ -235,7 +274,7 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
 
           <input
             type="number"
-            placeholder="Quantity (Litres)"
+            placeholder="Quantity (Litres/KG)"
             className="border rounded-xl p-3"
             value={fuelForm.quantity}
             onChange={(e) =>
@@ -243,8 +282,12 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
             }
           />
 
-          <button className="bg-blue-600 text-white rounded-xl p-3 font-semibold hover:bg-blue-700 transition">
-            Add Stock
+          <button
+            type="submit"
+            className="bg-blue-600 text-white rounded-xl p-3 font-semibold hover:bg-blue-700 transition"
+            disabled={loadingButton}
+          >
+            {loadingButton ? "Adding..." : "Add Stock"} 
           </button>
         </form>
       </div>
@@ -289,8 +332,12 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
             }
           />
 
-          <button className="bg-purple-600 text-white rounded-xl p-3 font-semibold hover:bg-purple-700 transition">
-            Add Product
+          <button
+            type="submit"
+            className="bg-purple-600 text-white rounded-xl p-3 font-semibold hover:bg-purple-700 transition"
+            disabled={loadingButton}
+          >
+            {loadingButton ? "Adding..." : "Add Product"}
           </button>
         </form>
       </div>
@@ -402,7 +449,53 @@ isLow ? "border border-red-400" : ""
   })()}
 </div>
 
+{/* ================= LPG Display ================= */}
+<div className="bg-yellow-50 p-6 rounded-3xl shadow-xl">  
+  <h2 className="text-xl font-bold text-yellow-800 mb-6">
+    LPG Tank
+  </h2>
+  {(() => {
+    const percentage = Math.min(
+      (inventory.fuel.LPG.quantityLitres / 1000) * 100,
+      100
+    );
 
+    const isLow =
+      inventory.fuel.LPG.quantityLitres < LPG_THRESHOLD;
+    return (
+      <div
+onClick={()=>navigate("/dashboard/inventory/fuel-history?type=LPG")}
+className={`bg-white p-5 rounded-2xl shadow cursor-pointer hover:scale-[1.02] transition ${
+isLow ? "border border-red-400" : ""
+}`}
+>
+
+        <div className="flex justify-between mb-2">
+          <span className="font-semibold">LPG Tank</span>
+          <span className="font-bold">
+            {formatNumber(inventory.fuel.LPG.quantityLitres)} KG
+          </span>
+        </div>
+
+        <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+          <div
+            className={`h-4 transition-all duration-500 ${
+              isLow ? "bg-red-500" : "bg-yellow-600"
+            }`}
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+
+        {isLow && (
+          <p className="text-red-600 text-sm mt-2 font-semibold">
+            ⚠ LPG stock low
+          </p>
+        )}
+      </div>
+    );
+  }
+  )()}
+</div>
 
       {/* ================= PRODUCT INVENTORY DISPLAY ================= */}
 <div className="bg-white p-6 rounded-3xl shadow-xl">

@@ -11,9 +11,10 @@ export default function ExpenseManagement() {
   const [form, setForm] = useState({
     description: "",
     amount: "",
-    category: "General"
+    category: "PMS"
   });
   const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState(false);
   const [loadingPDF, setLoadingPDF] = useState(false);
 
   const fetchCurrent = async () => {
@@ -27,11 +28,19 @@ export default function ExpenseManagement() {
   };
 
   useEffect(() => {
-    fetchCurrent();
-    fetchHistory();
-    // Simulate loading time for better UX    setLoading(true);
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
+    async function fetchData() {
+      setLoading(true);
+      setLoadingButton(true);
+      try {
+        await Promise.all([fetchCurrent(), fetchHistory()]);
+      } catch (err) {
+        console.error("Failed to fetch data:", err);
+      } finally {
+        setLoading(false);
+        setLoadingButton(false);
+      }
+    }
+    fetchData();
   }, []);
 
   const handleCreateDocument = async () => {
@@ -45,7 +54,7 @@ export default function ExpenseManagement() {
   const handleAddExpense = async (e) => {
     e.preventDefault();
     await expenseAPI.addExpense(form);
-    setForm({ description: "", amount: "", category: "General" });
+    setForm({ description: "", amount: "", category: "PMS" });
     fetchCurrent();
   };
 
@@ -201,12 +210,17 @@ export default function ExpenseManagement() {
               >
                 <option value="PMS">PMS</option>
                 <option value="AGO">AGO</option>
+                <option value="LPG">LPG</option>
                 <option value="products">Products</option>
                 <option value="General">General</option>
               </select>
 
-              <button className="bg-red-600 text-white rounded-xl p-3 hover:bg-red-700 transition">
-                Add
+              <button
+                type="submit"
+                className="bg-red-600 text-white rounded-xl p-3 hover:bg-red-700 transition"
+                disabled={loadingButton}
+              >
+                {loadingButton ? "Adding..." : "Add"}
               </button>
             </form>
           </div>

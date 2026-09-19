@@ -371,6 +371,39 @@ Net PMS Sales:
         </div>
       </div>
 
+      {/* ================= LPG ================= */}
+      <div className="bg-yellow-200 p-5 rounded-xl space-y-2">
+        <h2 className="text-xl font-bold text-yellow-700 mb-4">
+          LPG Sales
+        </h2>
+
+        <div className="space-y-1">
+          <p>Opening: {formatNumber(sales.LPG?.openingMeter)}</p>
+          <p>Closing: {formatNumber(sales.LPG?.closingMeter)}</p>
+          <p>Calibration: {formatNumber(sales.LPG?.calibrationKG)}</p>
+          <p>Calibration Reason: {sales.LPG?.calibrationReason}</p>
+          <p className="font-medium text-yellow-700">
+            KG Sold: {formatNumber(sales.LPG?.KGSold)}
+          </p>
+          <p>Price/KG: {formatCurrency(sales.LPG?.pricePerKG)}</p>
+          <p>Total Amount: {formatCurrency(sales.LPG?.totalAmount)}</p>
+
+          {/* LPG Expense Details */}
+          {sales.LPG?.expenses?.map((expense, i) => (
+            <div key={i} className="flex justify-between text-sm text-gray-600">
+              <span>{expense.description}</span>
+              <span>{formatCurrency(expense.amount)}</span>
+            </div>
+          ))}
+
+           <p>Total Expenses: {formatCurrency(sales.LPG?.totalExpenses)}</p>
+
+          <p className="font-bold text-lg text-yellow-900 mt-2">
+            Net Sales: {formatCurrency(sales.LPG?.ANetSales)}
+          </p>
+        </div>
+      </div>
+
       {/* ================= PRODUCTS ================= */}
       <div className="bg-white p-6 rounded-3xl shadow-xl">
         <h2 className="text-xl font-bold text-purple-700 mb-4">

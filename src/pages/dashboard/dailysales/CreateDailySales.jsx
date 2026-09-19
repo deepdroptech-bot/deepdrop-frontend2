@@ -31,6 +31,7 @@ const [newPriceInput, setNewPriceInput] = useState("");
       expenses: [{ description: "", amount: "" }]
     },
     AGO: { openingMeter: "", closingMeter: "", calibrationLitres: "", calibrationReason: "", pricePerLitre: "", expenses: [{ description: "", amount: "" }] },
+    LPG: { openingMeter: "", closingMeter: "", calibrationKG: "", calibrationReason: "", pricePerKG: "", expenses: [{ description: "", amount: "" }] },
     productsSold: [{ itemName: "", quantitySold: "", pricePerUnit: "" }],
     otherIncome: [{ itemName: "", amount: "" }],
     notes: [""]
@@ -143,6 +144,25 @@ const formatMoney = (v)=>
     return amount - calculateAGOExpensesTotal();
   };
 
+  const calculateLPGTotals = () => {
+    const opening = Number(form.LPG.openingMeter) || 0;
+    const closing = Number(form.LPG.closingMeter) || 0;
+    const kg = Math.max(closing - opening, 0);
+    const calibration = Number(form.LPG.calibrationKG) || 0;
+    const kgSold = Math.max(kg - calibration, 0);
+    const amount = kgSold * (Number(form.LPG.pricePerKG) || 0);
+    return { kgSold, amount, kg, calibration };
+  };
+
+  const calculateLPGExpensesTotal = () => {
+    return (form.LPG.expenses || []).reduce((sum, e) => sum + (Number(e.amount) || 0), 0);
+  };
+
+  const calculateLPGNetSales = () => {
+    const { amount } = calculateLPGTotals();
+    return amount - calculateLPGExpensesTotal();
+  };
+
   const calculateProductsTotal = () => {
     return form.productsSold.reduce((sum, p) => sum + ((Number(p.quantitySold) || 0) * (Number(p.pricePerUnit) || 0)), 0);
   };
@@ -152,7 +172,7 @@ const formatMoney = (v)=>
   };
 
   const calculateGrandTotal = () => {
-    return calculatePmsNetSales() + calculateAGONetSales() + calculateProductsTotal() + calculateOtherIncomeTotal();
+    return calculatePmsNetSales() + calculateAGONetSales() + calculateLPGNetSales() + calculateProductsTotal() + calculateOtherIncomeTotal();
   }
 
   /* ===========================
@@ -198,6 +218,18 @@ const formatMoney = (v)=>
   calibrationLitres: Number(form.AGO.calibrationLitres) || 0,
   pricePerLitre: Number(form.AGO.pricePerLitre) || 0,
   expenses: (form.AGO.expenses || []).map(e => ({
+    description: e.description,
+    amount: Number(e.amount) || 0
+  }))
+};
+
+    cleanedForm.LPG = {
+  ...cleanedForm.LPG,
+  openingMeter: Number(form.LPG.openingMeter) || 0,
+  closingMeter: Number(form.LPG.closingMeter) || 0,
+  calibrationKG: Number(form.LPG.calibrationKG) || 0,
+  pricePerKG: Number(form.LPG.pricePerKG) || 0,
+  expenses: (form.LPG.expenses || []).map(e => ({
     description: e.description,
     amount: Number(e.amount) || 0
   }))
@@ -568,6 +600,135 @@ cleanedForm.otherIncome =
 
           <div className="text-right text-lg font-bold text-green-600">
             AGO Net Sales: ₦{calculateAGONetSales().toLocaleString()}
+          </div>
+
+          {/* ================= LPG ================= */}
+          <h3 className="text-xl font-semibold">LPG</h3>
+
+          <input
+            type="text"
+            inputMode="decimal"
+            placeholder="LPG Price Per KG"
+            className="input-premium"
+            value={form.LPG.pricePerKG ?? ""}
+            onChange={e =>
+              handleSectionChange("LPG", "pricePerKG", e.target.value)
+            }
+          />
+
+          <input
+            type="text"
+            inputMode="decimal"
+            placeholder="Opening Meter"
+            className="input-premium"
+            value={form.LPG.openingMeter ?? ""}
+            onChange={e =>
+              handleSectionChange("LPG", "openingMeter", e.target.value)
+            }
+          />
+
+          <input
+            type="text"
+            inputMode="decimal"
+            placeholder="Closing Meter"
+            className="input-premium"
+            value={form.LPG.closingMeter ?? ""}
+            onChange={e =>
+              handleSectionChange("LPG", "closingMeter", e.target.value)
+            }
+          />
+
+          <input
+            type="text"
+            inputMode="decimal"
+            placeholder="Calibration (KG)"
+            className="input-premium"
+            value={form.LPG.calibrationKG ?? ""}
+            onChange={e =>
+              handleSectionChange("LPG", "calibrationKG", e.target.value)
+            }
+          />
+
+          <input
+            type="text"
+            placeholder="Calibration Reason"
+            className="input-premium"
+            value={form.LPG.calibrationReason ?? ""}
+            onChange={e =>
+              handleSectionChange("LPG", "calibrationReason", e.target.value)
+            }
+          />
+
+          {(() => {
+  const { kg, kgSold, amount, calibration } = calculateLPGTotals();
+
+  return (
+    <div className="bg-gray-50 rounded-lg p-3 text-sm text-gray-700 mt-3">
+      <p>
+        KG:{" "}
+        <span className="font-semibold">
+          {formatLitres(kg)} KG
+        </span>
+      </p>
+
+      <p>
+        Calibration:{" "}
+        <span className="font-semibold">
+          {formatLitres(calibration)} KG
+        </span>
+      </p>
+
+      <p>
+        KG Sold:{" "}
+        <span className="font-semibold">
+          {formatLitres(kgSold)} KG
+        </span>
+      </p>
+
+      <p>
+        Total Amount:{" "}
+        <span className="font-semibold">
+          {formatMoney(amount)}
+        </span>
+      </p>
+    </div>
+  );
+}
+)()}
+
+          {form.LPG.expenses.map((expense, index) => (
+            <div key={index} className="flex gap-4">
+              <input
+                placeholder="Expense Description"
+                className="input-premium"
+                value={expense.description}
+                onChange={e =>
+                  handleNestedExpenseChange("LPG", index, "description", e.target.value)
+                }
+              />
+              <input
+                type="text"
+                inputMode="decimal"
+                placeholder="Expense Amount"
+                className="input-premium"
+                value={expense.amount}
+                onChange={e =>
+                  handleNestedExpenseChange("LPG", index, "amount", e.target.value)
+                }
+              />
+            </div>
+          ))}
+
+          <div className="text-left text-lg font-semibold text-red-400">
+            LPG Expenses Total: ₦{calculateLPGExpensesTotal().toLocaleString()}
+          </div>
+
+          <button type="button" onClick={() => addExpense("LPG")} className="btn-secondary">
+            + Add LPG Expense
+          </button>
+
+        <div className="text-right text-lg font-bold text-green-600">
+            LPG Net Sales: ₦{calculateLPGNetSales().toLocaleString()}
           </div>
 
           {/* ================= PRODUCTS ================= */}
