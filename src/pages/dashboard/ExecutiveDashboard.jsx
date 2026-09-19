@@ -1,5 +1,4 @@
-import KpiCard from "../../components/dashboard/KpiCard";
-import KpiCard2 from "../../components/dashboard/KpiCard";
+import KpiCard, {KpiCard2} from "../../components/dashboard/KpiCard";
 import ChartCard from "../../components/dashboard/ChartCard";
 import { useOutletContext } from "react-router-dom";
 

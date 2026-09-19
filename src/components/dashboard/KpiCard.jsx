@@ -15,7 +15,7 @@ export default function KpiCard({ title, value, highlight }) {
   );
 }
 
-export default function KpiCard2({ title, value, highlight }) {
+export function KpiCard2({ title, value, highlight }) {
   return (
     <motion.div
       whileHover={{ scale: 1.03 }}
