@@ -8,7 +8,7 @@ export default function InventoryManagement() {
   fuel: {
     PMS: { totalQuantity: 0, wells: [] },
     AGO: { quantityLitres: 0 },
-    LPG: { quantityLitres: 0 }
+    LPG: { quantityKG: 0 }
   },
   products: {
     slots: []
@@ -198,16 +198,16 @@ const PRODUCT_MAX_CAPACITY = 100; // assumed max per slot (adjust if needed)
 
   {/* LPG TOTAL */}
   <div className={`p-6 rounded-2xl shadow-lg ${
-    inventory.fuel.LPG.quantityLitres < LPG_THRESHOLD
+    inventory.fuel.LPG.quantityKG < LPG_THRESHOLD
       ? "bg-red-50 border border-red-300"
       : "bg-yellow-50"
   }`}>
     <h3 className="font-semibold text-gray-700">Total LPG</h3>
     <p className="text-2xl font-bold">
-      {formatNumber(inventory.fuel.LPG.quantityLitres)} L
+      {formatNumber(inventory.fuel.LPG.quantityKG)} KG
     </p>
 
-    {inventory.fuel.LPG.quantityLitres < LPG_THRESHOLD && (
+    {inventory.fuel.LPG.quantityKG < LPG_THRESHOLD && (
       <p className="text-red-600 text-sm mt-2 font-semibold">
         ⚠ Low LPG Stock
       </p>
@@ -456,12 +456,12 @@ isLow ? "border border-red-400" : ""
   </h2>
   {(() => {
     const percentage = Math.min(
-      (inventory.fuel.LPG.quantityLitres / 1000) * 100,
+      (inventory.fuel.LPG.quantityKG / 1000) * 100,
       100
     );
 
     const isLow =
-      inventory.fuel.LPG.quantityLitres < LPG_THRESHOLD;
+      inventory.fuel.LPG.quantityKG < LPG_THRESHOLD;
     return (
       <div
 onClick={()=>navigate("/dashboard/inventory/fuel-history?type=LPG")}
@@ -473,7 +473,7 @@ isLow ? "border border-red-400" : ""
         <div className="flex justify-between mb-2">
           <span className="font-semibold">LPG Tank</span>
           <span className="font-bold">
-            {formatNumber(inventory.fuel.LPG.quantityLitres)} KG
+            {formatNumber(inventory.fuel.LPG.quantityKG)} KG
           </span>
         </div>
 
