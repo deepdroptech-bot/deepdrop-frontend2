@@ -42,10 +42,11 @@ export default function OperationalDashboard() {
   ========================= */
   const pieData = [
   { name: "PMS", value: inventory.pmsQty || 0 },
-  { name: "AGO", value: inventory.agoQty || 0 }
+  { name: "AGO", value: inventory.agoQty || 0 },
+  { name: "LPG", value: inventory.lpgQty || 0 }
 ];
 
-  const COLORS = ["#a33716", "#26a9dc"];
+  const COLORS = ["#a33716", "#26a9dc", "#f59e0b"];
 
   /* =========================
      BAR DATA (inventory breakdown)
@@ -151,6 +152,7 @@ export default function OperationalDashboard() {
           <div className="mt-2 text-sm text-gray-600">
             PMS: ₦{formatMoney(bank.breakdown?.PMS)} <br />
             AGO: ₦{formatMoney(bank.breakdown?.AGO)} <br />
+            LPG: ₦{formatMoney(bank.breakdown?.LPG)} <br />
             Products: ₦{formatMoney(bank.breakdown?.products)} <br />
             Other Income: ₦{formatMoney(bank.breakdown?.otherIncome)}
           </div>
@@ -178,6 +180,8 @@ tx.type === "PMS"
 ? "text-blue-400"
 : tx.type === "AGO"
 ? "text-green-400"
+: tx.type === "LPG"
+? "text-yellow-400"
 : tx.type === "products"
 ? "text-purple-400"
 : "text-pink-400"
@@ -212,6 +216,8 @@ tx.type === "PMS"
           className={`font-medium ${
             item.type === "PMS"
               ? "text-blue-400"
+              : item.type === "LPG"
+              ? "text-yellow-400"
               : "text-green-400"
           }`}
         >

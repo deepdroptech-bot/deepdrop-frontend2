@@ -32,7 +32,6 @@ fetchData();
 },[]);
 
 const fetchData = async()=>{
-setLoadingButton(true);
 
 try{
 

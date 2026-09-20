@@ -265,6 +265,17 @@ alert("Failed to generate PDF");
                 </p>
               </div>
 
+               <div className="bg-green-50 p-6 rounded-2xl">
+                <h3 className="font-bold mb-2">LPG</h3>
+                <p>Litres Sold: {dailyReport.LPG.KG}</p>
+                <p>Price: {formatCurrency(dailyReport.LPG.price)}</p>
+                <p>Revenue: {formatCurrency(dailyReport.LPG.revenue)}</p>
+                <p>Expenses: {formatCurrency(dailyReport.LPG.expenses)}</p>
+                <p className="font-bold text-green-600">
+                  Net Amount: {formatCurrency(dailyReport.LPG.netProfit)}
+                </p>
+              </div>
+
               <div className="bg-purple-50 p-6 rounded-2xl">
                 <h3 className="font-bold mb-2">Total Net Amount</h3>
                 <p className="text-2xl font-bold text-indigo-700">
@@ -401,6 +412,53 @@ Pump 3 & 4:
         }`}
       >
         {formatCurrency(summary.AGO.netProfit)}
+        <span className="text-sm font-medium ml-2 text-gray-400">
+          Net Profit
+        </span>
+      </div>
+    </div>
+
+    {/* ================= LPG CARD ================= */}
+    <div className="relative overflow-hidden bg-white border border-gray-100 rounded-3xl p-7 shadow-lg hover:shadow-xl transition-all">
+
+      <div className="flex justify-between items-start mb-5">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800">
+            LPG Performance
+          </h3>
+          <p className="text-sm text-gray-400">
+            Liquefied Petroleum Gas
+          </p>
+        </div>
+
+        <div className="bg-orange-100 text-orange-600 px-3 py-1 rounded-full text-xs font-semibold">
+          LPG
+        </div>
+      </div>
+
+      <div className="space-y-2 text-sm text-gray-600">
+        <p>
+          <span className="font-medium text-gray-700">KG Sold:</span>{" "}
+          {summary.LPG.KG.toLocaleString()} KG
+        </p>
+        <p>
+          <span className="font-medium text-gray-700">Revenue:</span>{" "}
+          {formatCurrency(summary.LPG.revenue)}
+        </p>
+        <p>
+          <span className="font-medium text-gray-700">Expenses:</span>{" "}
+          {formatCurrency(summary.LPG.expenses)}
+        </p>
+      </div>
+
+      <div
+        className={`mt-6 text-2xl font-bold ${
+          summary.LPG.netProfit >= 0
+            ? "text-green-600"
+            : "text-red-600"
+        }`}
+      >
+        {formatCurrency(summary.LPG.netProfit)}
         <span className="text-sm font-medium ml-2 text-gray-400">
           Net Profit
         </span>
